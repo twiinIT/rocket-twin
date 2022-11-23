@@ -14,7 +14,7 @@ class Rocket(System):
         
         self.add_child(Dynamics('Dyn'), pulling = ["a", "aw", "m"])
         self.add_child(Aerodynamics('Aero'), pulling = ["V", "theta"])
-        self.add_child(Thrust('Thrust'), pulling= ["theta"])
+        self.add_child(Thrust('Thrust'), pulling= ["theta", "F"])
         self.add_child(Mass('Mass'), pulling = ["Dm", "m"])
         # self.add_child(Atmosphere('Atm'), pulling = ["rhosol", "Psol", "Hp", "Hd"])
 

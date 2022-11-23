@@ -24,19 +24,18 @@ class Aerodynamics(System):
         self.add_outward('Ma', 0., desc = "Aerodynamic Moment")
         
     def compute(self):
-        arctan = np.arctan(self.V[1] / self.V[0]) if self.V[0] > 1e-5 else np.pi/2
+        arctan = np.arctan2(self.V[1],self.V[0])
         incidence = abs(arctan - self.theta)
 
         Cx, Cn, Z_CPA = aeroCoefs(incidence)
 
-        self.Fa = 0.5*self.rho*np.linalg.norm(self.V)**2*self.Sref*np.array([Cx, Cn*np.sign(incidence)]) # Selon l'axe de la fusée
+        self.Fa = 0.5*self.rho*np.linalg.norm(self.V)**2*self.Sref*np.array([Cx, Cn*np.sign(incidence%(2*np.pi) - np.pi)]) # Selon l'axe de la fusée
 
-        G = 300
-        self.Ma = self.Fa[1]*(G - Z_CPA)/1000 # Bras de levier entre Le centre de masse et le centre de poussée aérodynamique
+        G = .300
+        self.Ma = self.Fa[1]*(G - Z_CPA) # Bras de levier entre Le centre de masse et le centre de poussée aérodynamique
 
-        cos = np.cos(self.theta) if abs(self.theta - np.pi/2) > 1e-5 else 0
-        
+
         #print(cos, self.Fa, Cn, incidence, self.theta, self.V)
 
-        self.Fa = np.array([-self.Fa[0]*cos - self.Fa[1]*np.sin(self.theta),
-                            -self.Fa[0]*np.sin(self.theta) + self.Fa[1]*cos]) # Dans le repère cartésien
+        self.Fa = np.array([-self.Fa[0]*np.cos(self.theta) - self.Fa[1]*np.sin(self.theta),
+                            -self.Fa[0]*np.sin(self.theta) + self.Fa[1]*np.cos(self.theta)]) # Dans le repère cartésien

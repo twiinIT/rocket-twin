@@ -25,4 +25,4 @@ class Mass(System):
             self.Dm = 0
         
     def compute(self):
-        self.I = self.I0*self.m/self.m0
+        self.I = self.I0 * self.m/self.m0
