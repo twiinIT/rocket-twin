@@ -11,20 +11,22 @@ driver.time_interval = (0,40)
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['r', 'V', 'a', 'norm(V)', 'theta', 'm', 'F']),
-    period=0.05,
+    DataFrameRecorder(includes=['r', 'v', 'a', 'norm(v)', 'theta', 'm', 'F']),
+    period=0.05 ,
 )
 
 # Define a simulation scenario
 driver.set_scenario(
     init = {
         'r': np.zeros(2),
-        'V': np.zeros(2),
-        'theta': np.pi/2 + 0.00001
+        'v': np.zeros(2),
+        'theta': np.pi/2 - 0.1
     },
     values = {
         'm': 15,
     },
+    stop = 'r[1] < 0'
+    
 
 
 )
@@ -35,40 +37,88 @@ rocket.run_drivers()
 data = driver.recorder.export_data()
 data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 mass = np.array(data['m'])
-thrust = np.array(data['F'])
-theta = np.array(data['theta'])
 time = np.asarray(data['time'])
-angle = np.asarray(data['theta'])
 traj = np.asarray(data['r'].tolist())
-print("dn")
-print(theta)
+traj_angle = np.asarray(data['theta'].tolist())
 
+l = 20 #Rocket's length
+
+semi_length = np.transpose((l/2) * np.array([np.cos(traj_angle), np.sin(traj_angle)]))
+
+traj_top = []
+traj_bot = []
+
+for i in range(len(traj)):
+    sign = np.sign(np.pi / 2 - traj_angle[i])
+    traj_top.append(traj[i] + sign * semi_length[i])
+    traj_bot.append(traj[i] - sign * semi_length[i])
+
+traj_top = np.asarray(traj_top)
+traj_bot = np.asarray(traj_bot)
+
+for i in range(len(traj_top)):
+    print((traj_top[i][0]-traj_bot[i][0])**2 + (traj_top[i][1]-traj_bot[i][1])**2)
 
 #Plot results
 
-traces = [
-    go.Scatter(
-        x = traj[:, 0],
-        y = traj[:, 1],
-        mode = 'lines',
-        name = 'numerical',
-        line = dict(color='red'),
-    )
-   
-]
-layout = go.Layout(
-    title = "Trajectory",
-    xaxis = dict(title="x"),
-    yaxis = dict(
-        title = "z",
-        scaleanchor = "x",
-        scaleratio = 1,
-    ),
-    hovermode = "x",
-)
+#Animation - Rocket's movement
 
-fig = go.Figure(data=traces, layout=layout)
-fig.show()
+fig2 = go.Figure(go.Scatter(x=[traj_bot[0][0], traj_top[0][0]], y=[traj_bot[0][1], traj_top[0][1]]))
+
+fig2.update_layout(title='Rocket Movement',
+                  title_x=0.5,
+                  width=600, height=600, 
+                  xaxis_title='Ground Level', 
+                  yaxis_title='Height',
+                  yaxis_range=(-10,1000),
+                  xaxis_range=(-505,505), #you generate y-values for i =0, ...99, 
+                                      #that are assigned, by default, to x-values 0, 1, ..., 99
+                  
+                  updatemenus=[dict(buttons = [dict(
+                                               args = [None, {"frame": {"duration": 100*0.05, 
+                                                                        "redraw": True},
+                                                              "fromcurrent": True, 
+                                                              "transition": {"duration": 0}}],
+                                               label = "Play",
+                                               method = "animate")],
+                                type='buttons',
+                                showactive=False,
+                                y=1,
+                                x=1.12,
+                                xanchor='right',
+                                yanchor='top')])
+
+
+                                          
+                    
+frames= [go.Frame(data=[go.Scatter(x=[traj_bot[i,0], traj_top[i,0]],y=[traj_bot[i,1], traj_top[i,1]])]) for i in range(len(traj))]
+fig2.update(frames=frames)
+
+fig2.show()
+
+# traj_angle *= 180/np.pi
+
+# traces = [
+#     go.Scatter(
+#         x = time,
+#         y = traj_angle,
+#         mode = 'lines',
+#         name = 'numerical',
+#         line = dict(color='red'),
+#     )
+   
+# ]
+# layout = go.Layout(
+#     title = "Trajectory",
+#     xaxis = dict(title="time"),
+#     yaxis = dict(
+#         title = "theta",
+#     ),
+#     hovermode = "x",
+# )
+
+# fig = go.Figure(data=traces, layout=layout)
+# fig.show()
 
 
 

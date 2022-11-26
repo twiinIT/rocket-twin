@@ -11,7 +11,11 @@ class Thrust(System):
         self.add_inward('m', 1., desc = "Rocket's mass")
 
         #Pushing outputs
-        self.add_outward('F', 1., desc = "Thrust Force")
+        self.add_outward('Fp', 1., desc = "Thrust Force")
+        self.add_outward('Mp', 0, desc = "Thrust Moment")
         
     def compute(self):
-        self.F = thrust(self.time, self.theta)
+        #the data used comes from the experimental values measured on the engine used by X20
+        #Fp is a dim2 np.array
+        self.Fp = thrust(self.time, self.theta)
+
