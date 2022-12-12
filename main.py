@@ -1,17 +1,21 @@
-from Rocket import Rocket
+from Earth import Earth
 import numpy as np
 from cosapp.drivers import RungeKutta
 import plotly.graph_objs as go
 import plotly.figure_factory as ff
 from cosapp.recorders import DataFrameRecorder
 
-rocket = Rocket('rocket')
-driver = rocket.add_driver(RungeKutta(order=4, dt=0.1))
+earth = Earth('earth')
+driver = earth.add_driver(RungeKutta(order=3, dt=0.05))
 driver.time_interval = (0,40)
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['r', 'v', 'a', 'norm(v)', 'theta', 'm', 'F']),
+    DataFrameRecorder(includes=['r', 
+    'v.vector', 
+    'a',
+    'norm(v.vector)', 
+    'theta', 'm']),
     period=0.05 ,
 )
 
@@ -19,19 +23,15 @@ driver.add_recorder(
 driver.set_scenario(
     init = {
         'r': np.zeros(2),
-        'v': np.zeros(2),
         'theta': np.pi/2 - 0.1
     },
     values = {
         'm': 15,
     },
     stop = 'r[1] < 0'
-    
-
-
 )
 
-rocket.run_drivers()
+earth.run_drivers()
 
 # Retrieve recorded data
 data = driver.recorder.export_data()
@@ -55,9 +55,9 @@ for i in range(len(traj)):
 
 traj_top = np.asarray(traj_top)
 traj_bot = np.asarray(traj_bot)
+# for i in range(len(traj_top)):
+#     print("Traj", (traj_top[i][0]-traj_bot[i][0])**2 + (traj_top[i][1]-traj_bot[i][1])**2)
 
-for i in range(len(traj_top)):
-    print((traj_top[i][0]-traj_bot[i][0])**2 + (traj_top[i][1]-traj_bot[i][1])**2)
 
 #Plot results
 

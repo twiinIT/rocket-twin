@@ -4,7 +4,6 @@ import pandas as pd
 thrust_data = pd.read_csv("thrust.txt", header=None)
 times = list(thrust_data.iloc[0])
 thrusts = list(thrust_data.iloc[1])
-print(thrusts)
 
 aero_data = pd.read_csv("aero.txt", header=None)
 attack = list(aero_data.iloc[:, 0])
@@ -18,7 +17,7 @@ def mean(x, y, fx, fy, t):
     return (fx + (fy - fx)*percent)
 
 
-def thrust(time, theta):
+def thrust(time):
     """Calculates the thrust of the rocket"""
 
     #If the time is superior to the last data point there is no more thrust
@@ -29,9 +28,7 @@ def thrust(time, theta):
     while times[i] <= time:
         i += 1
 
-    return mean(times[i - 1], times[i], thrusts[i - 1], thrusts[i], time) * np.array([np.cos(theta), np.sin(theta)])
-
-print(thrust(2.5,0))
+    return mean(times[i - 1], times[i], thrusts[i - 1], thrusts[i], time) 
 
 
 def aeroCoefs(incidence):
