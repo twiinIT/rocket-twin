@@ -74,10 +74,10 @@ class Dynamics(System):
         self.a = (self.Fp.vector + self.Fa.vector) / self.m + self.g
         self.aw = (self.Ma + self.Mp) / self.I
 
-        # print(f'{self.Fp=}')
-        # print(f'{self.Fa=}')
-        # print(f'{self.a=}')
-        # print(f'{self.m=}')
+        print(f'{self.Fp=}')
+        print(f'{self.Fa=}')
+        print(f'{self.a=}')
+        print(f'{self.m=}')
 
 
 ##########################################################################################
@@ -123,17 +123,16 @@ class Aerodynamics(System):
         self.add_outward('Ma', 0., desc = "Aerodynamic Moment")
         
     def compute(self):
-        incidence = np.arctan2(self.v.vector[0], self.v.vector[1]) # The y axis is the axis of the rocket and the x axis is perpendicular 
-        incidence = incidence%(2*np.pi)
+        incidence = self.parent.parent.theta - np.arctan2(self.parent.parent.v.vector[1],self.parent.parent.v.vector[0]) # The y axis is the axis of the rocket and the x axis is perpendicular 
+        incidence = incidence%(2*np.pi) - np.pi
 
-        Cx, Cn, Z_CPA = aeroCoefs(abs(incidence) * 180 / np.pi) # Conversion into degree because the tables are in degree
-
+        Cx, Cn, Z_CPA = aeroCoefs(incidence) # !!!!!!!!!!! The tables are supposed to be in degree
+        
         self.Fa.vector = 0.5*self.rho*np.linalg.norm(self.v.vector)**2*self.Sref*np.array([Cx, Cn]) # Selon l'axe de la fusée
 
         G = .300
         self.Ma = self.Fa.vector[1]*(G - Z_CPA) # Bras de levier entre Le centre de masse et le centre de poussée aérodynamique
 
-        print("Rocket's Fa", self.Fa)
 
 ##########
 
@@ -141,17 +140,20 @@ class Aerodynamics(System):
 class Thrust(System):
     
     def setup(self):
+        
+        self.add_inward('m', 1., desc = "Rocket's mass")
 
         #Pushing outputs
         self.add_output(ReferentialPort, 'Fp') # desc = "Thrust Force"
         self.add_outward('Mp', 0, desc = "Thrust Moment")
-        
+
+        self.add_transient('edfzsrqgt', der='m') # Sinon on n'a pas assez d'appels à compute... Etrange
+
     def compute(self):
         #the data used comes from the experimental values measured on the engine used by X20
         #Fp is a dim2 np.array
         self.Fp.vector = np.array([0, - thrust(self.time)])
 
-        print("Rocket's Fp", self.Fp)
 
 ##########
 
@@ -191,7 +193,7 @@ class Mass(System):
 class ReferentialPort(Port):
     """Referential Port """
     def setup(self):
-        self.add_variable('vector', np.zeros(2, dtype=object))
+        self.add_variable('vector', np.zeros(2, dtype=float))
 
     class Connector(BaseConnector):
         """Custom connector for `ReferentialPort` objects
@@ -210,11 +212,13 @@ class ReferentialPort(Port):
                 theta = source.owner.theta
                 sink.vector = np.array([source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
                                         - source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
+                return
                                         
             if isinstance(source.owner, Dynamics) and isinstance(sink.owner, Rocket): 
                 theta = source.owner.parent.theta #Earth's theta
                 sink.vector = np.array([source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
                                         - source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
+                return
 
             ##########
             # Going from rocket referential to earth referential
@@ -223,8 +227,15 @@ class ReferentialPort(Port):
                 theta = sink.owner.theta
                 sink.vector = np.array([ - source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
                                         source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
+                return
 
             if isinstance(sink.owner, Dynamics) and isinstance(source.owner, Rocket): 
                 theta = sink.owner.parent.theta #Earth's theta
                 sink.vector = np.array([ - source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
                                         source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
+                return
+            
+            
+            sink.vector = source.vector
+
+            

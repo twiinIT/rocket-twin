@@ -22,7 +22,7 @@ def thrust(time):
 
     #If the time is superior to the last data point there is no more thrust
     if time >= times[-1]:
-        return np.zeros(2)
+        return 0
 
     i=0
     while times[i] <= time:
@@ -36,7 +36,6 @@ def aeroCoefs(incidence):
     i = 0
     if (incidence > attack[-1]):
         i = len(attack) - 1
-        percent = 1
     else:
         while attack[i] <= incidence:
             i += 1
