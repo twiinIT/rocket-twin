@@ -128,10 +128,10 @@ class Aerodynamics(System):
 
         Cx, Cn, Z_CPA = aeroCoefs(incidence) # !!!!!!!!!!! The tables are supposed to be in degree
         
-        self.Fa.vector = 0.5*self.rho*np.linalg.norm(self.v.vector)**2*self.Sref*np.array([Cx, Cn]) # Selon l'axe de la fusée
+        self.Fa.vector = 0.5*self.rho*np.linalg.norm(self.v.vector)**2*self.Sref*np.array([Cn, Cx]) # Selon l'axe de la fusée
 
         G = .300
-        self.Ma = self.Fa.vector[1]*(G - Z_CPA) # Bras de levier entre Le centre de masse et le centre de poussée aérodynamique
+        self.Ma = self.Fa.vector[0]*(G - Z_CPA) # Bras de levier entre Le centre de masse et le centre de poussée aérodynamique
 
 
 ##########

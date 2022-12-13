@@ -23,7 +23,7 @@ driver.add_recorder(
 driver.set_scenario(
     init = {
         'r': np.zeros(2),
-        'theta': np.pi/2
+        'theta': np.pi/2 + 0.1
     },
     values = {
         'm': 15,
