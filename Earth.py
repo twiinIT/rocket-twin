@@ -11,6 +11,7 @@ from Utility import thrust, aeroCoefs
 class Earth(System):
     
     def setup(self):
+        self.add_inward('referential', 'Earth', desc = "Earth is in the Earth's referential")
 
         self.add_child(Rocket('Rocket'), pulling = ["v", "m", 
                                                     #"Fp", "Fa"
@@ -50,6 +51,8 @@ class Dynamics(System):
     def setup(self):
         
         #Thrust inputs
+        self.add_inward('referential', 'Earth', desc = "Dynamics is in the Earth's referential")
+
         self.add_input(ReferentialPort, 'Fp') # desc = "Thrust Force"
         self.add_inward('Mp', np.zeros(2), desc = "Thrust Moment")
 
@@ -74,10 +77,10 @@ class Dynamics(System):
         self.a = (self.Fp.vector + self.Fa.vector) / self.m + self.g
         self.aw = (self.Ma + self.Mp) / self.I
 
-        print(f'{self.Fp=}')
-        print(f'{self.Fa=}')
-        print(f'{self.a=}')
-        print(f'{self.m=}')
+        # print(f'{self.Fp=}')
+        # print(f'{self.Fa=}')
+        # print(f'{self.a=}')
+        # print(f'{self.m=}')
 
 
 ##########################################################################################
@@ -87,12 +90,16 @@ class Dynamics(System):
 class Rocket(System):
     
     def setup(self):
+        self.add_inward('referential', 'Rocket', desc = "Rocket is in the Rocket's referential")
+
+        self.add_input(ReferentialPort, 'ref')
+        # En dessous inward
         self.add_input(ReferentialPort, 'v')
         self.add_output(ReferentialPort, 'Fa')
         self.add_output(ReferentialPort, 'Fp')
 
         self.add_child(Aerodynamics('Aero'), pulling = ["v", "Fa", "Ma"])
-        self.add_child(Thrust('Thrust'), pulling= ["Fp", "Mp"])
+        self.add_child(Thrust('Thrust'), pulling= ["m", "Fp", "Mp"])
         self.add_child(Mass('Mass'), pulling = ["m", "I"])
 
         self.exec_order = ['Mass', 'Aero', 'Thrust']
@@ -104,7 +111,8 @@ class Rocket(System):
 class Aerodynamics(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Aerodynamics is in the Rocket's referential")
+
         #Rocket inputsèè
         self.add_inward('Sref', 1.767e-2, desc = "Aerodynamic Surface of Reference")
 
@@ -140,6 +148,7 @@ class Aerodynamics(System):
 class Thrust(System):
     
     def setup(self):
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
         
         self.add_inward('m', 1., desc = "Rocket's mass")
 
@@ -147,13 +156,11 @@ class Thrust(System):
         self.add_output(ReferentialPort, 'Fp') # desc = "Thrust Force"
         self.add_outward('Mp', 0, desc = "Thrust Moment")
 
-        self.add_transient('edfzsrqgt', der='m') # Sinon on n'a pas assez d'appels à compute... Etrange
 
     def compute(self):
         #the data used comes from the experimental values measured on the engine used by X20
         #Fp is a dim2 np.array
         self.Fp.vector = np.array([0, - thrust(self.time)])
-
 
 ##########
 
@@ -161,7 +168,8 @@ class Thrust(System):
 class Mass(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Mass is in the Rocket's referential")
+
         #Rocket inputs
         self.add_inward('m0', 1., desc = "Rocket's Initial Mass")
         self.add_inward('I0', 1.475e-3, desc = "Rocket's Initial Inertia Moment")
@@ -208,33 +216,25 @@ class ReferentialPort(Port):
             ##########
             #Going from earth referential to rocket referential 
 
-            if isinstance(source.owner, Earth) and isinstance(sink.owner, Rocket): 
+            if source.owner.referential == 'Earth' and sink.owner.referential == 'Rocket': 
                 theta = source.owner.theta
                 sink.vector = np.array([source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
                                         - source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
                 return
                                         
-            if isinstance(source.owner, Dynamics) and isinstance(sink.owner, Rocket): 
-                theta = source.owner.parent.theta #Earth's theta
-                sink.vector = np.array([source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
-                                        - source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
-                return
-
             ##########
             # Going from rocket referential to earth referential
 
-            if isinstance(sink.owner, Earth) and isinstance(source.owner, Rocket): 
-                theta = sink.owner.theta
-                sink.vector = np.array([ - source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
-                                        source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
-                return
+            if sink.owner.referential == 'Earth' and source.owner.referential == 'Rocket': 
+                #If there is no theta in sink.owner (i.e. we are in Dynamics), then we take the theta from the parent Earth
+                try:
+                    theta = sink.owner.theta
+                except AttributeError:
+                    theta = sink.owner.parent.theta
 
-            if isinstance(sink.owner, Dynamics) and isinstance(source.owner, Rocket): 
-                theta = sink.owner.parent.theta #Earth's theta
                 sink.vector = np.array([ - source.vector[1]*np.cos(theta) - source.vector[0]*np.sin(theta),
                                         source.vector[0]*np.cos(theta) - source.vector[1]*np.sin(theta)])
                 return
-            
             
             sink.vector = source.vector
 
