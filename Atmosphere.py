@@ -1,5 +1,5 @@
 import numpy as np
-from cosapp.base import System, Port
+from cosapp.base import System
 
 class Atmosphere(System):
     
