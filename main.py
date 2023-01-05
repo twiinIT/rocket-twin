@@ -1,140 +1,87 @@
 from Earth import Earth
 import numpy as np
-from cosapp.drivers import RungeKutta
+from cosapp.drivers import RungeKutta, NonLinearSolver
 import plotly.graph_objs as go
-import plotly.figure_factory as ff
 from cosapp.recorders import DataFrameRecorder
 
+#Time-step
+dt = 0.01
+
+#Create System
 earth = Earth('earth')
-driver = earth.add_driver(RungeKutta(order=3, dt=0.05))
-driver.time_interval = (0,40)
+
+#Add RungeKutta driver
+driver = earth.add_driver(RungeKutta(order=4, dt=dt))
+driver.time_interval = (0, 30)
+
+#Add NonLinearSolver driver
+solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
+
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['r', 
-    'v.vector', 
-    'a',
-    'norm(v.vector)', 
-    'theta', 'm']),
-    period=0.05 ,
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp']),
+    period=1,
 )
 
-# Define a simulation scenario
+#Initial conditions and constants
+
 driver.set_scenario(
     init = {
-        'r': np.zeros(2),
-        'theta': np.pi/2 + 0.1
-    },
-    values = {
-        'm': 15,
-    },
-    stop = 'r[1] < 0'
-)
+        'Traj.r' : np.zeros(3),
+        'Rocket.Kin.v' : np.zeros(3),
+        'Rocket.Kin.ar' : np.array([0., np.pi/2 + 0.1, 0.]),
+        'Rocket.Kin.av' : 0.*np.array([np.pi/20, np.pi/20, 0.]),
+        'Rocket.Geom.Mass.m' : 15.
+    })
+
 
 earth.run_drivers()
 
 # Retrieve recorded data
 data = driver.recorder.export_data()
 data = data.drop(['Section', 'Status', 'Error code'], axis=1)
-mass = np.array(data['m'])
 time = np.asarray(data['time'])
-traj = np.asarray(data['r'].tolist())
-traj_angle = np.asarray(data['theta'].tolist())
+mass = np.array(data['Rocket.Dyn.m'])
+traj = np.asarray(data['Traj.r'].tolist())
+velo = np.asarray(data['Rocket.Kin.v'].tolist())
+acel = np.asarray(data['Rocket.Kin.a'].tolist())
+thrust = np.asarray(data['Rocket.Thrust.Fp'].tolist())
 
-l = 20 #Rocket's length
-
-semi_length = np.transpose((l/2) * np.array([np.cos(traj_angle), np.sin(traj_angle)]))
-
-traj_top = []
-traj_bot = []
-
-for i in range(len(traj)):
-    sign = np.sign(np.pi / 2 - traj_angle[i])
-    traj_top.append(traj[i] + sign * semi_length[i])
-    traj_bot.append(traj[i] - sign * semi_length[i])
-
-traj_top = np.asarray(traj_top)
-traj_bot = np.asarray(traj_bot)
-# for i in range(len(traj_top)):
-#     print("Traj", (traj_top[i][0]-traj_bot[i][0])**2 + (traj_top[i][1]-traj_bot[i][1])**2)
 
 
 #Plot results
 
-#Animation - Rocket's movement
+x=[]
+y=[]
+z=[]
 
-fig2 = go.Figure(go.Scatter(x=[traj_bot[0][0], traj_top[0][0]], y=[traj_bot[0][1], traj_top[0][1]]))
+for i in range(len(traj)):
+    x.append(traj[i][0])
+    y.append(traj[i][1])
+    z.append(traj[i][2])
 
-fig2.update_layout(title='Rocket Movement',
-                  title_x=0.5,
-                  width=600, height=600, 
-                  xaxis_title='Ground Level', 
-                  yaxis_title='Height',
-                  yaxis_range=(-10,1000),
-                  xaxis_range=(-505,505), #you generate y-values for i =0, ...99, 
-                                      #that are assigned, by default, to x-values 0, 1, ..., 99
-                  
-                  updatemenus=[dict(buttons = [dict(
-                                               args = [None, {"frame": {"duration": 100*0.05, 
-                                                                        "redraw": True},
-                                                              "fromcurrent": True, 
-                                                              "transition": {"duration": 0}}],
-                                               label = "Play",
-                                               method = "animate")],
-                                type='buttons',
-                                showactive=False,
-                                y=1,
-                                x=1.12,
-                                xanchor='right',
-                                yanchor='top')])
+fig = go.Figure(data=go.Scatter3d(
+    x=x, y=y, z=z,
+    marker=dict(
+        size=4,
+        color=z,
+        colorscale='Viridis',
+    ),
+    line=dict(
+        color='darkblue',
+        width=2
+    )
+))
 
 
-                                          
-                    
-frames= [go.Frame(data=[go.Scatter(x=[traj_bot[i,0], traj_top[i,0]],y=[traj_bot[i,1], traj_top[i,1]])]) for i in range(len(traj))]
-fig2.update(frames=frames)
-
-fig2.show()
-
-# traj_angle *= 180/np.pi
-
-# traces = [
-#     go.Scatter(
-#         x = time,
-#         y = traj_angle,
-#         mode = 'lines',
-#         name = 'numerical',
-#         line = dict(color='red'),
-#     )
-   
-# ]
-# layout = go.Layout(
-#     title = "Trajectory",
-#     xaxis = dict(title="time"),
-#     yaxis = dict(
-#         title = "theta",
-#     ),
-#     hovermode = "x",
-# )
-
-# fig = go.Figure(data=traces, layout=layout)
-# fig.show()
+fig.update_layout(
+    scene = dict(
+        xaxis = dict(nticks=2, range=[-500,500],),
+        yaxis = dict(nticks=2, range=[-500,500],),
+        zaxis = dict(nticks=2, range=[0,1000],),),
+    width=700,
+    margin=dict(r=20, l=10, b=10, t=10))
 
 
-
-
-
-
-# fig =  ff.create_quiver(
-#         traj[:, 0], 
-#         traj[:, 1], 
-#         np.cos(angle), 
-#         np.sin(angle),
-#         scale=5,
-#         arrow_scale=.4,
-#         name='quiver',
-#         line_width=1)
-
-# fig.update_layout(title='Trajectoire de la fusée', yaxis=dict(scaleanchor="x", scaleratio=1)) 
-
-# fig.show()
+fig.show()

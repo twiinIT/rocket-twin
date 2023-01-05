@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 thrust_data = pd.read_csv("thrust.txt", header=None)

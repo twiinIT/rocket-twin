@@ -1,24 +1,24 @@
+from cosapp.base import System
+
 import numpy as np
-from cosapp.base import System, Port
+
+from Atmo.Density import Density
+from Atmo.Pressure import Pressure
+from Atmo.Wind import Wind
 
 class Atmosphere(System):
     
     def setup(self):
         
-        #Rocket inputs
-        self.add_inward('rhosol', 1., desc="Air Density at Sea Level")
-        self.add_inward('Psol', 1., desc="Atmospheric Pressure at Sea Level")
-        self.add_inward('Hd', 1., desc="Height Scale of Exponential Fall for Density")
-        self.add_inward('Hp', 1., desc="Height Scale of Exponential Fall for Pressure")
-
-        #Trajectory inputs
-        self.add_inward('z', 1., desc="Rocket Height")
+        #System orientation
+        self.add_inward('Atmo_ang', np.zeros(3), desc = "Earth Euler Angles", unit = '')
         
-        #Atmosphere outputs
-        self.add_outward('rho', 1., desc="Air Density")
-        self.add_outward('Pa', 1., desc="Atmospheric Pressure")
+        #Atmosphere children
+        self.add_child(Density('Dens'), pulling = ['r_in', 'rho'])
+        self.add_child(Pressure('Pres'), pulling = ['r_in', 'P'])
+        self.add_child(Wind('Wind'), pulling = ['V_wind'])
         
-    def compute(self):
-
-        self.rho = self.rhosol*np.exp(-self.z/self.Hd)
-        self.Pa = self.Psol*np.exp(-self.z/self.Hp)
+        #Execution order
+        self.exec_order = ['Dens', 'Pres', 'Wind']
+    
+    
