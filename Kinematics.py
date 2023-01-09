@@ -29,4 +29,5 @@ class Kinematics(System):
         self.v_out.val = self.v
         self.av_out = self.av
         self.Kin_ang = self.ar
+        print(self.Kin_ang)
         
