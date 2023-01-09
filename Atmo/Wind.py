@@ -9,6 +9,7 @@ import numpy as np
 class Wind(System):
     
     def setup(self):
+        self.add_inward('referential', 'Earth', desc = "Earth's referential")
         
         #System orientation
         self.add_inward('Wind_ang', np.array([0., 0., np.pi/6]))

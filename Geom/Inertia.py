@@ -5,7 +5,8 @@ import numpy as np
 class Inertia(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #Mass inputs
         self.add_inward('m_in', 100., desc = "Rocket Mass", unit = 'kg')
         

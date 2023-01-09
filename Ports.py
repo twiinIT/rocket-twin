@@ -21,7 +21,6 @@ class VelPort(Port):
     """Velocity Port """
     def setup(self):
         self.add_variable('val', np.zeros(3), desc = "Velocity Components", unit = 'm/s')
-        #self.add_variable('ang', np.zeros(3), desc = "Axes' Euler's Angles", unit = '')
         
 
     class Connector(BaseConnector):
@@ -34,10 +33,10 @@ class VelPort(Port):
             sink = self.sink
             source = self.source
             
-            if sink.owner.parent == source.owner:
+            if source.owner.referential == 'Earth' and sink.owner.referential == 'Rocket': 
                 sink.val = np.matmul(RotMat3D(sink.owner[f'{sink.owner.name}_ang']), source.val)
 
-            elif sink.owner == source.owner.parent:
+            elif sink.owner.referential == 'Earth' and source.owner.referential == 'Rocket':
                 sink.val = np.matmul(RotMat3D(-source.owner[f'{source.owner.name}_ang']), source.val)
                 
             else:
@@ -49,7 +48,6 @@ class AclPort(Port):
     """Acceleration Port """
     def setup(self):
         self.add_variable('val', np.zeros(3), desc = "Acceleration Components", unit = 'm/s**2')
-        #self.add_variable('ang', np.zeros(3), desc = "Axes' Euler's Angles", unit = '')
         
 
     class Connector(BaseConnector):
@@ -62,11 +60,23 @@ class AclPort(Port):
             sink = self.sink
             source = self.source
             
-            if sink.owner.parent == source.owner:
-                sink.val = np.matmul(RotMat3D(sink.owner[f'{sink.owner.name}_ang']), source.val)
+            # try:
+            #     gini = source.owner.g
+            #     gfin = sink.owner.g
+            #     print(f'Going from {source.owner.__str__} to {sink.owner.__str__}')
+            #     print("Intitial", gini)
+            #     print("Final", gfin)
+            # except:
+            #     pass
 
-            elif sink.owner == source.owner.parent:
+            if source.owner.referential == 'Earth' and sink.owner.referential == 'Rocket': 
+                sink.val = np.matmul(RotMat3D(sink.owner[f'{sink.owner.name}_ang']), source.val)
+                 # print(RotMat3D(sink.owner[f'{sink.owner.name}_ang']))
+                print(sink.owner[f'{sink.owner.name}_ang'], sink.owner.name)
+
+
+            elif sink.owner.referential == 'Earth' and source.owner.referential == 'Rocket':
                 sink.val = np.matmul(RotMat3D(-source.owner[f'{source.owner.name}_ang']), source.val)
-                
+                # print(RotMat3D(-source.owner[f'{source.owner.name}_ang']))
             else:
                 sink.val = source.val

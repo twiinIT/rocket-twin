@@ -9,7 +9,8 @@ from Atmo.Wind import Wind
 class Atmosphere(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Earth', desc = "Earth's referential")
+    
         #System orientation
         self.add_inward('Atmo_ang', np.zeros(3), desc = "Earth Euler Angles", unit = '')
         

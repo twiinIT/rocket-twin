@@ -8,6 +8,7 @@ import numpy as np
 class Gravity(System):
     
     def setup(self):
+        self.add_inward('referential', 'Earth', desc = "Earth's referential")
         
         #System constants
         self.add_inward('G', 6.6743*10**(-11), desc = "Gravitational Constant", unit = 'N*m**2/kg**2')

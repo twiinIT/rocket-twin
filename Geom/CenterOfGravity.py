@@ -5,7 +5,8 @@ import numpy as np
 class CenterOfGravity(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #Dimensions inputs
         self.add_inward('l', 10., desc = "Rocket Length", unit = 'm')
         

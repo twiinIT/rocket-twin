@@ -7,7 +7,8 @@ import numpy as np
 class Thrust(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #System constants
         self.add_inward('g0', 9.81, desc = "Gravity at Earth's Surface", unit = 'm/s**2')
         self.add_inward('isp', 100., desc = "Specific Impulsion in vacuum", unit = 's')

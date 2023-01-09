@@ -5,6 +5,7 @@ import numpy as np
 class Pressure(System):
     
     def setup(self):
+        self.add_inward('referential', 'Earth', desc = "Earth's referential")
         
         #System constants
         self.add_inward('P0', 101325., desc = "Atmospheric Pressure at Sea Level", unit = 'Pa')

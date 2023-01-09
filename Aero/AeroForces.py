@@ -5,7 +5,8 @@ import numpy as np
 class AeroForces(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+
         #Density inputs
         self.add_inward('rho', 1., desc = "Air Density", unit = 'kg/m**3')
         
@@ -33,10 +34,9 @@ class AeroForces(System):
         dl = self.gf - self.gc
         
         self.Fa[0] = -0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[0]
-        self.Fa[1] =  0.5*self.rho*self.S_ref*self.V_rel[1]**2*self.C[1]
-        self.Fa[2] = -0.5*self.rho*self.S_ref*self.V_rel[2]**2*self.C[2]
+        self.Fa[1] =  0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[1]
+        self.Fa[2] = -0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[2]
         
         self.Ma[0] = 0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[0]*dl[0]
-        self.Ma[1] = 0.5*self.rho*self.S_ref*self.V_rel[1]**2*self.C[2]*dl[2]
-        self.Ma[2] = 0.5*self.rho*self.S_ref*self.V_rel[2]**2*self.C[1]*dl[1]
-    
+        self.Ma[1] = 0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[2]*dl[2]
+        self.Ma[2] = 0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[1]*dl[1]

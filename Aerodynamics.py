@@ -11,7 +11,8 @@ from Aero.CenterOfPressure import CenterOfPressure
 class Aerodynamics(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #System Orientation
         self.add_inward('Aero_ang', np.zeros(3), desc = "Rocket Euler Angles", unit = '')
         

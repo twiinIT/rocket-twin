@@ -6,7 +6,8 @@ import numpy as np
 
 class Dynamics(System):
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #System orientation
         self.add_inward('Dyn_ang', np.zeros(3), desc = "Rocket Euler Angles", unit = '')
         
@@ -38,9 +39,9 @@ class Dynamics(System):
         v = self.v_in.val
         av = self.av_in
         
-        self.a[0] = (self.Fp[0] + self.Fa[0])/self.m + self.g.val[0] + av[2]*v[1] - av[1]*v[2]
-        self.a[1] = (self.Fp[1] + self.Fa[1])/self.m + self.g.val[1] + av[0]*v[2] - av[2]*v[0]
-        self.a[2] = (self.Fp[2] + self.Fa[2])/self.m + self.g.val[2] + av[1]*v[0] - av[0]*v[1]
+        self.a[0] = (self.Fp[0] + self.Fa[0])/self.m + self.g.val[0] - av[2]*v[1] + av[1]*v[2]
+        self.a[1] = (self.Fp[1] + self.Fa[1])/self.m + self.g.val[1] - av[0]*v[2] + av[2]*v[0]
+        self.a[2] = (self.Fp[2] + self.Fa[2])/self.m + self.g.val[2] - av[1]*v[0] + av[0]*v[1]
         
         self.aa[0] = (self.Mp[0] + self.Ma[0] + (self.I[1] - self.I[2])*av[1]*av[2])/self.I[0]
         self.aa[1] = (self.Mp[1] + self.Ma[1] + (self.I[2] - self.I[0])*av[2]*av[0])/self.I[1]

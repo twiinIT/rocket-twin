@@ -9,7 +9,8 @@ import numpy as np
 class RelativeSpeed(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+
         #System orientation
         self.add_inward('RelSpeed_ang', np.zeros(3), desc = "Rocket Euler Angles", unit = '')
         

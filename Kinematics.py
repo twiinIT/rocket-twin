@@ -7,7 +7,8 @@ import numpy as np
 class Kinematics(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #System orientation
         self.add_outward('Kin_ang', np.zeros(3), desc = "Rocket Euler Angles", unit = '')
         
@@ -25,8 +26,6 @@ class Kinematics(System):
         self.add_outward('av_out', np.zeros(3), desc = "Rocket Angular Velocity", unit = '1/s')
         
     def compute(self):
-        
         self.v_out.val = self.v
         self.av_out = self.av
         self.Kin_ang = self.ar
-        

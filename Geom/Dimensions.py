@@ -5,7 +5,8 @@ import numpy as np
 class Dimensions(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #Dimensions outputs
         self.add_outward('l', 10., desc = "Rocket Length", unit = 'm')
         self.add_outward('r_cyl', 0.05, desc = "Rocket Radius", unit = 'm')

@@ -5,7 +5,8 @@ import numpy as np
 class Trajectory(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Earth', desc = "Earth's referential")
+    
         #Rocket inputs
         self.add_inward('v', np.zeros(3), desc = "Rocket Velocity", unit = 'm/s')
         

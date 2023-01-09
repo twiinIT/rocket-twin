@@ -5,7 +5,8 @@ import numpy as np
 class Coefficients(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+
         #System inputs
         self.add_inward('Cx0', 1., desc = "X Axis Initial Aerodynamic Coefficient", unit = '')
         self.add_inward('Cy0', 0., desc = "Y Axis Initial Aerodynamic Coefficient", unit = '')

@@ -3,9 +3,10 @@ from cosapp.base import System
 import numpy as np
 
 class Angles(System):
-    
+
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+
         #RelativeSpeed inputs
         self.add_inward('V_rel', np.zeros(3), desc = "Relative Velocity", unit = 'm/s')
         

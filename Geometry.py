@@ -9,7 +9,8 @@ from Geom.Inertia import Inertia
 class Geometry(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #Geometry children
         self.add_child(Mass('Mass'), pulling = ['m_out', 'qp'])
         self.add_child(Inertia('Inertia'), pulling = ['I'])

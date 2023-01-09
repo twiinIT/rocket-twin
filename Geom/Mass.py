@@ -4,7 +4,8 @@ from cosapp.base import System
 class Mass(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #System constants
         self.add_inward('m0', 100., desc = "Rocket's Initial Mass", unit = 'kg')
         self.add_inward('qp', 10., desc = "Engine's Propulsive Debt", unit = 'kg/s')

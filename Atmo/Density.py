@@ -5,7 +5,8 @@ import numpy as np
 class Density(System):
     
     def setup(self):
-        
+        self.add_inward('referential', 'Earth', desc = "Earth's referential")
+    
         #System constants
         self.add_inward('rho0', 1.225, desc = "Air Density at Sea Level", unit = 'kg/m**3')
         

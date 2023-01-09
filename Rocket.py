@@ -12,15 +12,13 @@ import numpy as np
 class Rocket(System):
     
     def setup(self):
-        
-        #System orientation
-        self.add_inward('Rocket_ang', np.zeros(3), desc = "Earth Euler Angles", unit = '')
-        
+        self.add_inward('referential', 'Rocket', desc = "Thrust is in the Rocket's referential")
+    
         #Engine propulsive debt
         self.add_inward('qp', 10., desc = "Engine's Propulsive Debt", unit = 'kg/s')
         
         #Rocket children
-        self.add_child(Kinematics('Kin'), pulling = ['v_out'])
+        self.add_child(Kinematics('Kin'), pulling = {'v_out': 'v_out', 'Kin_ang' : 'Rocket_ang'})
         self.add_child(Dynamics('Dyn'), pulling = ['g'])
         self.add_child(Thrust('Thrust'), pulling = ['P', 'qp'])
         self.add_child(Geometry('Geom'), pulling = ['qp'])
