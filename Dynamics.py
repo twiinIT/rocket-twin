@@ -39,7 +39,7 @@ class Dynamics(System):
         v = self.v_in.val
         av = self.av_in
         
-        self.a[0] = (self.Fp[0] + self.Fa[0])/self.m + self.g.val[0] - av[2]*v[1] + av[1]*v[2]
+        self.a[0] = (self.Fp[0] + self.Fa[0])/self.m + self.g.val[0] - av[2]*v[1] + av[1]*v[2]*1
         self.a[1] = (self.Fp[1] + self.Fa[1])/self.m + self.g.val[1] - av[0]*v[2] + av[2]*v[0]
         self.a[2] = (self.Fp[2] + self.Fa[2])/self.m + self.g.val[2] - av[1]*v[0] + av[0]*v[1]
         
