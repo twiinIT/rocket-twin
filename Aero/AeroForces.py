@@ -31,7 +31,7 @@ class AeroForces(System):
         
     def compute(self):
         
-        dl = self.gf - self.gc
+        dl = self.gc - self.gf
         
         self.Fa[0] = -0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[0]
         self.Fa[1] =  0.5*self.rho*self.S_ref*self.V_rel[0]**2*self.C[1]
