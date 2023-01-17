@@ -21,6 +21,7 @@ class Kinematics(System):
         self.add_transient('v', der = 'a', desc = "Rocket Velocity")
         self.add_transient('av', der = 'aa', desc = "Rocket Angular Velocity (pqr)")
         self.add_transient('ar', der = 'av2', desc = "Rocket Angular Position")
+        self.add_transient('artest', der = 'av')
         
         #Kinematics outputs
         self.add_output(VelPort, 'v_out')
@@ -35,3 +36,4 @@ class Kinematics(System):
         self.v_out.val = self.v
         self.av_out = self.av
         self.Kin_ang = self.ar
+

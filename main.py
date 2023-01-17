@@ -26,13 +26,13 @@ driver.add_recorder(
 
 #Initial conditions and constants
 
-l = 100 #Rocket's length
+l = 300 #Rocket's length
 
 driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.zeros(3),
-        'Rocket.Kin.ar' : np.array([0., np.pi/2 - 0.1, 0.]),
+        'Rocket.Kin.ar' : np.array([0., np.pi/2 - 0.1, np.pi/4]),
         'Rocket.Kin.av' : 0*np.array([np.pi/20, np.pi/20, 0.]),
         'Rocket.Geom.Mass.m' : 15.
     })
@@ -85,9 +85,9 @@ fig = go.Figure(data=go.Scatter3d(
 
 fig.update_layout(
     scene = dict(
-        xaxis = dict(nticks=2, range=[-500,500],),
-        yaxis = dict(nticks=2, range=[-500,500],),
-        zaxis = dict(nticks=2, range=[0,1000],),),
+        xaxis = dict(nticks=2, range=[-5000,0],),
+        yaxis = dict(nticks=2, range=[-5000,0],),
+        zaxis = dict(nticks=2, range=[0,2000],),),
     width=700,
     margin=dict(r=20, l=10, b=10, t=10))
 
@@ -99,18 +99,24 @@ traj_topx = []
 traj_topz = []
 traj_botx = []
 traj_botz = []
+traj_topy = []
+traj_boty = []
 
 for i in range(len(traj)):
     sign = np.sign(np.pi / 2 - ang[i][1] % 2*np.pi)
-    traj_topx.append(traj[i][0] + sign * l/2 * np.cos(ang[i][1]) )
-    traj_botx.append(traj[i][0] - sign * l/2 * np.cos(ang[i][1]))
-    traj_topz.append(traj[i][2] + sign * l/2 * np.sin(ang[i][1]))
-    traj_botz.append(traj[i][2] - sign * l/2 * np.sin(ang[i][1]))
+    traj_topx.append(traj[i][0] +   l/2 * np.cos(ang[i][1])* np.cos(ang[i][2]))
+    traj_botx.append(traj[i][0] -  l/2 * np.cos(ang[i][1])* np.cos(ang[i][2]))
+    traj_boty.append(traj[i][1] - l/2 * np.sin(ang[i][2]))
+    traj_topy.append(traj[i][1] + l/2 * np.sin(ang[i][2]))
+    traj_topz.append(traj[i][2] +  l/2 * np.sin(ang[i][1]))
+    traj_botz.append(traj[i][2] -  l/2 * np.sin(ang[i][1]))
 
 traj_topx = np.asarray(traj_topx)
 traj_botx = np.asarray(traj_botx)
 traj_topz = np.asarray(traj_topz)
 traj_botz = np.asarray(traj_botz)
+
+print(traj_topy, traj_boty)
 
 # for i in range(len(traj_top)):
 #     print("Traj", (traj_top[i][0]-traj_bot[i][0])**2 + (traj_top[i][1]-traj_bot[i][1])**2)
@@ -120,20 +126,20 @@ traj_botz = np.asarray(traj_botz)
 
 #Animation - Rocket's movement
 
-fig2 = go.Figure(data=[go.Scatter3d(x=[traj_botx[0], traj_topx[0]], y=[traj[0][1], traj[0][1]], z=[traj_botz[0], traj_topz[0]])])
+fig2 = go.Figure(data=[go.Scatter3d(x=[traj_botx[0], traj_topx[0]], y=[traj_boty[0], traj_topy[0]], z=[traj_botz[0], traj_topz[0]])])
 
 fig2.update_layout(title='Rocket Movement',
                   scene=dict(
-            xaxis=dict(range=[-500, 500], autorange=False),
-            yaxis=dict(range=[-500, 500], autorange=False),
-            zaxis=dict(range=[0, 1000], autorange=False),
+            xaxis=dict(range=[-5000, 5000], autorange=False),
+            yaxis=dict(range=[-5000, 5000], autorange=False),
+            zaxis=dict(range=[0, 3000], autorange=False),
         ),
 
                   updatemenus=[dict(buttons = [dict(
-                                               args = [None, {"frame": {"duration": 1000*0.05, 
+                                               args = [None, {"frame": {"duration": 100, 
                                                                         "redraw": True},
                                                               "fromcurrent": True, 
-                                                              "transition": {"duration": 0}}],
+                                                              "transition": {"duration": 10}}],
                                                label = "Play",
                                                method = "animate")],
                                 type='buttons',
@@ -146,7 +152,7 @@ fig2.update_layout(title='Rocket Movement',
 
 
 
-frames= [go.Frame(data=[go.Scatter3d(x=[traj_botx[i], traj_topx[i]],y = [traj[i][1], traj[i][1]], z=[traj_botz[i], traj_topz[i]])]) for i in range(len(traj))]
+frames= [go.Frame(data=[go.Scatter3d(x=[traj_botx[i], traj_topx[i]],y = [traj_boty[i], traj_topy[i]], z=[traj_botz[i], traj_topz[i]])]) for i in range(len(traj))]
 fig2.update(frames=frames)
 
 fig2.show()
