@@ -23,7 +23,7 @@ driver.add_recorder(
 driver.set_scenario(
     init = {
         'r': np.zeros(2),
-        'theta': np.pi/2 + 0.1
+        'theta': np.pi/2 - 0.1
     },
     values = {
         'm': 15,
@@ -96,32 +96,61 @@ fig2.update(frames=frames)
 
 fig2.show()
 
-# traj_angle *= 180/np.pi
 
-# traces = [
-#     go.Scatter(
-#         x = time,
-#         y = traj_angle,
-#         mode = 'lines',
-#         name = 'numerical',
-#         line = dict(color='red'),
-#     )
+
+#Theta angle 
+
+traj_angle *= 180/np.pi
+
+traces = [
+    go.Scatter(
+        x = time,
+        y = traj_angle,
+        mode = 'lines',
+        name = 'numerical',
+        line = dict(color='red'),
+    )
    
-# ]
-# layout = go.Layout(
-#     title = "Trajectory",
-#     xaxis = dict(title="time"),
-#     yaxis = dict(
-#         title = "theta",
-#     ),
-#     hovermode = "x",
-# )
+]
+layout = go.Layout(
+    title = "Trajectory",
+    xaxis = dict(title="time"),
+    yaxis = dict(
+        title = "theta",
+    ),
+    hovermode = "x",
+)
 
-# fig = go.Figure(data=traces, layout=layout)
-# fig.show()
+fig = go.Figure(data=traces, layout=layout)
+fig.show()
 
 
 
+
+#Rocket' trajectory
+
+
+traces3 = [
+    go.Scatter(
+        x = [traj[i,0] for i in range(len(traj))],
+        y = [traj[i,1] for i in range(len(traj))],
+        mode = 'lines',
+        name = 'numerical',
+        line = dict(color='red'),
+    )
+   
+]
+layout3 = go.Layout(
+    title = "Trajectory",
+    xaxis = dict(title="x (m)"),
+    yaxis = dict(
+        title = "z (m)",
+    ),
+    hovermode = "x",
+)
+
+fig3 = go.Figure(data=traces3, layout=layout3)
+fig3.show()
 
 
 
