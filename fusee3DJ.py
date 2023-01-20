@@ -396,16 +396,8 @@ fig.show()
 #useful library zhen using euler angle
 from scipy.spatial.transform import Rotation as R
 
+l=100 #rocket length on the plotting
 
-
-traj_topx = []
-traj_topz = []
-traj_botx = []
-traj_botz = []
-traj_topy = []
-traj_boty = []
-
-l=100
 rocket = np.array([l,0,0]) #representation of the rocket as a 3D vector that will be rotated and translated according to the computed trajectory
 
 rock = []
@@ -420,11 +412,6 @@ rock = np.asarray(rock)
 traj_bot = traj #traj[time][xyz]
 traj_top = traj + rock
 
-traj_topx = np.asarray(traj_topx)
-traj_botx = np.asarray(traj_botx)
-traj_topz = np.asarray(traj_topz)
-traj_botz = np.asarray(traj_botz)
-
 # #print(traj_topy, traj_boty)
 
 # for i in range(len(traj_top)):
@@ -434,8 +421,6 @@ traj_botz = np.asarray(traj_botz)
 #Plot results
 
 #Animation - Rocket's movement
-
-
 fig2 = go.Figure(data=[go.Scatter3d(x=[traj_bot[0][0], traj_top[0][0]], y=[traj_bot[0][1], traj_top[0][1]], z=[traj_bot[0][2], traj_top[0][2]])])
 
 fig2.update_layout(title='Rocket Movement',
