@@ -302,8 +302,6 @@ class AeroForces(System):
 
 
 
-
-
 class Moments(System):
     def setup(self):
         #AeroForces inward
@@ -321,8 +319,6 @@ class Moments(System):
         OM = np.array([self.l/2 - self.Xcp, 0, 0]) 
 
         self.Ma = np.cross(OM,self.F)
-        self.Ma[0] = 2
-
 
 
 class Aerodynamics(System):
@@ -402,14 +398,20 @@ class Rocket(System):
 class Gravity(System):
     
     def setup(self):
+        #System constants
+        self.add_inward('G', 6.6743*10**(-11), desc = "Gravitational Constant", unit = 'N*m**2/kg**2')
+        self.add_inward('M', 5.972*10**24, desc = "Earth's Mass", unit = 'kg')
+        self.add_inward('R', 6.371*10**6, desc = "Earth's Radius", unit = 'm')
+        
+        #Trajectory inputs
+        self.add_inward('r_in', np.zeros(3), desc = "Rocket Position", unit = 'm')
+        
         #Gravity outputs
         self.add_output(AclPort, 'g')
-        
+
     def compute(self):
         
-        # self.g.val = np.array([0., 0., self.G*self.M/(self.R - self.r_in[2])**2])
-        self.g.val = np.array([0, 0, -9.8])
-
+        self.g.val = np.array([0., 0., - self.G*self.M/(self.R + self.r_in[2])**2])
 
 
 ###EARTH
@@ -424,7 +426,8 @@ class Earth(System):
         
         self.connect(self.Rocket, self.Traj, {'v_out' : 'v'})
         self.connect(self.Rocket, self.Grav, ['g'])
-        
+        self.connect(self.Traj, self.Grav, {'r' : 'r_in'})
+
         #Execution order
         self.exec_order = ['Grav', 'Rocket', 'Traj']
 
