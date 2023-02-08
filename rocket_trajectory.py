@@ -158,7 +158,7 @@ class Dynamics(System):
         self.add_inward('av_in', np.zeros(3), desc = "Rocket Angular Velocity", unit = '1/s')
         
         #AeroForces inputs
-        self.add_inward('Fa', np.zeros(3), desc = "Thrust Force", unit = 'N')
+        self.add_inward('F', np.zeros(3), desc = "Thrust Force", unit = 'N')
         self.add_inward('Ma', np.zeros(3), desc = "Aerodynamic Moment", unit = 'N*m')
         
         #Gravity inputs
@@ -179,9 +179,9 @@ class Dynamics(System):
 
         
         #Acceleration
-        self.a[0] = (self.Fa[0] + Fp)/self.m + self.g.val[0] + av[2]*v[1] - av[1]*v[2]
-        self.a[1] = self.Fa[1]/self.m + self.g.val[1] + av[0]*v[2] - av[2]*v[0]
-        self.a[2] = self.Fa[2]/self.m + self.g.val[2] + av[1]*v[0] - av[0]*v[1]
+        self.a[0] = (self.F[0] + Fp)/self.m + self.g.val[0] + av[2]*v[1] - av[1]*v[2]
+        self.a[1] = self.F[1]/self.m + self.g.val[1] + av[0]*v[2] - av[2]*v[0]
+        self.a[2] = self.F[2]/self.m + self.g.val[2] + av[1]*v[0] - av[0]*v[1]
         
         #Angular acceleration (no momentum associated to thrust)
         self.aa[0] = (self.Ma[0] + (I[1] - I[2])*av[1]*av[2])/I[0] 
@@ -275,34 +275,31 @@ class AeroForces(System):
         #Atmosphere
         self.add_inward('rho', 1.292, unit="kg/m**3")
 
-        self.add_outward('Fa', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
+        self.add_outward('F', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
 
     def compute(self):
 
-
-
-        Fn = 0.5*self.rho*np.linalg.norm(self.v_cpa)**2*self.Cn*self.S_ref
-        Fd = 0.5*self.rho*np.linalg.norm(self.v_cpa)**2*self.Cd*self.S_ref
-
-        print(Fn, Fd)
-
-        #alpha and beta are the angles defined in the Rapport intermédiaire
-        alpha = np.arctan2(self.v_cpa[2], self.v_cpa[0]) # Maybe should be with a - ?
-        beta = np.arctan2(self.v_cpa[1], self.v_cpa[0])
-
-
-
-
-        # Check polar coordinates formulas
-        Fd_vector = np.array([-Fd*np.cos(alpha)*np.cos(beta),
-                            -Fd*np.cos(alpha)*np.sin(beta),
-                            -Fd*np.sin(alpha)])
+        angle = np.arccos(self.v_cpa[0]/np.linalg.norm(self.v_cpa)) if np.linalg.norm(self.v_cpa)>0.1 else 0 #angle d'attaque
         
-        angle = np.arctan2(self.v_cpa[2], self.v_cpa[1])
-        Fn_vector = np.array([0,
-                            -Fn*np.sin(angle),
-                            -Fn*np.cos(angle)])
-        self.Fa = Fd_vector + Fn_vector
+        Ca0 = .5
+        Cn0 = 0
+
+        Ca_alpha = .1
+        Cn_alpha = 2
+
+        Ca = Ca_alpha * angle + Ca0 
+        Cn = Cn_alpha * angle + Cn0 
+
+        Fa = .5 * self.rho * np.linalg.norm(self.v_cpa)**2 * self.S_ref * Ca
+        Fn = .5 * self.rho * np.linalg.norm(self.v_cpa)**2 * self.S_ref * Cn
+
+        a = np.arctan2(self.v_cpa[2], self.v_cpa[1])
+
+        Fnz = - Fn*np.sin(a)
+        Fny = - Fn*np.cos(a)
+
+        self.F = [-Fa, Fny, Fnz]
+
 
 
 
@@ -310,7 +307,7 @@ class AeroForces(System):
 class Moments(System):
     def setup(self):
         #AeroForces inward
-        self.add_inward('Fa', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
+        self.add_inward('F', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
 
         #Geometry inwards
         self.add_inward('Xcp', 0., desc='CPA position from the rocket top', unit='m')
@@ -321,9 +318,10 @@ class Moments(System):
 
     def compute(self):
 
-        OM = np.array([self.l/2 - self.Xcp, 0, 0])
+        OM = np.array([self.l/2 - self.Xcp, 0, 0]) 
 
-        self.Ma = np.cross(OM, self.Fa)
+        self.Ma = np.cross(OM,self.F)
+        self.Ma[0] = 2
 
 
 
@@ -337,19 +335,19 @@ class Aerodynamics(System):
         self.add_inward('m', desc = "mass", unit = 'kg')
 
         
-        self.add_outward('Fa', np.zeros(3), desc = "Aerodynamics Forces", unit = 'N')
+        self.add_outward('F', np.zeros(3), desc = "Aerodynamics Forces", unit = 'N')
         self.add_outward('Ma', np.zeros(3), desc = "Aerodynamics Moments", unit = 'N*m')
                 
 
         self.add_child(Alpha('Alpha'), pulling=['v_cpa'])
-        self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'Fa'])
+        self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F'])
         self.add_child(Coefficients('Coefs'), pulling=['v_cpa', 'l'])
         self.add_child(Moments('Moments'), pulling=['Ma'])
 
         self.connect(self.Alpha, self.Coefs, ['alpha'])
         self.connect(self.Coefs, self.Aeroforces, ['Cd', 'Cn','S_ref'])
         self.connect(self.Coefs, self.Moments, ['Xcp', 'l'])
-        self.connect(self.Aeroforces, self.Moments, ['Fa'])
+        self.connect(self.Aeroforces, self.Moments, ['F'])
 
 
         self.exec_order = ['Alpha', 'Coefs', 'Aeroforces', 'Moments']
@@ -393,7 +391,7 @@ class Rocket(System):
         #Child-Child connections
         self.connect(self.Kin, self.Dyn, {'Kin_ang' : 'Dyn_ang', 'v_out' : 'v_in', 'a': 'a', 'aa' : 'aa'})
         self.connect(self.Kin, self.Aero, {'Kin_ang' : 'Aero_ang', 'v_cpa':'v_cpa'})
-        self.connect(self.Dyn, self.Aero, ['Fa', 'Ma'])
+        self.connect(self.Dyn, self.Aero, ['F', 'Ma'])
         
         #Execution order
         self.exec_order = ['Aero', 'Dyn', 'Kin']
@@ -433,7 +431,7 @@ class Earth(System):
 
 ###MAIN
 #Time-step
-dt = 0.1
+dt = 0.05
 
 #Create System
 earth = Earth('earth')
@@ -448,120 +446,406 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.aeroforces.']),
-    period=1,
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val']),
+    period=.1,
 )
 
 #Initial conditions and constants
 
-l = 100 #Rocket's length on the plot
+l = 10 #Rocket's length on the plot
 
 driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
-        'Rocket.Kin.v' : np.array([1,0,0.5]),
-        'Rocket.Kin.ar' : np.array([np.pi/6, -np.pi/2 + 0.1, 0]),
+        'Rocket.Kin.v' : np.array([0,0,0]),
+        'Rocket.Kin.ar' : np.array([np.pi/6, -np.pi/2 + .2, np.pi/4]),
         'Rocket.Kin.av' : np.zeros(3),
     },
-    stop='Traj.r[2]<0'
+    stop='Traj.v.val[2]<-1'
 
     )
 
 
 earth.run_drivers()
 
+
+
+
+
+
+
+
+#==================================
+# Rocket's trajectory visualisation 
+#==================================
+
+import os
+import numpy as np
+import sympy as sp
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from matplotlib import animation
+from matplotlib.patches import FancyArrowPatch
+from mpl_toolkits.mplot3d import proj3d
+from mpl_toolkits.mplot3d.proj3d import proj_transform
+
+
+#==================================
+# INPUTS
+# t : time 
+# T : thrust 
+# r : position
+# v : velocity in rocket's referential
+# a : acceleration in rocket's referential
+# phi, theta, psi : euler angles
+#===================================
+
+# ==============================
+# vector equations
+
+def vector_derivative(vector, wrt):
+    """
+    differentiate vector components wrt a symbolic variable
+    param v: vector to differentiate
+    param wrt: symbolic variable
+    return V: velcoity vector and components in x, y, z
+    """
+    return [component.diff(wrt) for component in vector]
+
+
+def vector_magnitude(vector):
+    """
+    compute magnitude of a vector
+    param vector: vector with components of Cartesian form
+    return magnitude: magnitude of vector
+    """
+    # NOTE: np.linalg.norm(v) computes Euclidean norm
+    magnitude = 0
+    for component in vector:
+        magnitude += component ** 2
+    return magnitude ** (1 / 2)
+
+
+def unit_vector(from_vector_and_magnitude=None, from_othogonal_vectors=None, from_orthogonal_unit_vectors=None):
+    """
+    Calculate a unit vector using one of three input parameters.
+    1. using vector and vector magnitude
+    2. using orthogonal vectors
+    3. using orthogonal unit vectors
+    """
+
+    if from_vector_and_magnitude is not None:
+        vector_a, magnitude = from_vector_and_magnitude[0], from_vector_and_magnitude[1]
+        return [component / magnitude for component in vector_a]
+
+    if from_othogonal_vectors is not None:
+        vector_a, vector_b = from_othogonal_vectors[0], from_othogonal_vectors[1]
+        vector_normal = np.cross(vector_a, vector_b)
+        return unit_vector(from_vector_and_magnitude=(vector_normal, vector_magnitude(vector_normal)))
+
+    if from_orthogonal_unit_vectors is not None:
+        u1, u2 = from_orthogonal_unit_vectors[0], from_orthogonal_unit_vectors[1]
+        return np.cross(u1, u2)
+
+
+def evaluate_vector(vector, time_step):
+    """
+    evaluate numerical vector components and magnitude @ti
+    param numerical_vector: symbolic vector expression to evaluate @ti
+    param ti: time step for evaluation
+    return magnitude, numerical_vector: magnitude of vector and components evaluated @ti
+    """
+    numerical_vector = [float(component.subs(t, time_step).evalf()) for component in vector]
+    magnitude = vector_magnitude(numerical_vector)
+    return numerical_vector, magnitude
+
+
+def direction_angles(vector, magnitude=None):
+    """
+    compute direction angles a vector makes with +x,y,z axes
+    param vector: vector with x, y, z components
+    param magnitude: magnitude of vector
+    """
+    magnitude = vector_magnitude(vector) if magnitude is None else magnitude
+    return [sp.acos(component / magnitude) for component in vector]
+
+# ==============================
+# helper functions
+
+
+def d2r(degrees):
+    """
+    convert from degrees to radians
+    return: radians
+    """
+    return degrees * (np.pi / 180)
+
+
+def r2d(radians):
+    """
+    convert from radians to degrees
+    return: degrees
+    """
+    return radians * (180 / np.pi)
+
+
+
+#==================================
+# Create Dataframe
+#==================================
+
+
 # Retrieve recorded data
 data = driver.recorder.export_data()
 data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 time = np.asarray(data['time'])
-traj = np.asarray(data['Traj.r'].tolist())
-velo = np.asarray(data['Rocket.Kin.v'].tolist())
-acel = np.asarray(data['Rocket.Kin.a'].tolist())
-ang = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
-avelo = np.asarray(data['Rocket.Kin.av'].tolist())
+r = np.asarray(data['Traj.r'].tolist())
+v = np.asarray(data['Rocket.Kin.v'].tolist())
+a = np.asarray(data['Rocket.Kin.a'].tolist())
+euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 
-#Plot results
+#Modélisation de l'axe de la fusée et de sa normale(grossie x5)
+rocket = np.array([l*8,0,0])
+y = np.array([0,l*5,0])
+z = np.array([0,0,l*5])
 
-x=[]
-y=[]
-z=[]
-theta = []
-
-for i in range(len(traj)):
-    x.append(traj[i][0])
-    y.append(traj[i][1])
-    z.append(traj[i][2])
-
-for i in range(len(ang)):
-    theta.append(ang[1])
-
-fig = go.Figure(data=go.Scatter3d(
-    x=x, y=y, z=z,
-    marker=dict(
-        size=4,
-        color=z,
-        colorscale='Viridis',
-    ),
-    line=dict(
-        color='darkblue',
-        width=2
-    )
-))
-
-
-fig.update_layout(
-    scene = dict(
-        xaxis = dict(nticks=2, range=[-1000,1000],),
-        yaxis = dict(nticks=2, range=[-1000,1000],),
-        zaxis = dict(nticks=2, range=[0,1000],),),
-    width=700,
-    margin=dict(r=20, l=10, b=10, t=10))
-
-
-fig.show()
-
-#useful library zhen using euler angle
-
-
-rocket = np.array([l,0,0]) #representation of the rocket as a 3D vector that will be rotated and translated according to the computed trajectory
-
+indy = []
+indz = []
 rock = []
-
-for i in range(len(traj)):
-    rotation = R.from_euler('xyz', ang[i], degrees=False)
-    rotation.apply(rocket)
-    rock.append(rotation.apply(rocket))
+for i in range(len(r)):
+    rotation = R.from_euler('xyz', euler[i], degrees=False)
+    vect1 = rotation.apply(rocket)
+    vect2 = rotation.apply(y)
+    vect3 = rotation.apply(z)
+    norm_v1 = vector_magnitude(vect1)
+    norm_v2 = vector_magnitude(vect2)
+    norm_v2 = vector_magnitude(vect3)
+    for b in vect1:
+        b = b/norm_v1
+    for c in vect2:
+        c = c/norm_v2
+    for d in vect2:
+        d = d/norm_v2
+    rock.append(vect1)
+    indy.append(vect2)
+    indz.append(vect3)
 
 rock = np.asarray(rock)
+indy = np.asarray(indy)
+indz = np.asarray(indz)
 
-traj_bot = traj #traj[time][xyz]
-traj_top = traj + rock
+
+rt = rock
 
 
-#Animation - Rocket's movement
-fig2 = go.Figure(data=[go.Scatter3d(x=[traj_bot[0][0], traj_top[0][0]], y=[traj_bot[0][1], traj_top[0][1]], z=[traj_bot[0][2], traj_top[0][2]])])
+propagation_time_history = []
 
-fig2.update_layout(title='Rocket Movement',
-                  scene=dict(
-            xaxis=dict(range=[-1000, 1000], autorange=False),
-            yaxis=dict(range=[-1000, 1000], autorange=False),
-            zaxis=dict(range=[0, 1000], autorange=False),
-        ),
-                  updatemenus=[dict(buttons = [dict(
-                                               args = [None, {"frame": {"duration": 100, 
-                                                                        "redraw": True},
-                                                              "fromcurrent": True, 
-                                                              "transition": {"duration": 100}}],
-                                               label = "Play",
-                                               method = "animate")],
-                                type='buttons',
-                                showactive=False,
-                                y=1,
-                                x=1.12,
-                                xanchor='right',
-                                yanchor='top')])
 
-frames= [go.Frame(data=[go.Scatter3d(x=[traj_bot[i][0], traj_top[i][0]], y=[traj_bot[i][1], traj_top[i][1]], z=[traj_bot[i][2], traj_top[i][2]])]) for i in range(len(traj))]
-fig2.update(frames=frames)
+i = 0
+for ti in time:
+    iteration_results = {'t': ti, 
+                         'rx': r[i][0], 'ry': r[i][1], 'rz': r[i][2],
+                         'vx': v[i][0], 'vy': v[i][1], 'vz': v[i][2],
+                         'ax': a[i][0], 'ay': a[i][1], 'az': a[i][2],
+                         'rtx': rt[i][0], 'rty': rt[i][1], 'rtz': rt[i][2],
+                         'indyx': indy[i][0], 'indyy': indy[i][1], 'indyz': indy[i][2],
+                         'indzx': indz[i][0], 'indzy': indz[i][1], 'indzz': indz[i][2]
+                        }
+    i+=1
+    propagation_time_history.append(iteration_results)
 
-fig2.show()
+df = pd.DataFrame(propagation_time_history)
+
+
+#==================================
+# Visualise trajectory
+#==================================
+
+# Arrow3D used for drawing arrow as vectors in 3D space
+class Arrow3D(FancyArrowPatch):
+
+    def __init__(self, x, y, z, dx, dy, dz, *args, **kwargs):
+        super().__init__((0, 0), (0, 0), *args, **kwargs)
+        self._xyz = (x, y, z)
+        self._dxdydz = (dx, dy, dz)
+
+    def draw(self, renderer):
+        x1, y1, z1 = self._xyz
+        dx, dy, dz = self._dxdydz
+        x2, y2, z2 = (x1 + dx, y1 + dy, z1 + dz)
+
+        xs, ys, zs = proj_transform((x1, x2), (y1, y2), (z1, z2), self.axes.M)
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+        super().draw(renderer)
+        
+    def do_3d_projection(self, renderer=None):
+        x1, y1, z1 = self._xyz
+        dx, dy, dz = self._dxdydz
+        x2, y2, z2 = (x1 + dx, y1 + dy, z1 + dz)
+
+        xs, ys, zs = proj_transform((x1, x2), (y1, y2), (z1, z2), self.axes.M)
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+
+        return np.min(zs) 
+
+
+def vector_arrow_3d(x0, x1, y0, y1, z0, z1, color):
+    """
+    method to create a new arrow in 3d for vectors
+    return Arrow3D: new vector
+    """
+    return Arrow3D(x0, x1, y0, y1, z0, z1,
+                   mutation_scale=10, lw=1,
+                   arrowstyle='-|>', color=color)
+
+
+class Animator:
+
+    def __init__(self, simulation_results):
+        self.simulation_results = simulation_results
+        self.vector_lines = []
+        # =======================================
+        #  configure plots and data structures
+
+        self.fig = plt.figure(figsize=(15, 8))
+        self.fig.subplots_adjust(left=0.05,
+                                 bottom=None,
+                                 right=0.95,
+                                 top=None,
+                                 wspace=None,
+                                 hspace=0.28)
+
+
+        self.ax1 = self.fig.add_subplot(projection='3d')
+
+        self.set_axes_limits()
+
+        # axis 1 - 3D visualisation
+
+        self.trajectory, = self.ax1.plot([], [], [], 'bo', markersize=1)
+
+
+    def draw_xyz_axis(self, x_lims, y_lims, z_lims):
+        """
+        draw xyz axis on ax1 3d plot
+        param x_lims: upper and lower x limits
+        param y_lims: upper and lower y limits
+        param z_lims: upper and lower z limits
+        """
+        self.ax1.plot([0, 0], [0, 0], [0, 0], 'ko', label='Origin')
+        self.ax1.plot(x_lims, [0, 0], [0, 0], 'k-', lw=1)
+        self.ax1.plot([0, 0], y_lims, [0, 0], 'k-', lw=1)
+        self.ax1.plot([0, 0], [0, 0], z_lims, 'k-', lw=1)
+        self.text_artist_3d('x', 'k', x_lims[1], 0, 0)
+        self.text_artist_3d('y', 'k', 0, y_lims[1], 0)
+        self.text_artist_3d('z', 'k', 0, 0, z_lims[1])
+        self.ax1.set_xlabel('x')
+        self.ax1.set_ylabel('y')
+        self.ax1.set_zlabel('z')
+
+    def text_artist_3d(self, text, color, x=0, y=0, z=0):
+        """
+        create new text artist for the plot
+        param txt: text string
+        param color: text color
+        param x: x coordinate of text
+        param y: y coordinate of text
+        param z: z coordinate of text
+        """
+        return self.ax1.text(x, y, z, text, size=11, color=color)
+
+    def set_axes_limits(self):
+        """
+        set the axis limits for each plot, label axes
+        """
+        lim_params = ['r']
+        x_lims = self.get_limits(lim_params, 'x')
+        y_lims = self.get_limits(lim_params, 'y')
+        z_lims = self.get_limits(lim_params, 'z')
+
+        self.ax1.set_xlim3d(x_lims)
+        self.ax1.set_ylim3d(y_lims)
+        self.ax1.set_zlim3d(z_lims)
+        self.draw_xyz_axis(x_lims, y_lims, z_lims)
+
+        t_lims = self.get_limits(['t'], '')
+
+
+
+    def get_limits(self, params, axis):
+        """
+        get upper and lower limits for parameter
+        param axis: get limits for axis, i.e x or y
+        param params: list of varaible names
+        """
+        lower_lim, upper_lim = 0, 0
+        for p in params:
+            m = max(self.simulation_results['%s%s' % (p, axis)])
+            if m > upper_lim:
+                upper_lim = m
+            m = min(self.simulation_results['%s%s' % (p, axis)])
+            if m < lower_lim:
+                lower_lim = m
+            m = max(abs(lower_lim - 0.05), upper_lim + 0.05)
+        return lower_lim - 0.05,upper_lim + 0.05
+
+    def config_plots(self):
+        """
+        Setting the axes properties such as title, limits, labels
+        """
+        self.ax1.set_title('Trajectory Visualisation')
+        self.ax1.set_position([0.25, 0, 0.5, 1])
+        self.ax1.set_aspect('equal')
+
+    def visualize(self, i):
+
+        # ######
+        # axis 1
+        row = self.simulation_results.iloc[i]
+
+        # define vectors
+        vectors = [vector_arrow_3d(0, 0, 0, row.rx, row.ry, row.rz, 'g'), 
+                   vector_arrow_3d(row.rx, row.ry, row.rz, row.rtx, row.rty, row.rtz, 'r'),
+                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indyx, row.indyy, row.indyz, 'k'),
+                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k')
+                  ]
+
+        # add vectors to figure
+        [self.ax1.add_artist(vector) for vector in vectors]
+
+        # remove previous vectors from figure
+        if self.vector_lines:
+            [vector.remove() for vector in self.vector_lines]
+        self.vector_lines = vectors
+
+
+        # update trajectory for current time step
+        self.trajectory.set_data(self.simulation_results['rx'][:i], self.simulation_results['ry'][:i])
+        self.trajectory.set_3d_properties(self.simulation_results['rz'][:i])
+
+
+        # plt.pause(0.05)
+
+    def animate(self):
+        """
+        animate drawing velocity vector as particle
+        moves along trajectory
+        return: animation
+        """
+        return animation.FuncAnimation(self.fig,
+                                       self.visualize,
+                                       frames=len(time),
+                                       init_func=self.config_plots(),
+                                       blit=False,
+                                       repeat=True,
+                                       interval=5)
+
+
+# =======================================
+# save trajectory animation
+
+animator = Animator(simulation_results=df)
+anim = animator.animate()
+plt.show()
+
