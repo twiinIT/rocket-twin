@@ -1,9 +1,9 @@
 from cosapp.base import System
 
-from Alpha import Alpha
-from Aeroforces import AeroForces
-from Coefficients import Coefficients
-from Moments import Moments
+from Aerodynamics.Alpha import Alpha
+from Aerodynamics.Aeroforces import AeroForces
+from Aerodynamics.Coefficients import Coefficients
+from Aerodynamics.Moments import Moments
 
 import numpy as np
 

@@ -1,7 +1,7 @@
 from cosapp.base import System
 
 from Ports import VelPort, AclPort
-from Utility import thrust
+from Utility.Utility import thrust
 
 import numpy as np
 

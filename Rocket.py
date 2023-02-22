@@ -3,7 +3,7 @@ from cosapp.base import System
 from Ports import AclPort
 from Kinematics import Kinematics
 from Dynamics import Dynamics
-from Aerodynamics import Aerodynamics
+from Aerodynamics.Aerodynamics import Aerodynamics
 
 import numpy as np
 
