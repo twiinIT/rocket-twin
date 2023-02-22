@@ -21,4 +21,3 @@ class Density(System):
         #Linear temperature evolution in the atmosphere. Formula found on wikipedia
         #The typical temperature gradient is -0.0065 in the troposphere
         self.rho = self.rho0 * (1 - (0.0065 * self.r_in[2])/self.T0)**5.226
-        print(self.rho)
