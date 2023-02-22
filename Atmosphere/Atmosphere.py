@@ -1,7 +1,7 @@
 from cosapp.base import System
 
-from Density import Density
-from Pressure import Pressure
+from Atmosphere.Density import Density
+from Atmosphere.Pressure import Pressure
 
 class Atmosphere(System):
     
