@@ -4,7 +4,7 @@ from cosapp.base import System
 from Rocket import Rocket
 from Trajectory import Trajectory
 from Gravity import Gravity
-from Atmosphere import Atmosphere
+from Atmosphere.Atmosphere import Atmosphere
 
 class Earth(System):
     
