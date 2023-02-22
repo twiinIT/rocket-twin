@@ -25,7 +25,7 @@ class Rocket(System):
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out'])
         self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'I', 'm'])
-        self.add_child(Aerodynamics('Aero'), pulling = ['l', 'm'])
+        self.add_child(Aerodynamics('Aero'), pulling = ['l', 'm','rho'])
         
         #Child-Child connections
         self.connect(self.Kin, self.Dyn, {'Kin_ang' : 'Dyn_ang', 'v_out' : 'v_in', 'a': 'a', 'aa' : 'aa'})

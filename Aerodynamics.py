@@ -22,7 +22,7 @@ class Aerodynamics(System):
                 
 
         self.add_child(Alpha('Alpha'), pulling=['v_cpa'])
-        self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F'])
+        self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F','rho'])
         self.add_child(Coefficients('Coefs'), pulling=['v_cpa', 'l'])
         self.add_child(Moments('Moments'), pulling=['Ma'])
 
