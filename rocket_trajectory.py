@@ -4,6 +4,7 @@ from cosapp.drivers import RungeKutta, NonLinearSolver
 from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
 
+
 #Time-step
 dt = 0.05
 
@@ -32,7 +33,7 @@ driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([np.pi/6, -np.pi/2 + .2, np.pi/4]),
+        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + .2, 0]),
         'Rocket.Kin.av' : np.zeros(3),
     },
     stop='Traj.v.val[2]<-1'
