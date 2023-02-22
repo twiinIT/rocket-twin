@@ -7,11 +7,12 @@ import numpy as np
 
 class Wind(System):
 	def setup(self):
+		self.add_inward('Wind_ang', np.zeros(3), desc='Wind Euler Angles')
 		self.add_output(VelPort, "v_wind")
-		self.add_inward('r', np.zeros(3), desc='rocket position in earth referential', unit='m')
+		self.add_inward('r_in', np.zeros(3), desc='rocket position in earth referential', unit='m')
 
 	def compute(self):
-		self.v_wind.val = wind(self.r[2])
+		self.v_wind.val = wind(self.r_in[2])
 
 def wind(alt):
 	if alt>100 and alt<200:
