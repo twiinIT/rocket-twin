@@ -1,10 +1,14 @@
 from cosapp.base import System
 
+from Ports import VelPort
+
 import numpy as np
 
 class AeroForces(System):
     def setup(self):
         self.add_inward('v_cpa', np.zeros(3), desc='CPA velocity', unit='m/s') 
+
+        self.add_inward('Aeroforces_ang', np.zeros(3), desc="Computing artefact, don't worry")
 
         #Coefficients inwards
         self.add_inward('Cd', 0., desc='Drag coefficient', unit='')
@@ -14,9 +18,13 @@ class AeroForces(System):
         #Atmosphere
         self.add_inward('rho', 1.292, unit="kg/m**3")
 
+        #Wind
+        self.add_input(VelPort, 'v_wind')
+
         self.add_outward('F', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
 
     def compute(self):
+        self.v_cpa += self.v_wind.val 
 
         angle = np.arccos(self.v_cpa[0]/np.linalg.norm(self.v_cpa)) if np.linalg.norm(self.v_cpa)>0.1 else 0 #angle d'attaque
         

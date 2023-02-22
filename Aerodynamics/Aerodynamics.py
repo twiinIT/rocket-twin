@@ -5,6 +5,8 @@ from Aerodynamics.Aeroforces import AeroForces
 from Aerodynamics.Coefficients import Coefficients
 from Aerodynamics.Moments import Moments
 
+from Ports import VelPort
+
 import numpy as np
 
 class Aerodynamics(System):
@@ -16,13 +18,14 @@ class Aerodynamics(System):
         #TODO Create a mass System
         self.add_inward('m', desc = "mass", unit = 'kg')
 
-        
+        self.add_input(VelPort, 'v_wind')
+            
         self.add_outward('F', np.zeros(3), desc = "Aerodynamics Forces", unit = 'N')
         self.add_outward('Ma', np.zeros(3), desc = "Aerodynamics Moments", unit = 'N*m')
                 
 
         self.add_child(Alpha('Alpha'), pulling=['v_cpa'])
-        self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F','rho'])
+        self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F','rho', 'v_wind'])
         self.add_child(Coefficients('Coefs'), pulling=['v_cpa', 'l'])
         self.add_child(Moments('Moments'), pulling=['Ma'])
 

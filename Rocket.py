@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from Ports import AclPort
+from Ports import VelPort, AclPort
 from Kinematics import Kinematics
 from Dynamics import Dynamics
 from Aerodynamics.Aerodynamics import Aerodynamics
@@ -16,6 +16,7 @@ class Rocket(System):
         
         #Gravity input
         self.add_input(AclPort, 'g')
+        self.add_input(VelPort, 'v_wind')
         
         #Rocket parameters
         self.add_inward('l', 2., desc='Rocket length', unit='m')
@@ -25,7 +26,7 @@ class Rocket(System):
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out'])
         self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'I', 'm'])
-        self.add_child(Aerodynamics('Aero'), pulling = ['l', 'm','rho'])
+        self.add_child(Aerodynamics('Aero'), pulling = ['l', 'm','rho', 'v_wind'])
         
         #Child-Child connections
         self.connect(self.Kin, self.Dyn, {'Kin_ang' : 'Dyn_ang', 'v_out' : 'v_in', 'a': 'a', 'aa' : 'aa'})
