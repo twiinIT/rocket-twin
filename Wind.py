@@ -15,6 +15,6 @@ class Wind(System):
 
 def wind(alt):
 	if alt>100 and alt<200:
-		return np.array([0,100,0])
+		return np.array([0,1,0])
 	else:
 		return np.zeros(3)
