@@ -7,7 +7,7 @@ import numpy as np
 
 class Thrust(System):
     def setup(self):
-        self.add_inward('bang', np.array([0, 0, 0]), desc="bracage angle", unit="")
+        self.add_inward('bang', np.zeros(3), desc="bracage angle", unit="")
 
         #Geometry
         self.add_inward('l', desc = "Rocket length", unit = 'm')
