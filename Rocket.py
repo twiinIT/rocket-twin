@@ -5,6 +5,7 @@ from Kinematics import Kinematics
 from Dynamics import Dynamics
 from Thrust import Thrust
 from Aerodynamics.Aerodynamics import Aerodynamics
+from Mass import Mass
 
 import numpy as np
 
@@ -21,20 +22,22 @@ class Rocket(System):
         
         #Rocket parameters
         self.add_inward('l', 2., desc='Rocket length', unit='m')
-        self.add_inward('I', np.array([10., 100., 100.]), desc = "Matrix of inertia")
-        self.add_inward('m', 15, desc = "mass", unit = 'kg')
 
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out'])
-        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'I', 'm'])
-        self.add_child(Aerodynamics('Aero'), pulling = ['l', 'm','rho', 'v_wind'])
         self.add_child(Thrust('Thrust'), pulling=['l'])
+        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l'])
+        self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind'])
+        self.add_child(Mass('Mass'))
         
         #Child-Child connections
         self.connect(self.Kin, self.Dyn, {'Kin_ang' : 'Dyn_ang', 'v_out' : 'v_in', 'a': 'a', 'aa' : 'aa'})
         self.connect(self.Kin, self.Aero, {'Kin_ang' : 'Aero_ang', 'v_cpa':'v_cpa'})
         self.connect(self.Dyn, self.Aero, ['F', 'Ma'])
         self.connect(self.Thrust, self.Dyn, ['Fp', 'Mp'])
-        
+        self.connect(self.Mass, self.Dyn, {'m_out':'m', 'I':'I'})
+        self.connect(self.Mass, self.Aero, {'m_out':'m'})
+
+ 
         #Execution order
-        self.exec_order = ['Thrust', 'Aero', 'Dyn', 'Kin',]
+        self.exec_order = ['Thrust', 'Mass', 'Aero', 'Dyn', 'Kin']
