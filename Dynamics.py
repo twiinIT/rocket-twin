@@ -40,7 +40,6 @@ class Dynamics(System):
         av = self.av_in
 
         Fp = thrust(self.time)
-
         
         #Acceleration
         self.a[0] = (self.F[0] + Fp)/self.m + self.g.val[0] + av[2]*v[1] - av[1]*v[2]
