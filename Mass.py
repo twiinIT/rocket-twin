@@ -21,7 +21,7 @@ class Mass(System):
         self.add_event('noMoreEngine', trigger="time >= 3.6") #voir thrust.txt
 
         #Transients
-        self.add_transient('m', der='-Dm',)
+        self.add_transient('m', der='-Dm')
         
     def transition(self):
         if self.noMoreEngine.present:

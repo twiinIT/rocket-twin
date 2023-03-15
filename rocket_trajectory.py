@@ -415,4 +415,3 @@ class Animator:
 animator = Animator(simulation_results=df)
 anim = animator.animate()
 plt.show()
-
