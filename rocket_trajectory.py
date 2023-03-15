@@ -20,7 +20,7 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val']),
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val']),
     period=.1,
 )
 
@@ -32,7 +32,7 @@ driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + .2, 0]),
+        'Rocket.Kin.ar' : np.array([0, -np.pi/2, 0]),
         'Rocket.Kin.av' : np.zeros(3),
     },
     stop='Traj.v.val[2]<-1'
@@ -171,6 +171,11 @@ r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
 a = np.asarray(data['Rocket.Kin.a'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
+wind = np.asarray(data['Wind.v_wind.val'].tolist())
+wind*=8 #on fait x10 pour l'affichage du vent sinon on verra rien
+wind_b = []
+#On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
+
 
 #Modélisation de l'axe de la fusée et de sa normale(grossie x5)
 rocket = np.array([l*8,0,0])
@@ -197,6 +202,9 @@ for i in range(len(r)):
     rock.append(vect1)
     indy.append(vect2)
     indz.append(vect3)
+    wind_b.append([-wind[i][0]/2,-wind[i][1]/2,r[i][2]-wind[i][2]])
+
+
 
 rock = np.asarray(rock)
 indy = np.asarray(indy)
@@ -217,13 +225,16 @@ for ti in time:
                          'ax': a[i][0], 'ay': a[i][1], 'az': a[i][2],
                          'rtx': rt[i][0], 'rty': rt[i][1], 'rtz': rt[i][2],
                          'indyx': indy[i][0], 'indyy': indy[i][1], 'indyz': indy[i][2],
-                         'indzx': indz[i][0], 'indzy': indz[i][1], 'indzz': indz[i][2]
+                         'indzx': indz[i][0], 'indzy': indz[i][1], 'indzz': indz[i][2],
+                         'wind_bx':wind_b[i][0], 'wind_by':wind_b[i][1], 'wind_bz':wind_b[i][2],
+                         'windx':wind[i][0], 'windy':wind[i][1], 'windz':wind[i][2],
                         }
     i+=1
     propagation_time_history.append(iteration_results)
 
 df = pd.DataFrame(propagation_time_history)
 
+print(df)
 
 #==================================
 # Visualise trajectory
@@ -285,6 +296,7 @@ class Animator:
 
 
         self.ax1 = self.fig.add_subplot(projection='3d')
+        # self.ax2 = self.fig.add_subplot()
 
         self.set_axes_limits()
 
@@ -375,7 +387,8 @@ class Animator:
         vectors = [vector_arrow_3d(0, 0, 0, row.rx, row.ry, row.rz, 'g'), 
                    vector_arrow_3d(row.rx, row.ry, row.rz, row.rtx, row.rty, row.rtz, 'r'),
                    vector_arrow_3d(row.rx, row.ry, row.rz, row.indyx, row.indyy, row.indyz, 'k'),
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k')
+                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k'),
+                vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
                   ]
 
         # add vectors to figure
@@ -410,7 +423,7 @@ class Animator:
 
 
 # =======================================
-# save trajectory animation
+# trajectory animation
 
 animator = Animator(simulation_results=df)
 anim = animator.animate()
