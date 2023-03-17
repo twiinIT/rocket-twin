@@ -21,7 +21,7 @@ class Rocket(System):
         self.add_input(VelPort, 'v_wind')
         
         #Rocket parameters
-        self.add_inward('l', 2., desc='Rocket length', unit='m')
+        self.add_inward('l', 2.2, desc='Rocket length', unit='m')
 
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out'])
@@ -32,7 +32,7 @@ class Rocket(System):
         
         #Child-Child connections
         self.connect(self.Kin, self.Dyn, {'Kin_ang' : 'Dyn_ang', 'v_out' : 'v_in', 'a': 'a', 'aa' : 'aa'})
-        self.connect(self.Kin, self.Aero, {'Kin_ang' : 'Aero_ang', 'v_cpa':'v_cpa'})
+        self.connect(self.Kin, self.Aero, {'Kin_ang' : 'Aero_ang', 'v_cpa':'v_cpa', 'av_out':'av'})
         self.connect(self.Dyn, self.Aero, ['F', 'Ma'])
         self.connect(self.Thrust, self.Dyn, ['Fp', 'Mp'])
         self.connect(self.Mass, self.Dyn, {'m_out':'m', 'I':'I'})
