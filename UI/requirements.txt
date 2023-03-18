@@ -1,0 +1,2 @@
+ipywidgets==7.7.1
+pythreejs==2.4.2

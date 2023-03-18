@@ -18,7 +18,6 @@ driver.time_interval = (0, 40)
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
-
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
     DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val']),
@@ -37,17 +36,10 @@ driver.set_scenario(
         'Rocket.Kin.av' : np.zeros(3),
     },
     stop='Traj.v.val[2]<-1'
-
     )
 
 
 earth.run_drivers()
-
-
-
-
-
-
 
 
 #==================================
