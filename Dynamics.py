@@ -36,17 +36,12 @@ class Dynamics(System):
         self.add_outward('aa', np.zeros(3), desc = "Rocket Angular Acceleration", unit = '1/s**2')
         
     def compute(self):
-
+        print(self.F)
         I = self.I
         g = self.g.val
 
         v = self.v_in.val
         av = self.av_in
-<<<<<<< HEAD
-
-        Fp = thrust(self.time)
-=======
->>>>>>> origin/main
         
         #Acceleration
         self.a[0] = (self.F[0] + self.Fp[0])/self.m + g[0] + av[2]*v[1] - av[1]*v[2]
