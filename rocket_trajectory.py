@@ -116,7 +116,7 @@ def unit_vector(from_vector_and_magnitude=None, from_othogonal_vectors=None, fro
         return np.cross(u1, u2)
 
 
-def evaluate_vector(vector, time_step):
+'''def evaluate_vector(vector, time_step):
     """
     evaluate numerical vector components and magnitude @ti
     param numerical_vector: symbolic vector expression to evaluate @ti
@@ -125,7 +125,7 @@ def evaluate_vector(vector, time_step):
     """
     numerical_vector = [float(component.subs(t, time_step).evalf()) for component in vector]
     magnitude = vector_magnitude(numerical_vector)
-    return numerical_vector, magnitude
+    return numerical_vector, magnitude'''
 
 
 def direction_angles(vector, magnitude=None):
