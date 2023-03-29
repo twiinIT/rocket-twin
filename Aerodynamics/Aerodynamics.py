@@ -29,6 +29,7 @@ class Aerodynamics(System):
 
         self.connect(self.Coefs, self.Aeroforces, ['Cd', 'N','S_ref'])
         self.connect(self.Coefs, self.Moments, ['Xcp', 'l', 'M', 'Mroll'])
+        self.connect(self.Aeroforces, self.Moments, ['F'])
 
 
         self.exec_order = ['Coefs', 'Aeroforces', 'Moments']

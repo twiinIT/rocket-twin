@@ -95,7 +95,8 @@ class Coefficients(System):
         # print(f'{Cm=}')
 
         self.N = 0.5*Cn*self.rho*v_norm**2*self.S_ref
-        self.M = 0.5*Cm*self.rho*v_norm**2*self.S_ref*self.d  
+        self.M = 0.5*Cm*self.rho*v_norm**2*self.S_ref*self.d
+          
         # Parameters for Roll Moment.
         # Documented at: https://github.com/RocketPy-Team/RocketPy/blob/master/docs/technical/aerodynamics/Roll_Equations.pdf
         λ = self.Ct / self.Cr
@@ -203,7 +204,7 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        self.Cd = f(abs(alpha)) * C_D_0
+        # self.Cd = f(abs(alpha)) * C_D_0
         # print("Cd", self.Cd)
 
 
