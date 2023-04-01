@@ -336,7 +336,8 @@ class Animator:
 
         else:
             vectors = [vector_arrow_3d(0, 0, 0, row.r2x, row.r2y, row.r2z, 'g'), 
-                    vector_arrow_3d(row.r1x, row.r1y, row.r1z, row.r1x-row.r2x, row.r1y-row.r2y, row.rtz-row.r2z, 'r'),
+                    #    vector_arrow_3d(0, 0, 0, row.r1x, row.r1y, row.r1z, 'r'), 
+                    vector_arrow_3d(row.r2x, row.r2y, row.r2z, row.r1x-row.r2x, row.r1y-row.r2y, row.r2z-row.r2z, 'r'),
                     vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
                     ]
 
