@@ -35,7 +35,7 @@ class DynamicsPar(System):
         self.add_transient('r2', der='v2') #correspond au haut du tube de la fusée (extrémité basse de la corde)
 
         #Event
-        self.add_event("ParachuteDeployed", trigger='v_in.val[2] == 0')
+        self.add_event("ParachuteDeployed", trigger='v_in.val[2] < 0')
 
     def transition(self):
 
@@ -47,15 +47,17 @@ class DynamicsPar(System):
     def compute(self):
 
         if self.Dep == 0:
-
+            print("not deployed yet")
             self.v1 = self.v_in.val
             self.v2 = self.v_in.val
             self.r1 = self.r_in
             self.r2 = self.r_in
 
         else:
-
+            print("deployed")
+            print(self.v1)
             Drag = -.5 * self.S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
             d = -self.r2 + self.r1
-            self.a1 = (-(self.k / self.m1) * (d-self.l0*d/np.linalg.norm(d)) + np.array([0.,0.,-9.8]) + Drag)
-            self.a2 = (-(self.k / self.m2) * (-d+self.l0*d/np.linalg.norm(d)) + np.array([0.,0.,-9.8]))
+            d_norm = 0 if np.linalg.norm(d)<1e-6 else d/np.linalg.norm(d)
+            self.a1 = -(self.k / self.m1) * (d-self.l0*d_norm + np.array([0.,0.,-9.8]) + Drag)
+            self.a2 = -(self.k / self.m2) * (-d+self.l0*d_norm + np.array([0.,0.,-9.8]))

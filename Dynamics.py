@@ -36,7 +36,6 @@ class Dynamics(System):
         self.add_outward('aa', np.zeros(3), desc = "Rocket Angular Acceleration", unit = '1/s**2')
         
     def compute(self):
-        print(self.F)
         I = self.I
         g = self.g.val
 

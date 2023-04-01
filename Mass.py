@@ -8,7 +8,9 @@ class Mass(System):
         self.add_inward('referential', 'Rocket', desc = "Mass is in the Rocket's referential")
         
         #Rocket inputs
-        self.add_inward('m', 15., desc = "Rocket's Initial Mass")
+        self.add_inward('m', 15., desc = "Rocket's Mass")
+        self.add_inward('m0', 15., desc = "Rocket's Initial Mass")
+
         self.add_inward('I0_geom', np.array([10., 100., 100.]), desc = "Rocket's Initial Inertia Moment/mass")
 
         #Mass outputs
@@ -28,5 +30,5 @@ class Mass(System):
             self.Dm = 0
         
     def compute(self):
-        self.I = self.I0_geom * self.m
+        self.I = self.I0_geom * self.m / self.m0
         self.m_out = self.m

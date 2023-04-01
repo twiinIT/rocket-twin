@@ -33,7 +33,8 @@ def wind(alt):
 	w_hd = sample_wind[alt][0]
 	w_vd = sample_wind[alt][1]
 	w_n = sample_wind[alt][2]
-	return [w_n*np.cos(w_vd)*np.cos(w_hd), -w_n*np.cos(w_vd)*np.sin(w_hd), w_n*np.sin(w_vd)*np.cos(w_hd)]
+	return [0,0,0]
+	# return [w_n*np.cos(w_vd)*np.cos(w_hd), -w_n*np.cos(w_vd)*np.sin(w_hd), w_n*np.sin(w_vd)*np.cos(w_hd)]
 	
 
 
