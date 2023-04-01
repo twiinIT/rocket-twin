@@ -20,7 +20,8 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val']),
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2']),
     period=.1,
 )
 
@@ -32,10 +33,14 @@ driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([0, -np.pi/2, 0]),
+        'Rocket.Kin.ar' : np.array([0, -np.pi/4, 0]),
         'Rocket.Kin.av' : np.zeros(3),
+        'Para.DynPar.r1' : np.array([0., 0., l/2]),
+        'Para.DynPar.r2' : np.array([0., 0., l/2]),
+        'Para.DynPar.v1' : np.array([0,0,0]),
+        'Para.DynPar.v2' : np.array([0,0,0])
     },
-    stop='Traj.v.val[2]<-1'
+    stop='Traj.r[2] < 0'
     )
 
 
@@ -170,11 +175,21 @@ time = np.asarray(data['time'])
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
 a = np.asarray(data['Rocket.Kin.a'].tolist())
+r1 = np.asarray(data['Para.DynPar.r1'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
 wind*=8 #on fait x10 pour l'affichage du vent sinon on verra rien
 wind_b = []
 #On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
+
+#For loop for verification of r = r1 (and r != r1)
+for i in range(10):
+    print(r[i] == r1[i])
+
+for i in range(120, 130):
+    print(r[i] == r1[i])
+
+r = r1  #Seulement pour verifier l'affichage de r1
 
 
 #Modélisation de l'axe de la fusée et de sa normale(grossie x5)
