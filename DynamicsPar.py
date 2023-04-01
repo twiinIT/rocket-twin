@@ -52,6 +52,7 @@ class DynamicsPar(System):
             rotation = R.from_euler('xyz', self.ang, degrees=False)
             vect1 = rotation.apply(l0)
             self.r1 = self.r1 + l0
+            print(self.r1, self.r2)
             print("R1 ABOUGA")
 
 
@@ -59,35 +60,36 @@ class DynamicsPar(System):
     def compute(self):
 
         if self.Dep == 0:
-            print("not deployed yet")
-            print("r_in")
-            print(self.r_in)
-            print("angles")
-            print(self.ang)
-            self.v1 = self.v_in.val
-            self.v2 = self.v_in.val
-            self.r1 = self.r_in
-            self.r2 = self.r_in
+            # print("not deployed yet")
+            # print("r_in")
+            # print(self.r_in)
+            # print("angles")
+            # print(self.ang)
+            self.v1 = np.zeros(3)
+            self.v2 = np.zeros(3)
+            self.r1 = np.array([100,0,0])
+            self.r2 = np.array([100,0,0])
 
-            print("r1")
-            print(self.r1)
-            print("r2")
-            print(self.r2)
-            print("v1")
-            print(self.v1)
+            # print("r1")
+            # print(self.r1)
+            # print("r2")
+            # print(self.r2)
+            # print("v1")
+            # print(self.v1)
 
         else:
-            print("deployed")
-            print("r1")
-            print(self.r1)
-            print("r2")
-            print(self.r2)
-            print("v1")
-            print(self.v1)
+            # print("deployed")
+            # print("r1")
+            # print(self.r1)
+            # print("r2")
+            # print(self.r2)
+            # print("v1")
+            # print(self.v1)
             Drag = -.5 * self.S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
-            print("Drag")
-            print(Drag)
+            # print("Drag")
+            # print(Drag)
+            # print(self.v2)
             d = abs(-self.r2 + self.r1)
             d_norm = 0 if np.linalg.norm(d)<1e-6 else d/np.linalg.norm(d)
-            self.a1 = -(self.k / self.m1) * (d-self.l0*d_norm + np.array([0.,0.,-9.8]) + Drag)
-            self.a2 = -(self.k / self.m2) * (-d+self.l0*d_norm + np.array([0.,0.,-9.8]))
+            self.a1 = -(self.k / self.m1) * (d-self.l0*d_norm) + np.array([0.,0.,-9.8]) + Drag/self.m1
+            self.a2 = -(self.k / self.m2) * (-d+self.l0*d_norm) + np.array([0.,0.,-9.8])

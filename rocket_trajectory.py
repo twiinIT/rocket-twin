@@ -35,12 +35,12 @@ driver.set_scenario(
         'Rocket.Kin.v' : np.array([0,0,0]),
         'Rocket.Kin.ar' : np.array([0, -np.pi/4, 0]),
         'Rocket.Kin.av' : np.zeros(3),
-        'Para.DynPar.r1' : np.array([0., 0., l]), #The parachute is at the tip of the rocket ( = l)
-        'Para.DynPar.r2' : np.array([0., 0., l]),
+        'Para.DynPar.r1' : np.array([0., 0., l/2]), #(should be l because the parachute is at the tip of the rocket)
+        'Para.DynPar.r2' : np.array([0., 0., l/2]),
         'Para.DynPar.v1' : np.array([0,0,0]),
         'Para.DynPar.v2' : np.array([0,0,0])
     },
-    stop='Traj.r[2] < 0'
+    stop='Para.DynPar.r1[2] < -1'
     )
 
 
@@ -101,21 +101,12 @@ r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
 a = np.asarray(data['Rocket.Kin.a'].tolist())
 r1 = np.asarray(data['Para.DynPar.r1'].tolist())
+r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
-wind*=8 #on fait x10 pour l'affichage du vent sinon on verra rien
+wind*=8 #on fait x8 pour l'affichage du vent sinon on verra rien
 wind_b = []
 #On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
-
-#For loop for verification of r = r1 (and r != r1)
-# for i in range(10):
-#     print(r[i] == r1[i])
-
-# for i in range(120, 130):
-#     print(r[i] == r1[i])
-
-r = r1  #Seulement pour verifier l'affichage de r1
-
 
 #Modélisation de l'axe de la fusée et de sa normale(grossie x5)
 rocket = np.array([l*8,0,0])
@@ -161,6 +152,8 @@ i = 0
 for ti in time:
     iteration_results = {'t': ti, 
                          'rx': r[i][0], 'ry': r[i][1], 'rz': r[i][2],
+                         'r1x': r1[i][0], 'r1y': r1[i][1], 'r1z': r1[i][2],
+                         'r2x': r2[i][0], 'r2y': r2[i][1], 'r2z': r2[i][2],
                          'vx': v[i][0], 'vy': v[i][1], 'vz': v[i][2],
                          'ax': a[i][0], 'ay': a[i][1], 'az': a[i][2],
                          'rtx': rt[i][0], 'rty': rt[i][1], 'rtz': rt[i][2],
@@ -171,6 +164,14 @@ for ti in time:
                         }
     i+=1
     propagation_time_history.append(iteration_results)
+
+print(r1)
+print(r2)
+
+# find time i where the parachute appears 
+time_parachute=0
+while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
+    time_parachute+=1
 
 df = pd.DataFrame(propagation_time_history)
 
@@ -323,13 +324,21 @@ class Animator:
         # axis 1
         row = self.simulation_results.iloc[i]
 
-        # define vectors
-        vectors = [vector_arrow_3d(0, 0, 0, row.rx, row.ry, row.rz, 'g'), 
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.rtx, row.rty, row.rtz, 'r'),
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indyx, row.indyy, row.indyz, 'k'),
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k'),
-                vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
-                  ]
+        if i<time_parachute:
+
+            # define vectors
+            vectors = [vector_arrow_3d(0, 0, 0, row.rx, row.ry, row.rz, 'g'), 
+                    vector_arrow_3d(row.rx, row.ry, row.rz, row.rtx, row.rty, row.rtz, 'r'),
+                    vector_arrow_3d(row.rx, row.ry, row.rz, row.indyx, row.indyy, row.indyz, 'k'),
+                    vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k'),
+                    vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
+                    ]
+
+        else:
+            vectors = [vector_arrow_3d(0, 0, 0, row.r2x, row.r2y, row.r2z, 'g'), 
+                    vector_arrow_3d(row.r1x, row.r1y, row.r1z, row.r1x-row.r2x, row.r1y-row.r2y, row.rtz-row.r2z, 'r'),
+                    vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
+                    ]
 
         # add vectors to figure
         [self.ax1.add_artist(vector) for vector in vectors]
