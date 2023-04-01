@@ -145,6 +145,18 @@ indz = np.asarray(indz)
 rt = rock
 
 
+# find time i where the parachute appears 
+time_parachute=0
+while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
+    time_parachute+=1
+
+r_then_r1 = []
+for i in range(time_parachute):
+    r_then_r1.append(r[i])
+for i in range(time_parachute,len(r1)):
+    r_then_r1.append(r1[i])
+
+
 propagation_time_history = []
 
 
@@ -154,6 +166,7 @@ for ti in time:
                          'rx': r[i][0], 'ry': r[i][1], 'rz': r[i][2],
                          'r1x': r1[i][0], 'r1y': r1[i][1], 'r1z': r1[i][2],
                          'r2x': r2[i][0], 'r2y': r2[i][1], 'r2z': r2[i][2],
+                         'r_then_r1_x': r_then_r1[i][0], 'r_then_r1_y': r_then_r1[i][1], 'r_then_r1_z': r_then_r1[i][2],
                          'vx': v[i][0], 'vy': v[i][1], 'vz': v[i][2],
                          'ax': a[i][0], 'ay': a[i][1], 'az': a[i][2],
                          'rtx': rt[i][0], 'rty': rt[i][1], 'rtz': rt[i][2],
@@ -165,17 +178,10 @@ for ti in time:
     i+=1
     propagation_time_history.append(iteration_results)
 
-print(r1)
-print(r2)
 
-# find time i where the parachute appears 
-time_parachute=0
-while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
-    time_parachute+=1
+
 
 df = pd.DataFrame(propagation_time_history)
-
-print(df)
 
 #==================================
 # Visualise trajectory
@@ -279,7 +285,7 @@ class Animator:
         """
         set the axis limits for each plot, label axes
         """
-        lim_params = ['r']
+        lim_params = ['r1']
         x_lims = self.get_limits(lim_params, 'x')
         y_lims = self.get_limits(lim_params, 'y')
         z_lims = self.get_limits(lim_params, 'z')
@@ -349,10 +355,9 @@ class Animator:
             [vector.remove() for vector in self.vector_lines]
         self.vector_lines = vectors
 
-
         # update trajectory for current time step
-        self.trajectory.set_data(self.simulation_results['rx'][:i], self.simulation_results['ry'][:i])
-        self.trajectory.set_3d_properties(self.simulation_results['rz'][:i])
+        self.trajectory.set_data(self.simulation_results['r_then_r1_x'][:i], self.simulation_results['r_then_r1_y'][:i])
+        self.trajectory.set_3d_properties(self.simulation_results['r_then_r1_z'][:i])
 
 
         # plt.pause(0.05)

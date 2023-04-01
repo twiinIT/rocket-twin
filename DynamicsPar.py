@@ -42,7 +42,7 @@ class DynamicsPar(System):
         #Event
         self.add_event("ParachuteDeployed", trigger='v_in.val[2] < 0')
         self.add_inward("apogee_time", np.Infinity, unit = "s")
-        self.add_event("FinallyDeployed", trigger = "time > apogee_time + 1 ") # The parachute takes one second to deploy itself
+        self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes one second to deploy itself
 
     def transition(self):
 
