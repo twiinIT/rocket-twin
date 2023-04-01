@@ -24,7 +24,7 @@ class Rocket(System):
         self.add_inward('l', 2., desc='Rocket length', unit='m')
 
         #Rocket children
-        self.add_child(Kinematics('Kin'), pulling = ['v_out'])
+        self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang'])
         self.add_child(Thrust('Thrust'), pulling=['l'])
         self.add_child(Dynamics('Dyn'), pulling = ['g', 'l'])
         self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind'])

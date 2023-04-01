@@ -29,7 +29,7 @@ class Earth(System):
         self.connect(self.Wind, self.Rocket, ['v_wind'])
         self.connect(self.Atmo, self.Rocket, ['rho'])
         self.connect(self.Para, self.Grav, ['g'])
-        self.connect(self.Rocket, self.Para, {'v_out' : 'v_in'})
+        self.connect(self.Rocket, self.Para, {'v_out' : 'v_in', 'Kin_ang':'ang'})
         self.connect(self.Traj, self.Para, {'r_out' : 'r_in'})
         self.connect(self.Wind, self.Para, ['v_wind'])
 

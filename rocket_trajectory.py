@@ -35,8 +35,8 @@ driver.set_scenario(
         'Rocket.Kin.v' : np.array([0,0,0]),
         'Rocket.Kin.ar' : np.array([0, -np.pi/4, 0]),
         'Rocket.Kin.av' : np.zeros(3),
-        'Para.DynPar.r1' : np.array([0., 0., l/2]),
-        'Para.DynPar.r2' : np.array([0., 0., l/2]),
+        'Para.DynPar.r1' : np.array([0., 0., l]), #The parachute is at the tip of the rocket ( = l)
+        'Para.DynPar.r2' : np.array([0., 0., l]),
         'Para.DynPar.v1' : np.array([0,0,0]),
         'Para.DynPar.v2' : np.array([0,0,0])
     },

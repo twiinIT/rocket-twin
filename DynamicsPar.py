@@ -5,6 +5,9 @@ from Utility.Utility import thrust
 
 import numpy as np
 
+from scipy.spatial.transform import Rotation as R
+
+
 class DynamicsPar(System):
     def setup(self):
 
@@ -18,6 +21,7 @@ class DynamicsPar(System):
         self.add_inward('S_ref', .1, desc = "Reference surface of parachute", unit = 'm**2')
         self.add_inward('Cd', 1.75, desc = "Drag coefficient of parachute", unit = '')
         self.add_inward('r_in', np.zeros(3), desc = "Rocket Position", unit = 'm')
+        self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = 'm')
         self.add_inward('Dep', 0., desc = "Parachute Deployed", unit = '')
         
         self.add_input(AclPort, 'g')
@@ -41,23 +45,49 @@ class DynamicsPar(System):
 
         if self.ParachuteDeployed.present:
 
+            print("R1 ABOUGA")
+            print(self.r1)
             self.Dep = 1
-            self.r2 += self.l0
+            l0 = [self.l0,0,0]
+            rotation = R.from_euler('xyz', self.ang, degrees=False)
+            vect1 = rotation.apply(l0)
+            self.r1 = self.r1 + l0
+            print("R1 ABOUGA")
+
+
         
     def compute(self):
 
         if self.Dep == 0:
             print("not deployed yet")
+            print("r_in")
+            print(self.r_in)
+            print("angles")
+            print(self.ang)
             self.v1 = self.v_in.val
             self.v2 = self.v_in.val
             self.r1 = self.r_in
             self.r2 = self.r_in
 
+            print("r1")
+            print(self.r1)
+            print("r2")
+            print(self.r2)
+            print("v1")
+            print(self.v1)
+
         else:
             print("deployed")
+            print("r1")
+            print(self.r1)
+            print("r2")
+            print(self.r2)
+            print("v1")
             print(self.v1)
             Drag = -.5 * self.S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
-            d = -self.r2 + self.r1
+            print("Drag")
+            print(Drag)
+            d = abs(-self.r2 + self.r1)
             d_norm = 0 if np.linalg.norm(d)<1e-6 else d/np.linalg.norm(d)
             self.a1 = -(self.k / self.m1) * (d-self.l0*d_norm + np.array([0.,0.,-9.8]) + Drag)
             self.a2 = -(self.k / self.m2) * (-d+self.l0*d_norm + np.array([0.,0.,-9.8]))
