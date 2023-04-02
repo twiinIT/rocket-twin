@@ -23,9 +23,16 @@ class Wind(System):
 	def setup(self):
 		self.add_output(VelPort, "v_wind")
 		self.add_inward('r', np.zeros(3), desc='rocket position in earth referential', unit='m')
+		self.add_inward('r1', np.zeros(3), desc='rocket position in earth referential after parachute deployment', unit='m')
+        
+		#Parachute
+		self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
 	def compute(self):
-		self.v_wind.val = [0,0,0] #wind(self.r[2])
+		if self.ParaDep == 1:
+			self.v_wind.val = wind(self.parent.Para.DynPar.r1[2])
+		else:
+			self.v_wind.val = wind(self.r[2])
 
 
 def wind(alt):

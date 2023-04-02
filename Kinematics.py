@@ -29,8 +29,8 @@ class Kinematics(System):
         self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
     def compute(self):
-        if self.ParaDep == 1:
-            return
+        # if self.ParaDep == 1:
+        #     return
 
         #compute angular velocity to obtain angular position
         self.av2[0] = self.av[0] + np.tan(self.ar[1])*(self.av[2]*np.cos(self.ar[0]) + self.av[1]*np.sin(self.ar[0]))
