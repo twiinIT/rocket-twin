@@ -20,7 +20,7 @@ class Rocket(System):
         self.add_input(VelPort, 'v_wind')
         
         #Rocket parameters
-        self.add_inward('l', 2.2, desc='Rocket length', unit='m')
+        self.add_inward('l', 0.56, desc='Rocket length', unit='m')
 
         #Parachute deployment
         self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')

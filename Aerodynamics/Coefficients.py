@@ -21,22 +21,22 @@ class Coefficients(System):
         self.add_input(VelPort, 'v_wind')
 
         # Rocket's Geometry
-        self.add_inward('d', 0.2, desc='Rocket diameter', unit='m')
-        self.add_inward('l', 2.2, desc = "Rocket length", unit = 'm')
-        self.add_inward('ln', 0.2, desc="Length of the cone", unit='m')
+        self.add_inward('d', 0.029, desc='Rocket diameter', unit='m')
+        self.add_inward('l', -1, desc = "Rocket length", unit = 'm')
+        self.add_inward('ln', 0.1, desc="Length of the cone", unit='m')
         self.add_outward('S_ref', np.pi*(self.d/2)**2, desc="Reference Surface", unit="m**2")
         self.add_inward('A0', 0., desc = "Cross section at the top of the body", unit = 'm**2')
         self.add_inward('Al', self.S_ref, desc = "Cross section at the bottom of the body", unit = 'm**2')
 
         #Fins' Geometry, check the documentation for explanation
-        self.add_inward('NFins', 4, desc="Number of fins", unit="")
-        self.add_inward('GammaC', np.pi/4, desc = 'Fin mid-chord sweep angle', unit="m")
-        self.add_inward('s', 0.2, desc="Span of one fin", unit='m')
-        self.add_inward('Xt', 0.125, unit = 'm')
-        self.add_inward('Cr', 0.2, unit = 'm')
-        self.add_inward('Ct', 0.15, unit = 'm')
-        self.add_inward('delta', 0.01, desc="Cant angle", unit = 'm')
-        self.add_inward('tf', 0.001, desc = 'Thickness', unit='m')
+        self.add_inward('NFins', 3, desc="Number of fins", unit="")
+        self.add_inward('GammaC', 11.3*np.pi/180, desc = 'Fin mid-chord sweep angle', unit="m")
+        self.add_inward('s', 0.05, desc="Span of one fin", unit='m')
+        self.add_inward('Xt', 0.01, unit = 'm')
+        self.add_inward('Cr', 0.06, unit = 'm')
+        self.add_inward('Ct', 0.04, unit = 'm')
+        self.add_inward('delta', 0, desc="Cant angle", unit = 'm')
+        self.add_inward('tf', 0.00456, desc = 'Thickness', unit='m')
         
         #Coefficients outwards
         self.add_outward('Cd', 0.7, desc='Drag coefficient', unit='')

@@ -27,7 +27,7 @@ driver.add_recorder(
 
 #Initial conditions and constants
 
-l = 10 #Rocket's length on the plot
+l = 2 #Rocket's length on the plot
 
 driver.set_scenario(
     init = {
