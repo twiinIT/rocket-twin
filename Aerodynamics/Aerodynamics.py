@@ -14,7 +14,6 @@ class Aerodynamics(System):
         self.add_inward('Aero_ang', np.zeros(3), desc = "Rocket Euler Angles")
         
         #Geometry
-        #TODO Create a mass System
         self.add_inward('m', desc = "mass", unit = 'kg')
 
         self.add_input(VelPort, 'v_wind')

@@ -20,7 +20,8 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang', 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val']),
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2']),
     period=.1,
 )
 
@@ -32,10 +33,14 @@ driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + .2, 0]),
+        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + 0.1, 0]),
         'Rocket.Kin.av' : np.zeros(3),
+        'Para.DynPar.r1' : np.array([0., 0., l/2]), #(should be l because the parachute is at the tip of the rocket)
+        'Para.DynPar.r2' : np.array([0., 0., l/2]),
+        'Para.DynPar.v1' : np.array([0,0,0]),
+        'Para.DynPar.v2' : np.array([0,0,0])
     },
-    stop='Traj.v.val[2]<-1'
+    stop='Para.DynPar.r1[2] < -1'
     )
 
 
@@ -71,16 +76,6 @@ from mpl_toolkits.mplot3d.proj3d import proj_transform
 # ==============================
 # vector equations
 
-def vector_derivative(vector, wrt):
-    """
-    differentiate vector components wrt a symbolic variable
-    param v: vector to differentiate
-    param wrt: symbolic variable
-    return V: velcoity vector and components in x, y, z
-    """
-    return [component.diff(wrt) for component in vector]
-
-
 def vector_magnitude(vector):
     """
     compute magnitude of a vector
@@ -92,71 +87,6 @@ def vector_magnitude(vector):
     for component in vector:
         magnitude += component ** 2
     return magnitude ** (1 / 2)
-
-
-def unit_vector(from_vector_and_magnitude=None, from_othogonal_vectors=None, from_orthogonal_unit_vectors=None):
-    """
-    Calculate a unit vector using one of three input parameters.
-    1. using vector and vector magnitude
-    2. using orthogonal vectors
-    3. using orthogonal unit vectors
-    """
-
-    if from_vector_and_magnitude is not None:
-        vector_a, magnitude = from_vector_and_magnitude[0], from_vector_and_magnitude[1]
-        return [component / magnitude for component in vector_a]
-
-    if from_othogonal_vectors is not None:
-        vector_a, vector_b = from_othogonal_vectors[0], from_othogonal_vectors[1]
-        vector_normal = np.cross(vector_a, vector_b)
-        return unit_vector(from_vector_and_magnitude=(vector_normal, vector_magnitude(vector_normal)))
-
-    if from_orthogonal_unit_vectors is not None:
-        u1, u2 = from_orthogonal_unit_vectors[0], from_orthogonal_unit_vectors[1]
-        return np.cross(u1, u2)
-
-
-def evaluate_vector(vector, time_step):
-    """
-    evaluate numerical vector components and magnitude @ti
-    param numerical_vector: symbolic vector expression to evaluate @ti
-    param ti: time step for evaluation
-    return magnitude, numerical_vector: magnitude of vector and components evaluated @ti
-    """
-    numerical_vector = [float(component.subs(t, time_step).evalf()) for component in vector]
-    magnitude = vector_magnitude(numerical_vector)
-    return numerical_vector, magnitude
-
-
-def direction_angles(vector, magnitude=None):
-    """
-    compute direction angles a vector makes with +x,y,z axes
-    param vector: vector with x, y, z components
-    param magnitude: magnitude of vector
-    """
-    magnitude = vector_magnitude(vector) if magnitude is None else magnitude
-    return [sp.acos(component / magnitude) for component in vector]
-
-# ==============================
-# helper functions
-
-
-def d2r(degrees):
-    """
-    convert from degrees to radians
-    return: radians
-    """
-    return degrees * (np.pi / 180)
-
-
-def r2d(radians):
-    """
-    convert from radians to degrees
-    return: degrees
-    """
-    return radians * (180 / np.pi)
-
-
 
 #==================================
 # Create Dataframe
@@ -170,7 +100,13 @@ time = np.asarray(data['time'])
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
 a = np.asarray(data['Rocket.Kin.a'].tolist())
+r1 = np.asarray(data['Para.DynPar.r1'].tolist())
+r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
+wind = np.asarray(data['Wind.v_wind.val'].tolist())
+wind*=8 #on fait x8 pour l'affichage du vent sinon on verra rien
+wind_b = []
+#On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
 
 #Modélisation de l'axe de la fusée et de sa normale(grossie x5)
 rocket = np.array([l*8,0,0])
@@ -197,6 +133,9 @@ for i in range(len(r)):
     rock.append(vect1)
     indy.append(vect2)
     indz.append(vect3)
+    wind_b.append([-wind[i][0]/2,-wind[i][1]/2,r[i][2]-wind[i][2]])
+
+
 
 rock = np.asarray(rock)
 indy = np.asarray(indy)
@@ -206,6 +145,18 @@ indz = np.asarray(indz)
 rt = rock
 
 
+# find time i where the parachute appears 
+time_parachute=0
+while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
+    time_parachute+=1
+
+r_then_r1 = []
+for i in range(time_parachute):
+    r_then_r1.append(r[i])
+for i in range(time_parachute,len(r1)):
+    r_then_r1.append(r1[i])
+
+
 propagation_time_history = []
 
 
@@ -213,17 +164,24 @@ i = 0
 for ti in time:
     iteration_results = {'t': ti, 
                          'rx': r[i][0], 'ry': r[i][1], 'rz': r[i][2],
+                         'r1x': r1[i][0], 'r1y': r1[i][1], 'r1z': r1[i][2],
+                         'r2x': r2[i][0], 'r2y': r2[i][1], 'r2z': r2[i][2],
+                         'r_then_r1_x': r_then_r1[i][0], 'r_then_r1_y': r_then_r1[i][1], 'r_then_r1_z': r_then_r1[i][2],
                          'vx': v[i][0], 'vy': v[i][1], 'vz': v[i][2],
                          'ax': a[i][0], 'ay': a[i][1], 'az': a[i][2],
                          'rtx': rt[i][0], 'rty': rt[i][1], 'rtz': rt[i][2],
                          'indyx': indy[i][0], 'indyy': indy[i][1], 'indyz': indy[i][2],
-                         'indzx': indz[i][0], 'indzy': indz[i][1], 'indzz': indz[i][2]
+                         'indzx': indz[i][0], 'indzy': indz[i][1], 'indzz': indz[i][2],
+                         'wind_bx':wind_b[i][0], 'wind_by':wind_b[i][1], 'wind_bz':wind_b[i][2],
+                         'windx':wind[i][0], 'windy':wind[i][1], 'windz':wind[i][2],
                         }
     i+=1
     propagation_time_history.append(iteration_results)
 
-df = pd.DataFrame(propagation_time_history)
 
+
+
+df = pd.DataFrame(propagation_time_history)
 
 #==================================
 # Visualise trajectory
@@ -285,6 +243,7 @@ class Animator:
 
 
         self.ax1 = self.fig.add_subplot(projection='3d')
+        # self.ax2 = self.fig.add_subplot()
 
         self.set_axes_limits()
 
@@ -326,7 +285,7 @@ class Animator:
         """
         set the axis limits for each plot, label axes
         """
-        lim_params = ['r']
+        lim_params = ['r1']
         x_lims = self.get_limits(lim_params, 'x')
         y_lims = self.get_limits(lim_params, 'y')
         z_lims = self.get_limits(lim_params, 'z')
@@ -371,12 +330,22 @@ class Animator:
         # axis 1
         row = self.simulation_results.iloc[i]
 
-        # define vectors
-        vectors = [vector_arrow_3d(0, 0, 0, row.rx, row.ry, row.rz, 'g'), 
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.rtx, row.rty, row.rtz, 'r'),
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indyx, row.indyy, row.indyz, 'k'),
-                   vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k')
-                  ]
+        if i<time_parachute:
+
+            # define vectors
+            vectors = [vector_arrow_3d(0, 0, 0, row.rx, row.ry, row.rz, 'g'), 
+                    vector_arrow_3d(row.rx, row.ry, row.rz, row.rtx, row.rty, row.rtz, 'r'),
+                    vector_arrow_3d(row.rx, row.ry, row.rz, row.indyx, row.indyy, row.indyz, 'k'),
+                    vector_arrow_3d(row.rx, row.ry, row.rz, row.indzx, row.indzy, row.indzz, 'k'),
+                    vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
+                    ]
+
+        else:
+            vectors = [vector_arrow_3d(0, 0, 0, row.r2x, row.r2y, row.r2z, 'g'), 
+                    #    vector_arrow_3d(0, 0, 0, row.r1x, row.r1y, row.r1z, 'r'), 
+                    vector_arrow_3d(row.r2x, row.r2y, row.r2z, (row.r1x-row.r2x)*30, (row.r1y-row.r2y)*30, (row.r1z-row.r2z)*30, 'r'),
+                    vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
+                    ]
 
         # add vectors to figure
         [self.ax1.add_artist(vector) for vector in vectors]
@@ -386,10 +355,9 @@ class Animator:
             [vector.remove() for vector in self.vector_lines]
         self.vector_lines = vectors
 
-
         # update trajectory for current time step
-        self.trajectory.set_data(self.simulation_results['rx'][:i], self.simulation_results['ry'][:i])
-        self.trajectory.set_3d_properties(self.simulation_results['rz'][:i])
+        self.trajectory.set_data(self.simulation_results['r_then_r1_x'][:i], self.simulation_results['r_then_r1_y'][:i])
+        self.trajectory.set_3d_properties(self.simulation_results['r_then_r1_z'][:i])
 
 
         # plt.pause(0.05)
@@ -410,7 +378,7 @@ class Animator:
 
 
 # =======================================
-# save trajectory animation
+# trajectory animation
 
 animator = Animator(simulation_results=df)
 anim = animator.animate()
