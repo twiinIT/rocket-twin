@@ -33,7 +33,7 @@ driver.set_scenario(
     init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([0, -np.pi/4, 0]),
+        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + 0.2, 0]),
         'Rocket.Kin.av' : np.zeros(3),
         'Para.DynPar.r1' : np.array([0., 0., l/2]), #(should be l because the parachute is at the tip of the rocket)
         'Para.DynPar.r2' : np.array([0., 0., l/2]),
@@ -150,11 +150,11 @@ time_parachute=0
 while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
     time_parachute+=1
 
-r_then_r1 = []
+r_then_r2 = []
 for i in range(time_parachute):
-    r_then_r1.append(r[i])
-for i in range(time_parachute,len(r1)):
-    r_then_r1.append(r1[i])
+    r_then_r2.append(r[i])
+for i in range(time_parachute,len(r2)):
+    r_then_r2.append(r2[i])
 
 
 propagation_time_history = []
@@ -166,7 +166,7 @@ for ti in time:
                          'rx': r[i][0], 'ry': r[i][1], 'rz': r[i][2],
                          'r1x': r1[i][0], 'r1y': r1[i][1], 'r1z': r1[i][2],
                          'r2x': r2[i][0], 'r2y': r2[i][1], 'r2z': r2[i][2],
-                         'r_then_r1_x': r_then_r1[i][0], 'r_then_r1_y': r_then_r1[i][1], 'r_then_r1_z': r_then_r1[i][2],
+                         'r_then_r2_x': r_then_r2[i][0], 'r_then_r2_y': r_then_r2[i][1], 'r_then_r2_z': r_then_r2[i][2],
                          'vx': v[i][0], 'vy': v[i][1], 'vz': v[i][2],
                          'ax': a[i][0], 'ay': a[i][1], 'az': a[i][2],
                          'rtx': rt[i][0], 'rty': rt[i][1], 'rtz': rt[i][2],
@@ -356,8 +356,8 @@ class Animator:
         self.vector_lines = vectors
 
         # update trajectory for current time step
-        self.trajectory.set_data(self.simulation_results['r_then_r1_x'][:i], self.simulation_results['r_then_r1_y'][:i])
-        self.trajectory.set_3d_properties(self.simulation_results['r_then_r1_z'][:i])
+        self.trajectory.set_data(self.simulation_results['r_then_r2_x'][:i], self.simulation_results['r_then_r2_y'][:i])
+        self.trajectory.set_3d_properties(self.simulation_results['r_then_r2_z'][:i])
 
 
         # plt.pause(0.05)
