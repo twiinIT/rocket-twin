@@ -25,7 +25,7 @@ class Wind(System):
 		self.add_inward('r', np.zeros(3), desc='rocket position in earth referential', unit='m')
 
 	def compute(self):
-		self.v_wind.val = wind(self.r[2])
+		self.v_wind.val = [0,0,0] #wind(self.r[2])
 
 
 def wind(alt):
@@ -33,8 +33,7 @@ def wind(alt):
 	w_hd = sample_wind[alt][0]
 	w_vd = sample_wind[alt][1]
 	w_n = sample_wind[alt][2]
-	return [0,0,0]
-	# return [w_n*np.cos(w_vd)*np.cos(w_hd), -w_n*np.cos(w_vd)*np.sin(w_hd), w_n*np.sin(w_vd)*np.cos(w_hd)]
+	return [w_n*np.cos(w_vd)*np.cos(w_hd), -w_n*np.cos(w_vd)*np.sin(w_hd), w_n*np.sin(w_vd)*np.cos(w_hd)]
 	
 
 

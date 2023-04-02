@@ -35,7 +35,7 @@ class Coefficients(System):
         self.add_inward('Xt', 0.125, unit = 'm')
         self.add_inward('Cr', 0.2, unit = 'm')
         self.add_inward('Ct', 0.15, unit = 'm')
-        self.add_inward('delta', 0, desc="Cant angle", unit = 'm')
+        self.add_inward('delta', 0.01, desc="Cant angle", unit = 'm')
         self.add_inward('tf', 0.001, desc = 'Thickness', unit='m')
         
         #Coefficients outwards
@@ -45,7 +45,13 @@ class Coefficients(System):
         self.add_outward('Mroll', 0., desc='Roll moment')
         self.add_outward('Xcp', 0., desc='CPA position from the rocket top', unit='m')
 
+        #Parachute
+        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+
     def compute(self):
+        if self.ParaDep == 1:
+            return
+        
         self.v_cpa += self.v_wind.val 
 
         v_norm = np.linalg.norm(self.v_cpa)
@@ -204,42 +210,5 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        # self.Cd = f(abs(alpha)) * C_D_0
+        self.Cd = f(abs(alpha)) * C_D_0
         # print("Cd", self.Cd)
-
-
-
-        #Old analityc coefficient determination
-        # if v_norm>10:
-        #     cna_c = 2
-        #     cna_b = 0
-        #     cna_f = (1 + self.dn/(self.ls + self.dn/2))*4*4*(self.ls/self.dn)**2/(1 + (1 + 2*self.lm/(self.lr + self.lt))**0.5)
-        #     cna = cna_c + cna_b + cna_f
-
-        #     self.Cn = cna*self.alpha
-
-        #     self.Xcp = 1/cna*(cna_c*2/3*self.ln + cna_f*(self.xf + self.lm*(self.lr + 2*self.lt)/(3*(self.lr+self.lt)) + 1/6*(self.lr + self.lt - self.lr*self.lt/(self.lr+self.lt))))
-
-        #     Rec = 5*10**5
-        #     Ref =  Rec #v_norm * self.l / (15.6*10**(-6))
-        #     Refb = Rec #v_norm * self.lm / (15.6*10**(-6))
-
-        #     Bf = Rec * (0.074/Ref**0.2) - 1.328/Ref**0.5
-        #     Bfb = Rec * (0.074/Refb**0.2) - 1.328/Refb**0.5
-
-        #     cffb = 1.328/Refb**0.5 if Refb < Rec else 0.074/Refb**0.2 - Bfb/Refb
-        #     cff = 1.328/Ref**0.5 if Ref < Rec else 0.074/Ref**0.2 - Bf/Ref
-
-        #     afe = 1/2 * (self.lr + self.lt)*self.ls
-        #     afb = afe + 0.5*self.dn*self.lr
-        #     cdi = 2*cff*(1+2*self.tf/self.lm)*4*4*(afb - afe)/(np.pi*self.dn**2)
-        #     cdf = 2*cff*(1+2*self.tf/self.lm)*4*4*(afb)/(np.pi*self.dn**2)
-        #     cdfb = (1 + 60/(self.l/self.dn)**3 + 0.0025*self.l/self.dn)*(2.7*self.l/self.dn + 4*self.l/self.dn)*(cffb)
-        #     cdb = 0.029/cdfb**0.5
-        #     cd0 = cdfb + cdb + cdf + cdi
-        #     cdba = 2*0.9*self.alpha**2 + 3.6*0.7*(1.36*self.l - 0.55*self.ln)/(np.pi*self.dn)*self.alpha**3
-        #     rs = self.lts/self.dn
-        #     kfb = 0.8065*rs**2 + 1.1553*rs
-        #     kbf = 0.1935*rs**2 + 0.8174*rs + 1
-        #     cdfa = self.alpha**2*(1.2*afb**4/(np.pi*self.dn**2) + 3.12*(kfb + kbf - 1)*afe**4/(np.pi*self.dn**2))
-        #     self.Cd = cd0 + cdba + cdfa 

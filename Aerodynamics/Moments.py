@@ -18,9 +18,12 @@ class Moments(System):
         #Outward
         self.add_outward('Ma', np.zeros(3) , desc='Aerodynamic Moments', unit='N*m')
 
+        #Parachute
+        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+
     def compute(self):
-        # self.Ma[0] += self.Mroll
-        # self.Ma[1] = self.M
+        if self.ParaDep == 1:
+            return
 
         # Lever arm technique
         OM = np.array([self.l/2 - self.Xcp, 0, 0]) 

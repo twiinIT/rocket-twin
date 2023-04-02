@@ -23,13 +23,16 @@ class AeroForces(System):
 
         self.add_outward('F', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
 
-    def compute(self):
-        self.v_cpa += self.v_wind.val 
+        #Parachute
+        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
-        angle = np.arccos(self.v_cpa[0]/np.linalg.norm(self.v_cpa)) if np.linalg.norm(self.v_cpa)>0.1 else 0 #angle d'attaque
+    def compute(self):
+        if self.ParaDep == 1:
+            return
+
+        self.v_cpa += self.v_wind.val 
         
         Fd = .5 * self.rho * np.linalg.norm(self.v_cpa)**2 * self.S_ref * self.Cd
-
         Fn = self.N
 
         a = np.arctan2(self.v_cpa[2], self.v_cpa[1])

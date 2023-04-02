@@ -12,7 +12,6 @@ import numpy as np
 class Rocket(System):
     
     def setup(self):
-
         #System orientation
         self.add_inward('Rocket_ang', np.zeros(3), desc = "Earth Euler Angles", unit = '')
         
@@ -23,11 +22,14 @@ class Rocket(System):
         #Rocket parameters
         self.add_inward('l', 2.2, desc='Rocket length', unit='m')
 
+        #Parachute deployment
+        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+      
         #Rocket children
-        self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang'])
+        self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang', 'ParaDep'])
         self.add_child(Thrust('Thrust'), pulling=['l'])
-        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l'])
-        self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind'])
+        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'ParaDep'])
+        self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind', 'ParaDep'])
         self.add_child(Mass('Mass'))
         
         #Child-Child connections
