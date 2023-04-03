@@ -133,7 +133,7 @@ for i in range(len(r)):
     rock.append(vect1)
     indy.append(vect2)
     indz.append(vect3)
-    wind_b.append([-wind[i][0]/2,-wind[i][1]/2,r[i][2]-wind[i][2]])
+    
 
 
 
@@ -155,6 +155,9 @@ for i in range(time_parachute):
     r_then_r2.append(r[i])
 for i in range(time_parachute,len(r2)):
     r_then_r2.append(r2[i])
+
+for i in range(len(r_then_r2)):
+    wind_b.append([-wind[i][0]/2,-wind[i][1]/2,r_then_r2[i][2]-wind[i][2]])
 
 
 propagation_time_history = []
