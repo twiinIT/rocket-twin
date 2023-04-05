@@ -17,7 +17,7 @@ class Trajectory(System):
         #Trajectory transients
         self.add_transient('r', der = 'v.val', desc = "Rocket Position")
 
-        self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = 'm')
+        self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = '')
 
         # Rope length of the parachute
         self.add_inward('l0', 1., desc = "Rope rest length", unit = 'm')
