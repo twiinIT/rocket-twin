@@ -25,7 +25,13 @@ class Kinematics(System):
         self.add_outward('v_cpa',  np.zeros(3), desc='CPA velocity', unit = 'm/s')
         self.add_outward('av_out', np.zeros(3), desc = "Rocket Angular Velocity (pqr)", unit = '1/s')
         
+        #Parachute
+        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+
     def compute(self):
+        # if self.ParaDep == 1:
+        #     return
+
         #compute angular velocity to obtain angular position
         self.av2[0] = self.av[0] + np.tan(self.ar[1])*(self.av[2]*np.cos(self.ar[0]) + self.av[1]*np.sin(self.ar[0]))
         self.av2[1] = self.av[1]*np.cos(self.ar[0]) - self.av[2]*np.sin(self.ar[0])

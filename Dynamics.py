@@ -35,8 +35,12 @@ class Dynamics(System):
         self.add_outward('a', np.zeros(3), desc = "Rocket Acceleration", unit = 'm/s**2')
         self.add_outward('aa', np.zeros(3), desc = "Rocket Angular Acceleration", unit = '1/s**2')
         
-    def compute(self):
+        #Parachute
+        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
+    def compute(self):
+        if self.ParaDep == 1:
+            return
         I = self.I
         g = self.g.val
 

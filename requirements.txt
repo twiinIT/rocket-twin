@@ -1,0 +1,8 @@
+cosapp==0.12.2
+ipython==8.11.0
+matplotlib==3.6.3
+numpy==1.20.1
+pandas==1.2.4
+pythreejs==2.4.2
+scipy==1.10.1
+sympy==1.8
