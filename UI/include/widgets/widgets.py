@@ -369,7 +369,7 @@ def find_motor(designation):
 
 def rocket_dictionary():
     '''
-    Return a dictionary representing the rocket.
+    Return a dictionary representing the rocket and write it content in the 'rocket_dict.txt' file.
     '''
     rocket = {'tube_length':tube_length.value,
               'tube_radius':tube_radius.value,
@@ -398,4 +398,9 @@ def rocket_dictionary():
               'motor_ring_material':ring_material.value,
               'motor_ring_density':ring_density.value,
               'additional_masses':mass_dict_list()}
+    
+    # Write the content of the dict in a file that will be passed to the model
+    with open("include/init_rocket/rocket_dict.txt", "w") as f:
+        json.dump(rocket, f)
+
     return rocket
