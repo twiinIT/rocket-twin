@@ -4,35 +4,65 @@ import matplotlib.pyplot as plt
 
 plt.close() # To avoid the code from plotting residual figures
 
-materials = {"Customized":-1,
-             "Mousse Bleue de polystyrène (XPS)": 32,
-             "Acier": 7850,
-             "Acrylique": 1190,
-             "Aluminium": 2700,
-             "Balsa": 170, 
-             "Blue tube": 1300,
-             "Bouleau": 670,
-             "Carton": 680,
-             "Contre-plaqué (bouleau)": 630, 
-             "Delrin": 1420, 
-             "Depron (XPS)": 40, 
-             "Fibre de carbone": 1780,
-             "Fibre de verre": 1850, 
-             "Kraft phénolique": 950, 
-             "Laiton": 8600, 
-             "Liège": 240, 
-             "Nylon": 1150, 
-             "PVC": 1390, 
-             "Papier (bureau)": 820,
-             "Pin": 530, 
-             "Polycarbonate (Lexan)": 1200, 
-             "Polystyrène": 1050, 
-             "Polystyrène (générique EPS)": 20, 
-             "Sapin": 450, 
-             "Tilleul": 500,
-             "Titane": 4500, 
-             "Tube Quantum": 1050,
-             "Erable": 755}
+materials = {"custom": 0,
+             "blue_xps": 32,
+             "acier": 7850,
+             "acrylique": 1190,
+             "aluminium": 2700,
+             "balsa": 170, 
+             "blue_tube": 1300,
+             "bouleau": 670,
+             "carton": 680,
+             "contre_plaque": 630, 
+             "delrin": 1420, 
+             "depron (XPS)": 40, 
+             "erable": 755,
+             "fibre_carbon": 1780,
+             "fibre_verre": 1850, 
+             "kraft_phenolique": 950, 
+             "laiton": 8600, 
+             "liege": 240, 
+             "nylon": 1150, 
+             "pvc": 1390, 
+             "papier": 820,
+             "pin": 530, 
+             "polycarbonate": 1200, 
+             "polystyrene": 1050, 
+             "polystyrene_eps": 20, 
+             "sapin": 450, 
+             "tilleul": 500,
+             "titane": 4500, 
+             "tube_quantum": 1050}
+
+textures = {"Customized":"custom",
+             "Acier": "acier",
+             "Acrylique": "acrylique",
+             "Aluminium": "aluminium",
+             "Balsa": "balsa", 
+             "Blue tube": "blue_tube",
+             "Bouleau": "bouleau",
+             "Carton": "carton",
+             "Contre-plaqué (bouleau)": "contre_plaque", 
+             "Delrin": "delrin", 
+             "Depron (XPS)": "depron_xps", 
+             "Erable": "erable", 
+             "Fibre de carbone": "fibre_carbon",
+             "Fibre de verre": "fibre_verre", 
+             "Kraft phénolique": "kraft_phenolique", 
+             "Laiton": "laiton", 
+             "Liège": "liege", 
+             "Mousse Bleue de polystyrène (XPS)": "blue_xps",
+             "Nylon": "nylon", 
+             "Papier (bureau)": "papier",
+             "Pin": "pin", 
+             "Polycarbonate (Lexan)": "polycarbonate", 
+             "Polystyrène": "polystyrene", 
+             "Polystyrène (générique EPS)": "polystyrene_eps", 
+             "PVC": "pvc", 
+             "Sapin": "sapin", 
+             "Tilleul": "tilleul",
+             "Titane": "titane", 
+             "Tube Quantum": "tube_quantum"}
 
 nose_options = [('Ellipse','ellipse'),
                 ('Cone','cone'),
@@ -69,16 +99,16 @@ impulse_options = [("[1.26 - 2.50]",'A'),
 tube_length = widgets.BoundedFloatText(value=2,min=0,max=500.0,step=0.1,description='Tube length ($m$):',style={'description_width': 'initial'},disabled=False)
 tube_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Tube radius ($m$):',style={'description_width': 'initial'},disabled=False)
 tube_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Tube thickness ($m$):',style={'description_width': 'initial'},disabled=False)
-tube_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Tube material',value = 2700,options = materials.items(),style={'description_width': 'initial'},disabled=False)
+tube_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Tube material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 tube_density = widgets.BoundedFloatText(value=0.,min=0,max=100000,step=1,description='Tube density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 
 def show_tube_density(change):
-    if change['new'] == -1:
-        tube_density.layout.display = ''
+    if change['new'] == "custom":
         tube_density.value = 0.
+        tube_density.layout.display = ''
     else:
         tube_density.layout.display = 'none'
-        tube_density.value = change['new']
+        tube_density.value = materials[change['new']]
 
 show_tube_density({'new':tube_material.value})
 tube_material.observe(show_tube_density, names='value')
@@ -90,23 +120,21 @@ nose_parameter_desc = widgets.Label( value='')
 nose_length = widgets.BoundedFloatText(value=.5,min=0,max=50.0,step=0.1,description='Nose length ($m$):',style={'description_width': 'initial'},disabled=False)
 nose_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Nose radius ($m$):',style={'description_width': 'initial'},disabled=False)
 nose_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Nose thickness ($m$):',style={'description_width': 'initial'},disabled=False)
-nose_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Nose material',value = 7850,options = materials.items(),style={'description_width': 'initial'},disabled=False)
+nose_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Nose material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 nose_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Nose density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 
 def show_nose_density(change):
-    if change['new'] == -1:
-        nose_density.layout.display = ''
+    if change['new'] == "custom":
         nose_density.value = 0.
+        nose_density.layout.display = ''
     else:
         nose_density.layout.display = 'none'
-        nose_density.value = change['new']
+        nose_density.value = materials[change['new']]
 
 def show_nose_parameter(change):
     nose_parameter.min = 0.
     nose_parameter.max = 1.
     if change['new'] in ['haack_series','power_series','parabole']:
-        nose_parameter.layout.display = ''
-        nose_parameter_desc.layout.display = ''
         if change['new'] == 'haack_series':
             nose_parameter_desc.value = '(*) C=0 : LD-Haack - C=1/3 : LV-Haack (min drag) - C=2/3 : tangent to the body'
             nose_parameter.value = 0.
@@ -118,6 +146,8 @@ def show_nose_parameter(change):
         elif change['new'] == 'parabole':
             nose_parameter_desc.value = '(*) Parabola parameter C in [0,1]'
             nose_parameter.value = 0.
+        nose_parameter.layout.display = ''
+        nose_parameter_desc.layout.display = ''
     else:
         nose_parameter.layout.display = 'none'
         nose_parameter_desc.layout.display = 'none'
@@ -139,17 +169,17 @@ Xt = widgets.BoundedFloatText(value=.1,min=0,max=1,step=0.01,description='Xt ($m
 s = widgets.BoundedFloatText(value=.15,min=0,max=1,step=0.01,description='s ($m$):',style={'description_width': 'initial'},disabled=False)
 fins_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='thickness ($m$):',style={'description_width': 'initial'},disabled=False)
 fins_number = widgets.IntText(value=4,description='Number of fins:',style={'description_width': 'initial'},disabled=False)
-fins_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fins material',value = 1780,options = materials.items(),style={'description_width': 'initial'},disabled=False)
+fins_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fins material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 fins_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fins density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 fins_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.01,description='Fins position from tube bottom ($m$):',style={'description_width': 'initial'},disabled=False)
 
 def show_fins_density(change):
-    if change['new'] == -1:
-        fins_density.layout.display = ''
+    if change['new'] == "custom":
         fins_density.value = 0.
+        fins_density.layout.display = ''
     else:
         fins_density.layout.display = 'none'
-        fins_density.value = change['new']
+        fins_density.value = materials[change['new']]
 
 show_fins_density({'new':fins_material.value})
 fins_material.observe(show_fins_density, names='value')
@@ -173,12 +203,35 @@ motor_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.1,descrip
 motor_geometry = widgets.VBox([motor_diameter,motor_position])
 selected_motor = widgets.Dropdown(options = [], description = 'Designation:', style={'description_width': 'initial'}, disabled=False)
 motor_select_text = widgets.Label( value='(Keep this tab opened to ensure you have selected the right motor)', style={'description_width':'initial'})
+motor_ring = widgets.Checkbox(value=True,description='Automatic fixation ring around the motor',disabled=False,indent=True,style={'description_width':'initial'})
+ring_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fixation ring material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
+ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fixation ring density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
+ring_box = widgets.VBox([ring_material,ring_density])
 motor_file = open("./include/widgets/thrustcurve.png", "rb")
 motor_image = motor_file.read()
 motor_wimg = widgets.Image(value=motor_image,format='png', height = 300, width=600)
-motorBox = widgets.VBox([selected_motor,motor_select_text,motor_wimg])
+motorBox = widgets.VBox([selected_motor,motor_select_text,motor_ring,ring_box,motor_wimg])
 
 motor_selection_widget = widgets.Accordion(children=[impulse_class, motor_geometry, motorBox], titles=('Impulse class', 'Geometric parameters', 'Motor selection'), style={'description_width': 'initial'})
+
+def show_ring(change):
+    if change['new']:
+        ring_box.layout.display = ''
+    else:
+        ring_box.layout.display = 'none'
+
+motor_ring.observe(show_ring, names='value')
+
+def show_ring_density(change):
+    if change['new'] == "custom":
+        ring_density.value = 0.
+        ring_density.layout.display = ''
+    else:
+        ring_density.layout.display = 'none'
+        ring_density.value = materials[change['new']]
+
+show_ring_density({'new':ring_material.value})
+ring_material.observe(show_ring_density, names='value')
 
 def thrustcurve(motor_name):
     d=[]
@@ -253,7 +306,7 @@ def create_mass_form():
     mass_length= widgets.BoundedFloatText(value=0.,min=0.,max=1000.,step=.1,description='Mass length ($m$):',style={'description_width': 'initial'},disabled=False)
     mass_outer_radius= widgets.BoundedFloatText(value=0.,min=0.,max=100.,step=.1,description='Mass outer radius ($m$):',style={'description_width': 'initial'},disabled=False)
     mass_inner_radius= widgets.BoundedFloatText(value=0.,min=0.,max=100.,step=.1,description='Mass inner radius ($m$):',style={'description_width': 'initial'},layout={'display':'none'},disabled=False)
-    mass_material = widgets.Dropdown(description = 'Mass material',value = -1,options = materials.items(),style={'description_width': 'initial'},disabled=False)
+    mass_material = widgets.Dropdown(description = 'Mass material',value = "custom",options = textures.items(),style={'description_width': 'initial'},disabled=False)
     mass_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Mass density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
     mass_position= widgets.BoundedFloatText(value=0.,min=0.,max=1000.,step=0.1,description='Mass position form rocket bottom ($m$):',style={'description_width': 'initial'},disabled=False)
 
@@ -270,12 +323,12 @@ def create_mass_form():
         mass_inner_radius.max = change['new']
     
     def show_mass_density(change):
-        if change['new'] == -1:
-            mass_density.layout.display = ''
+        if change['new'] == "custom":
             mass_density.value = 0.
+            mass_density.layout.display = ''
         else:
             mass_density.layout.display = 'none'
-            mass_density.value = change['new']
+            mass_density.value = materials[change['new']]
 
     mass_type.observe(on_type_selected,names='value')
     mass_outer_radius.observe(update_max,names='value')
@@ -284,6 +337,9 @@ def create_mass_form():
     return form
 
 def mass_dict_list():
+    '''
+    Return a list of dict representing additinal masses.
+    '''
     dict_list = []
     for i in range(number_int.value):
         parent = masses_properties.children[i]
@@ -291,11 +347,13 @@ def mass_dict_list():
                 'length':parent.children[1].value,
                 'outer_radius':parent.children[2].value,
                 'inner_radius':parent.children[3].value,
+                'material':parent.children[4].value,
                 'density':parent.children[5].value,
                 'position':parent.children[6].value}
         dict_list.append(dict)
 
     return dict_list
+
 ####################################################
 
 ####################################################
@@ -308,3 +366,36 @@ def find_motor(designation):
         if motor['designation'] == designation:
             return motor
     raise ValueError('Motor not found : wrong motor designation.')
+
+def rocket_dictionary():
+    '''
+    Return a dictionary representing the rocket.
+    '''
+    rocket = {'tube_length':tube_length.value,
+              'tube_radius':tube_radius.value,
+              'tube_thickness':tube_thickness.value,
+              'tube_material':tube_material.value,
+              'tube_density':tube_density.value,
+              'nose_type':nose_type.value,
+              'nose_parameter':nose_parameter.value,
+              'nose_length':nose_length.value,
+              'nose_radius':nose_radius.value,
+              'nose_thickness':nose_thickness.value,
+              'nose_material':nose_material.value,
+              'nose_density':nose_density.value,
+              'fins_Cr':Cr.value,
+              'fins_Ct':Ct.value,
+              'fins_Xt':Xt.value,
+              'fins_s':s.value,
+              'fins_thickness':fins_thickness.value,
+              'fins_number':fins_number.value,
+              'fins_material':fins_material.value,
+              'fins_density':fins_density.value,
+              'fins_position':fins_position.value,
+              'motor':find_motor(selected_motor.value),
+              'motor_position':motor_position.value,
+              'motor_ring':motor_ring.value,
+              'motor_ring_material':ring_material.value,
+              'motor_ring_density':ring_density.value,
+              'additional_masses':mass_dict_list()}
+    return rocket

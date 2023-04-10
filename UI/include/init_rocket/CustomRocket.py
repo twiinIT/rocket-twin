@@ -1,6 +1,6 @@
 import numpy as np
-import include.init_rocket.mesh_creation as mc
-from include.init_rocket.Solid import Solid
+import include.init_rocket.mesh.mesh_creation as mc
+from include.init_rocket.mesh.Solid import Solid
 
 class CustomRocket:
     '''
@@ -12,13 +12,17 @@ class CustomRocket:
         fins (Solid): Fins mesh and the density of their material.
         booster (Solid): The booster of the rocket.
         additional_mass (list(Solid)): List of dict containing mesh for additional masses and their density.
+        textures (list): List of string giving the texture of each component of the rocket.
+        component_number (int): The number of individual component.
     '''
-    def __init__(self, nose, body, fins, booster, additional_mass=[]) -> None:
+    def __init__(self, nose, body, fins, booster, additional_mass=[], textures=[None for _ in range(5)]) -> None:
         self.nose = nose
         self.body = body
         self.fins = fins
         self.booster = booster
         self.additional_mass = additional_mass
+        self.textures = textures
+        self.component_number = 5 + len(additional_mass)
     
     @classmethod
     def fromDict(cls, dict):
@@ -56,7 +60,18 @@ class CustomRocket:
                               pos = dict['motor_position'],
                               density=density)
         
-        additional_mass = []
+        textures = [dict['nose_material'], dict['tube_material'], dict['fins_material'], 'motor']
+
+        if dict['motor_ring']:
+            motor_ring = mc.empty_cylinder(outer_radius = dict['tube_radius'] - dict['tube_thickness'],
+                                           inner_radius = motor['diameter']*1e-3/2,
+                                           height = motor['length']*1e-3,
+                                           pos = dict['motor_position'],
+                                           density = dict['motor_ring_density'])
+            additional_mass = [motor_ring]
+            textures.append(dict['motor_ring_material'])
+        else:
+            additional_mass = []
         mass_list = dict['additional_masses']
         for i in range(len(mass_list)):
             current_mass = mass_list[i]
@@ -72,8 +87,17 @@ class CustomRocket:
                                          pos = current_mass['position'],
                                          density = current_mass['density'])
             additional_mass.append(mass)
+            textures.append(current_mass['material'])
 
-        return cls(nose,body,fins,booster,additional_mass)
+        return cls(nose,body,fins,booster,additional_mass,textures)
+
+
+    def set_textures(self,textures):
+        '''
+        Textures setter.
+        '''
+        assert len(textures) == len(self.component_number), "Textures list must be the same length as the number of component of your rocket. Enter None for unknown textures."
+        self.textures = textures
 
 
     def show(self, method = 'mpl', opened=True, only_ext = True):
@@ -89,24 +113,21 @@ class CustomRocket:
         rocket.show(method=method, opened=opened)
 
 
-    def asList(self):
+    def asList(self, only_ext = False):
         '''
         Return the rocket as a list of its solid components.
         '''
         ls = [self.nose, self.body, self.fins, self.booster]
         ls += self.additional_mass
-        return ls
-    
+        return ls[:3] if only_ext else ls
+
 
     def build(self, only_ext=True):
         '''
         Build the rocket into a unique solid. Only build the exterior of the rocket if only_ext is True.
         '''
-        if only_ext:
-            return Solid.combine(self.asList()[:3])
-        else:
-            return Solid.combine(self.asList())
-    
+        return Solid.combine(self.asList(only_ext))
+
 
     def get_cog(self):
         '''
@@ -118,9 +139,11 @@ class CustomRocket:
             _, vmass, vcog, __ = component.stl_mesh.get_mass_properties_with_density(component.density)
             cog += vmass*vcog
             mass += vmass
-        return cog/mass
+        cog/=mass
+        cog[cog<1e-6]=0. # micrometric precision on the cog
+        return cog
 
-    
+
     def get_mass_properties(self):
         '''
         Get mass properties of the rocket (volume, mass, cog, inertia).
@@ -138,15 +161,22 @@ class CustomRocket:
             mass += tmass
             inertia += tinertia
 
+        inertia[inertia<1e-6]=0.
+
         return volume, mass, cog, inertia
+    
+    def print_mass_properties(self):
+        '''
+        Print and return mass properties.
+        '''
+        volume, mass, cog, inertia = self.get_mass_properties()
+        print("Volume (m^3)                                 = {0}".format(volume))
+        print("Mass   (kg)                                  = {0}".format(mass))
+        print("\n")
+        print("Position of the center of gravity (COG)      = {0}".format(cog))
+        print("\n")
+        print("Inertia matrix expressed at the COG (kg*m^2) = {0}".format(inertia[0,:]))
+        print("                                               {0}".format(inertia[1,:]))
+        print("                                               {0}".format(inertia[2,:]))
 
-
-# dens = 1e3
-# volume, vmass, cog, inertia = rocket.stl_mesh.get_mass_properties_with_density(dens)
-# print("Density (kg/m^3)                        = {0}".format(dens))
-# print("Volume (m^3)                            = {0}".format(volume))
-# print("Mass   (kg)                             = {0}".format(vmass))
-# print("Position of the center of gravity (COG) = {0}".format(cog))
-# print("Inertia matrix at expressed at the COG  = {0}".format(inertia[0,:]))
-# print("                                          {0}".format(inertia[1,:]))
-# print("                                          {0}".format(inertia[2,:]))
+        return volume, mass, cog, inertia

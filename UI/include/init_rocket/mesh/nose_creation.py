@@ -70,6 +70,7 @@ def create_nose(x, y_out, y_prime, L, thick):
 
     return Nose(out_points=out_points, in_points=in_points)
 
+
 # Different equations for nose shape (all nose equation equal 0 at the origin)
 
 def tangent_ogive(x, R, L, thick=.01, C=0):

@@ -3,6 +3,7 @@ from stl import mesh
 from mpl_toolkits import mplot3d
 from matplotlib import pyplot
 import plotly.graph_objects as go
+import pyvista as pv
 
 
 class Solid:
@@ -82,6 +83,22 @@ class Solid:
         return Solid(brute_mesh=brute_mesh, stl_mesh=stl_mesh, plot_brute_mesh=plot_brute_mesh, plot_stl_mesh=plot_stl_mesh, density = mean_density)
     
 
+    def to_vista_mesh(self,opened=False):
+        '''
+        Create and return the pyvista mesh of the solid. opened=True for the opened mesh if available.
+        '''
+        if opened:
+            vertices, faces = self.plot_brute_mesh.vertices, self.plot_brute_mesh.faces
+        else:
+            vertices, faces = self.brute_mesh.vertices, self.brute_mesh.faces
+        faces = np.pad(faces,pad_width=((0,0),(1,0)), mode='constant', constant_values=3)
+
+        mesh = pv.PolyData(vertices, faces)
+        mesh.texture_map_to_plane(inplace=True)
+
+        return mesh
+    
+
     def show(self, method='mpl', opened = True):
         valid_methods = ['mpl', 'go']  # predefined list of valid strings
         assert method in valid_methods, f"Invalid shape function. Valid options are: {', '.join(valid_methods)}"
@@ -141,12 +158,14 @@ class Solid:
 
         figure.show()
 
-    
+
     def get_inertia_wrt(self, point : np.ndarray):
         '''
-        Get matrix of inertia with respect to the specified point [x,y,z].
+        Get matrix of inertia with respect to the specified point [x,y,z] using the parallel axis theorem.
         '''
         volume, vmass, cog, inertia = self.stl_mesh.get_mass_properties_with_density(self.density)
+        cog[cog<1e-10] = 0.
+        inertia[inertia<1e-7] = 0.
         R = point - cog
         E = np.eye(3)
 

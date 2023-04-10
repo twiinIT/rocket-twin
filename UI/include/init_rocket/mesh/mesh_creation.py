@@ -1,7 +1,7 @@
 # Mesh creation
 import numpy as np
-from include.init_rocket.Solid import Solid
-import include.init_rocket.nose_creation as nc
+from include.init_rocket.mesh.Solid import Solid
+import include.init_rocket.mesh.nose_creation as nc
 from stl import mesh
 from scipy.spatial.transform import Rotation as R
 
@@ -69,7 +69,7 @@ def half_cylinder(outer_radius = .5, inner_radius = .49, height = 2, pnum = 25, 
 
     faces = np.array(faces)
 
-    rot = R.from_euler('xyz', [-np.pi/2,0.,0.], degrees=False)
+    rot = R.from_euler('xyz', [np.pi/2,0.,0.], degrees=False)
     vertices = rot.apply(vertices)
 
     brute_mesh = Solid.BruteMesh(vertices=vertices, faces=faces)
@@ -276,7 +276,7 @@ def fins(Cr=.2,Ct=.1, Xt=.1, s=.15, thick=.01,fnum=4, radius=.5, pos=0., density
     plot_total_faces = total_faces[:n_face*num]
 
     # Rotation of plot vertices
-    rot = R.from_euler('xyz', [-np.pi/2,0.,0.],degrees=False)
+    rot = R.from_euler('xyz', [np.pi/2,0.,0.],degrees=False)
     plot_total_vertices = rot.apply(plot_total_vertices)
     
     brute_mesh = Solid.BruteMesh(vertices=total_vertices, faces=total_faces)
@@ -297,7 +297,7 @@ def fins(Cr=.2,Ct=.1, Xt=.1, s=.15, thick=.01,fnum=4, radius=.5, pos=0., density
     return Solid(brute_mesh=brute_mesh, stl_mesh=fins, plot_brute_mesh=plot_brute_mesh, plot_stl_mesh=plot_fins, density = density)
 
 
-def half_nose(nose_obj, Cpnum=10):
+def half_nose(nose_obj, Cpnum=25): # Never used in the code because of face orientation problems
     '''
     Create plotting part of the nose of the rocket.
 
@@ -425,7 +425,7 @@ def half_nose(nose_obj, Cpnum=10):
     faces = np.concatenate((out_faces, in_faces, close_faces))
 
     # Rotate plot vertices
-    rot = R.from_euler('xyz',[-np.pi/2,0.,0.],degrees=False)
+    rot = R.from_euler('xyz',[np.pi/2,0.,0.],degrees=False)
     vertices = rot.apply(vertices)
 
     brute_mesh = Solid.BruteMesh(vertices=vertices, faces=faces)
@@ -438,7 +438,7 @@ def half_nose(nose_obj, Cpnum=10):
     return brute_mesh, stl_nose
 
 
-def nose(shape_function = 'cone', radius=.5, length = .5, curve_param = 0, thick = .1, pos=0, OVpnum = 20, Cpnum=20, density = 1e3):
+def nose(shape_function = 'cone', radius=.5, length = .5, curve_param = 0, thick = .1, pos=0, OVpnum = 25, Cpnum=50, density = 1e3):
     '''
     Create a Solid representing the nose of the rocket.
 
@@ -589,6 +589,6 @@ def nose(shape_function = 'cone', radius=.5, length = .5, curve_param = 0, thick
         for j in range(3):
             nose.vectors[i][j] = vertices[f[j],:]
 
-    plot_brute_mesh, plot_nose = half_nose(nose_points, Cpnum = Cpnum//2)
+    # plot_brute_mesh, plot_nose = half_nose(nose_points, Cpnum = Cpnum//2)
 
-    return Solid(brute_mesh=brute_mesh, stl_mesh=nose, plot_brute_mesh=plot_brute_mesh, plot_stl_mesh=plot_nose, density = density)
+    return Solid(brute_mesh=brute_mesh, stl_mesh=nose, plot_brute_mesh=brute_mesh, plot_stl_mesh=nose, density = density)
