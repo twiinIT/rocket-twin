@@ -7,7 +7,7 @@ class Pressure(System):
     def setup(self):
         
         #System constants
-        self.add_inward('P0', 101325., desc = "Atmospheric Pressure at Sea Level", unit = 'Pa')
+        self.add_inward('P0', 97500., desc = "Atmospheric Pressure at Sea Level", unit = 'Pa')
         self.add_inward('T0', 298., desc = "Temperature at Sea Level", unit = 'K')
         
         #Trajectory inputs

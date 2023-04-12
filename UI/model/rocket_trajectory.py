@@ -20,7 +20,7 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.a_earth.val', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
                                  'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
     period=.1,
 )
@@ -99,7 +99,7 @@ data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 time = np.asarray(data['time'])
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
-a = np.asarray(data['Rocket.a_earth.val'].tolist())
+a = np.asarray(data['Rocket.Dyn.a'].tolist())
 r1 = np.asarray(data['Para.DynPar.r1'].tolist())
 r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
@@ -393,11 +393,15 @@ plt.show()
 # Flight Data
 
 print('\n')
-print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]))
+print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]), "m")
 print('\n')
+#print("Horizontal Position at Apogee: ", np.min(r2[:,0]), 'm')
+#print('\n')
 print("Total Flight Time: ", time[-1], "s")
 print('\n')
 print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
+print('\n')
+print("Lowest Pressure", np.min(pres))
 print('\n')
 
 plt.scatter(time, a[:,0], label = "x-axis Acceleration")
@@ -416,7 +420,7 @@ plt.ylabel("Height (m)")
 plt.show()
 
 plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
-plt.title("Rocket Altitude")
+plt.title("Rocket XZ Trajectory")
 plt.xlabel("Horizontal Displacement (m)")
 plt.ylabel("Height (m)")
 plt.show()
