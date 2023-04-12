@@ -413,11 +413,11 @@ def rocket_from_widgets():
 
     rocket_dict['rocket_volume'] = volume
     rocket_dict['rocket_mass'] = mass
-    rocket_dict['rocket_cog'] = cog
-    rocket_dict['rocket_inertia'] = inertia
+    rocket_dict['rocket_cog'] = cog.tolist()
+    rocket_dict['rocket_inertia'] = inertia.tolist()
 
     # Write the content of the dict in a file that will be passed to the model
     with open("include/init_rocket/rocket_dict.json", "w") as f:
-        json.dump(rocket, f)
+        json.dump(rocket_dict, f)
     
     return rocket
