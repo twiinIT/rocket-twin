@@ -20,14 +20,14 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Kin.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.a_earth.val', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
                                  'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2']),
     period=.1,
 )
 
 #Initial conditions and constants
 
-l = 2 #Rocket's length on the plot
+l = 1 #Rocket's length on the plot
 
 driver.set_scenario(
     init = {
@@ -99,7 +99,7 @@ data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 time = np.asarray(data['time'])
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
-a = np.asarray(data['Rocket.Kin.a'].tolist())
+a = np.asarray(data['Rocket.a_earth.val'].tolist())
 r1 = np.asarray(data['Para.DynPar.r1'].tolist())
 r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
@@ -385,5 +385,38 @@ class Animator:
 
 animator = Animator(simulation_results=df)
 anim = animator.animate()
+plt.show()
+
+
+# =======================================
+# Flight Data
+
+print('\n')
+print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]))
+print('\n')
+print("Total Flight Time: ", time[-1], "s")
+print('\n')
+print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
+print('\n')
+
+plt.scatter(time, a[:,0], label = "x-axis Acceleration")
+plt.scatter(time, a[:,1], label = "y-axis Acceleration")
+plt.scatter(time, a[:,2], label = "z-axis Acceleration")
+plt.title("Rocket Acceleration")
+plt.xlabel("Time (s)")
+plt.ylabel("Acceleration (m/s²)")
+plt.legend()
+plt.show()
+
+plt.plot(time, np.array(r_then_r2)[:,2])
+plt.title("Rocket Altitude")
+plt.xlabel("Time (s)")
+plt.ylabel("Height (m)")
+plt.show()
+
+plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
+plt.title("Rocket Altitude")
+plt.xlabel("Horizontal Displacement (m)")
+plt.ylabel("Height (m)")
 plt.show()
 

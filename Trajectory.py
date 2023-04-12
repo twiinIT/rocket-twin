@@ -17,7 +17,7 @@ class Trajectory(System):
         #Trajectory transients
         self.add_transient('r', der = 'v.val', desc = "Rocket Position")
 
-        self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = 'm')
+        self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = '')
 
         # Rope length of the parachute
         self.add_inward('l0', 1., desc = "Rope rest length", unit = 'm')
@@ -25,7 +25,7 @@ class Trajectory(System):
         #Event
         self.add_event("ParachuteDeployed", trigger='v.val[2] < 0')
         self.add_inward("apogee_time", np.Infinity, unit = "s")
-        self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes .1 second to deploy itself
+        self.add_event("FinallyDeployed", trigger = "time > 9. ") # The parachute takes .1 second to deploy itself
 
         self.add_outward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 

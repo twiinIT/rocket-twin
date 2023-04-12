@@ -125,6 +125,7 @@ sample_wind2 = wind2()
 	
 def get_wind2(alt):
 	alt = int(alt//10) #on a un pas de 10 mètres pour cette fonction
-	return [sample_wind2[0][alt]*np.cos(sample_wind2[1][alt]*np.pi/180), sample_wind2[0][alt]*np.sin(sample_wind2[1][alt]*np.pi/180),0]
+	#return [sample_wind2[0][alt]*np.cos(sample_wind2[1][alt]*np.pi/180), sample_wind2[0][alt]*np.sin(sample_wind2[1][alt]*np.pi/180),0]
+	return [0., 0., 0.]
 
 

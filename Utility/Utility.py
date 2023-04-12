@@ -1,6 +1,6 @@
 import pandas as pd
 
-thrust_data = pd.read_csv("Utility/thrust.txt", header=None)
+thrust_data = pd.read_csv("Utility/thrustPandoraPro24.txt", header=None)
 times = list(thrust_data.iloc[0])
 thrusts = list(thrust_data.iloc[1])
 
