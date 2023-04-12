@@ -15,7 +15,7 @@ class Mass(System):
 
         #Mass outputs
         self.add_outward('I', self.I0_geom*self.m, desc = "Rocket's Inertia Moment")
-        self.add_outward('Dm', (0.16 - 0.084)/1, desc = "Rocket Mass' Rate of Change")
+        self.add_inward('Dm', (0.16 - 0.084)/1, desc = "Rocket Mass' Rate of Change")
         self.add_outward('m_out', 0, desc= "Rocket's mass", unit='kg')
 
 
