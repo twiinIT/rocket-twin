@@ -21,7 +21,7 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
     DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.a_earth.val', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
-                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2']),
+                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
     period=.1,
 )
 
@@ -104,6 +104,7 @@ r1 = np.asarray(data['Para.DynPar.r1'].tolist())
 r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
+pres = np.asarray(data['Atmo.Pres.P'].tolist())
 wind*=8 #on fait x8 pour l'affichage du vent sinon on verra rien
 wind_b = []
 #On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
@@ -418,5 +419,11 @@ plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
 plt.title("Rocket Altitude")
 plt.xlabel("Horizontal Displacement (m)")
 plt.ylabel("Height (m)")
+plt.show()
+
+plt.plot(time, pres)
+plt.title("Pressure over Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Pressure (Pa)")
 plt.show()
 

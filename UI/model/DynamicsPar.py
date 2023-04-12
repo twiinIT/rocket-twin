@@ -19,6 +19,7 @@ class DynamicsPar(System):
         self.add_inward('r_in', np.zeros(3), desc = "Rocket Position", unit = 'm')
         self.add_inward('temp', np.zeros(3), desc = "Temporary velcity", unit = 'm/s')
         self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = 'm')
+        self.add_inward('rho', 1., desc = "Air Density at Rocket's Height", unit = 'kg/m**3')
         self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
         
         self.add_input(AclPort, 'g')
@@ -29,6 +30,7 @@ class DynamicsPar(System):
         #Dynamics outputs
         self.add_outward('a1', np.zeros(3), desc = "Parachute + nosecone Acceleration", unit = 'm/s**2')
         self.add_outward('a2', np.zeros(3), desc = "Rocket - nosecone Acceleration", unit = 'm/s**2')
+        self.add_outward('r2_out', np.zeros(3), desc = "Lower String Position", unit = 'm')
 
         #Transients
         self.add_transient('v1', der='a1')
@@ -41,7 +43,9 @@ class DynamicsPar(System):
         if self.ParaDep == 0:
             return
 
-        Drag = -.5 * self.S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
+        Drag = -.5 * self.rho * self.S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
         d = -self.r2 + self.r1
         self.a1 = -(self.k / self.m1) * (d-self.l0*d/np.linalg.norm(d)) + np.array([0.,0.,-9.8]) + Drag/self.m1
         self.a2 = -(self.k / self.m2) * (-d+self.l0*d/np.linalg.norm(d)) + np.array([0.,0.,-9.8])
+
+        self.r2_out = self.r2
