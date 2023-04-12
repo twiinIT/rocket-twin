@@ -29,7 +29,6 @@ class Coefficients(System):
         self.add_inward('Al', self.S_ref, desc = "Cross section at the bottom of the body", unit = 'm**2')
 
         #Fins' Geometry, check the documentation for explanation
-<<<<<<< HEAD:Aerodynamics/Coefficients.py
         self.add_inward('NFins', 4, desc="Number of fins", unit="")
         self.add_inward('GammaC', 0*np.pi/180, desc = 'Fin mid-chord sweep angle', unit="m")
         self.add_inward('s', 0.1, desc="Span of one fin", unit='m')
@@ -38,16 +37,6 @@ class Coefficients(System):
         self.add_inward('Ct', 0.03, unit = 'm')
         self.add_inward('delta', 0.00, desc="Cant angle", unit = '')
         self.add_inward('tf', 0.002, desc = 'Thickness', unit='m')
-=======
-        self.add_inward('NFins', 3, desc="Number of fins", unit="")
-        self.add_inward('GammaC', 11.3*np.pi/180, desc = 'Fin mid-chord sweep angle', unit="m")
-        self.add_inward('s', 0.05, desc="Span of one fin", unit='m')
-        self.add_inward('Xt', 0.01, unit = 'm')
-        self.add_inward('Cr', 0.06, unit = 'm')
-        self.add_inward('Ct', 0.04, unit = 'm')
-        self.add_inward('delta', 0.0, desc="Cant angle", unit = '')
-        self.add_inward('tf', 0.00456, desc = 'Thickness', unit='m')
->>>>>>> 9ac0da0c6e8e364c9597c582efca4086bf969bed:UI/model/Aerodynamics/Coefficients.py
         
         #Coefficients outwards
         self.add_outward('Cd', 0.7, desc='Drag coefficient', unit='')
