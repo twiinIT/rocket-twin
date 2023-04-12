@@ -400,7 +400,7 @@ def rocket_dictionary():
               'additional_masses':mass_dict_list()}
     
     # Write the content of the dict in a file that will be passed to the model
-    with open("include/init_rocket/rocket_dict.txt", "w") as f:
+    with open("include/init_rocket/rocket_dict.json", "w") as f:
         json.dump(rocket, f)
 
     return rocket
