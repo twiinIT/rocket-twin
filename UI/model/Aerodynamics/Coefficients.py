@@ -21,22 +21,22 @@ class Coefficients(System):
         self.add_input(VelPort, 'v_wind')
 
         # Rocket's Geometry
-        self.add_inward('d', 0.029, desc='Rocket diameter', unit='m')
+        self.add_inward('d', 0.06, desc='Rocket diameter', unit='m')
         self.add_inward('l', -1, desc = "Rocket length", unit = 'm')
-        self.add_inward('ln', 0.1, desc="Length of the cone", unit='m')
+        self.add_inward('ln', 0.15, desc="Length of the cone", unit='m')
         self.add_outward('S_ref', np.pi*(self.d/2)**2, desc="Reference Surface", unit="m**2")
         self.add_inward('A0', 0., desc = "Cross section at the top of the body", unit = 'm**2')
         self.add_inward('Al', self.S_ref, desc = "Cross section at the bottom of the body", unit = 'm**2')
 
         #Fins' Geometry, check the documentation for explanation
-        self.add_inward('NFins', 3, desc="Number of fins", unit="")
-        self.add_inward('GammaC', 11.3*np.pi/180, desc = 'Fin mid-chord sweep angle', unit="m")
-        self.add_inward('s', 0.05, desc="Span of one fin", unit='m')
-        self.add_inward('Xt', 0.01, unit = 'm')
-        self.add_inward('Cr', 0.06, unit = 'm')
-        self.add_inward('Ct', 0.04, unit = 'm')
-        self.add_inward('delta', 0.0, desc="Cant angle", unit = '')
-        self.add_inward('tf', 0.00456, desc = 'Thickness', unit='m')
+        self.add_inward('NFins', 4, desc="Number of fins", unit="")
+        self.add_inward('GammaC', 0*np.pi/180, desc = 'Fin mid-chord sweep angle', unit="m")
+        self.add_inward('s', 0.1, desc="Span of one fin", unit='m')
+        self.add_inward('Xt', 0.03, unit = 'm')
+        self.add_inward('Cr', 0.09, unit = 'm')
+        self.add_inward('Ct', 0.03, unit = 'm')
+        self.add_inward('delta', 0.00, desc="Cant angle", unit = '')
+        self.add_inward('tf', 0.002, desc = 'Thickness', unit='m')
         
         #Coefficients outwards
         self.add_outward('Cd', 0.7, desc='Drag coefficient', unit='')
@@ -210,5 +210,5 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        self.Cd = f(abs(alpha)) * C_D_0
+        self.Cd = 0.6 #f(abs(alpha)) * C_D_0
         # print("Cd", self.Cd)

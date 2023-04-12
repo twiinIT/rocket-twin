@@ -34,6 +34,7 @@ class Dynamics(System):
         #Dynamics outputs
         self.add_outward('a', np.zeros(3), desc = "Rocket Acceleration", unit = 'm/s**2')
         self.add_outward('aa', np.zeros(3), desc = "Rocket Angular Acceleration", unit = '1/s**2')
+        self.add_output(AclPort, 'a_earth')
         
         #Parachute
         self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
@@ -51,6 +52,7 @@ class Dynamics(System):
         self.a[0] = (self.F[0] + self.Fp[0])/self.m + g[0] + av[2]*v[1] - av[1]*v[2]
         self.a[1] = (self.F[1] + self.Fp[1])/self.m + g[1] + av[0]*v[2] - av[2]*v[0]
         self.a[2] = (self.F[2] + self.Fp[2])/self.m + g[2] + av[1]*v[0] - av[0]*v[1]
+        self.a_earth.val = self.a
         
         #Angular acceleration (no momentum associated to thrust)
         self.aa[0] = (self.Mp[0] + self.Ma[0] + (I[1] - I[2])*av[1]*av[2])/I[0] 

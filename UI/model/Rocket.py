@@ -20,7 +20,7 @@ class Rocket(System):
         self.add_input(VelPort, 'v_wind')
         
         #Rocket parameters
-        self.add_inward('l', 0.56, desc='Rocket length', unit='m')
+        self.add_inward('l', 0.834664, desc='Rocket length', unit='m')
 
         #Parachute deployment
         self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
@@ -28,7 +28,7 @@ class Rocket(System):
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang', 'ParaDep'])
         self.add_child(Thrust('Thrust'), pulling=['l'])
-        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'ParaDep'])
+        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'ParaDep', 'a_earth'])
         self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind', 'ParaDep'])
         self.add_child(Mass('Mass'))
         

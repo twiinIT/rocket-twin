@@ -1,6 +1,7 @@
 import ipywidgets as widgets
 import json
 import matplotlib.pyplot as plt
+from include.init_rocket.CustomRocket import CustomRocket
 
 plt.close() # To avoid the code from plotting residual figures
 
@@ -369,7 +370,7 @@ def find_motor(designation):
 
 def rocket_dictionary():
     '''
-    Return a dictionary representing the rocket and write it content in the 'rocket_dict.txt' file.
+    Return a dictionary representing the rocket.
     '''
     rocket = {'tube_length':tube_length.value,
               'tube_radius':tube_radius.value,
@@ -398,9 +399,25 @@ def rocket_dictionary():
               'motor_ring_material':ring_material.value,
               'motor_ring_density':ring_density.value,
               'additional_masses':mass_dict_list()}
-    
+
+    return rocket
+
+def rocket_from_widgets():
+    '''
+    Create a CustomRocket object representing the rocket from its dict, and write it content in 'rocket_dict.json'.
+    '''
+    rocket_dict = rocket_dictionary()
+    rocket = CustomRocket.fromDict(rocket_dict)
+
+    volume, mass, cog, inertia = rocket.get_mass_properties()
+
+    rocket_dict['rocket_volume'] = volume
+    rocket_dict['rocket_mass'] = mass
+    rocket_dict['rocket_cog'] = cog.tolist()
+    rocket_dict['rocket_inertia'] = inertia.tolist()
+
     # Write the content of the dict in a file that will be passed to the model
     with open("include/init_rocket/rocket_dict.json", "w") as f:
-        json.dump(rocket, f)
-
+        json.dump(rocket_dict, f)
+    
     return rocket
