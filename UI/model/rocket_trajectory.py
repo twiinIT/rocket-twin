@@ -55,6 +55,10 @@ init = {
 # rocket_dict parameters
 if LOAD:
     init = {**init, 
+            'Traj.r' : np.array([0,0, rocket_dict['rocket_cog'][0]]),
+            'Para.DynPar.r1' : np.array([0., 0., rocket_dict['rocket_cog'][0]]),
+            'Para.DynPar.r2' : np.array([0., 0., rocket_dict['rocket_cog'][0]]),
+            'Rocket.CG': rocket_dict['rocket_cog'][0],
             'Rocket.l' : l,
             'Rocket.Mass.m' : rocket_dict['rocket_mass']/1000 + rocket_dict['motor']['propWeightG'],
             'Rocket.Mass.m0' : rocket_dict['rocket_mass']/1000 + rocket_dict['motor']['propWeightG'],
@@ -88,15 +92,11 @@ earth.run_drivers()
 # Rocket's trajectory visualisation 
 #==================================
 
-import os
 import numpy as np
-import sympy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 from matplotlib import animation
 from matplotlib.patches import FancyArrowPatch
-from mpl_toolkits.mplot3d import proj3d
 from mpl_toolkits.mplot3d.proj3d import proj_transform
 
 

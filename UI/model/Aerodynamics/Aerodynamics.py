@@ -26,7 +26,7 @@ class Aerodynamics(System):
 
         self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F','rho', 'v_wind', 'ParaDep'])
         self.add_child(Coefficients('Coefs'), pulling=['v_cpa', 'l', 'rho', 'v_wind', 'av', 'ParaDep'])
-        self.add_child(Moments('Moments'), pulling=['Ma', 'ParaDep'])
+        self.add_child(Moments('Moments'), pulling=['Ma', 'ParaDep', 'CG'])
 
         self.connect(self.Coefs, self.Aeroforces, ['Cd', 'N','S_ref'])
         self.connect(self.Coefs, self.Moments, ['Xcp', 'l', 'M', 'Mroll'])

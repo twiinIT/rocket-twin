@@ -11,6 +11,7 @@ class Thrust(System):
 
         #Geometry
         self.add_inward('l', desc = "Rocket length", unit = 'm')
+        self.add_inward('CG', desc='Center of Gravity', unit='m')
 
         #Thrust outputs
         self.add_outward("Fp", np.zeros(3), desc="Thrust Force", unit = 'N')
@@ -23,4 +24,4 @@ class Thrust(System):
         self.Fp = np.array([thrust(self.time), 0, 0])
         rot = R.from_euler('xyz', self.bang)
         self.Fp = rot.apply(self.Fp)
-        self.Mp = np.cross(np.array([- self.l/2, 0, 0]), self.Fp)
+        self.Mp = np.cross(np.array([- self.CG, 0, 0]), self.Fp)
