@@ -5,7 +5,7 @@ from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
 import json
 
-LOAD = True 
+LOAD = False
 
 #Time-step
 dt = 0.05
@@ -28,6 +28,8 @@ driver.add_recorder(
 )
 
 #Initial conditions and constants
+
+l = 2
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
