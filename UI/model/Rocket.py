@@ -29,7 +29,7 @@ class Rocket(System):
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang', 'ParaDep'])
         self.add_child(Thrust('Thrust'), pulling=['l', 'CG'])
-        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'ParaDep', 'a_earth'])
+        self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'ParaDep'])
         self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind', 'ParaDep', 'CG'])
         self.add_child(Mass('Mass'))
         

@@ -23,8 +23,8 @@ class Trajectory(System):
         self.add_inward('l0', 1., desc = "Rope rest length", unit = 'm')
 
         #Event
-        #self.add_event("ParachuteDeployed", trigger='v.val[2] < 0')
-        self.add_event("ParachuteDeployed", trigger = 'time > 9.')
+        self.add_event("ParachuteDeployed", trigger='v.val[2] < 0')
+        # self.add_event("ParachuteDeployed", trigger = 'time > 9.')
         self.add_inward("apogee_time", np.Infinity, unit = "s")
         self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes .1 second to deploy itself
 
