@@ -4,7 +4,6 @@ from Ports import VelPort
 
 import numpy as np
 
-import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 
 
@@ -13,7 +12,7 @@ class Wind(System):
 		self.add_output(VelPort, "v_wind")
 		self.add_inward('r', np.zeros(3), desc='rocket position in earth referential', unit='m')
 		self.add_inward('r1', np.zeros(3), desc='rocket position in earth referential after parachute deployment', unit='m')
-        
+
 		#Parachute
 		self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 

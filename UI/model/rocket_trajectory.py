@@ -15,7 +15,7 @@ earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 70)
+driver.time_interval = (0, 100)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
@@ -77,8 +77,19 @@ if LOAD:
             'Rocket.Aero.Coefs.Cr' : rocket_dict['fins_Cr'],
             'Rocket.Aero.Coefs.Ct' : rocket_dict['fins_Ct'],
             'Rocket.Aero.Coefs.tf' : rocket_dict['fins_thickness'],
+            'Rocket.Aero.Coefs.delta' : rocket_dict['delta'],
 
             'Wind.wind_on' : rocket_dict['wind_on'],
+            # 'Wind.wind_average_speed' : rocket_dict['wind_average_speed'],
+
+            'Para.l0' : rocket_dict['parachute_l0'],
+            'Para.m1' : rocket_dict['parachute_weight'] + rocket_dict['ejected_nose_mass'],
+            'Para.m2' : rocket_dict['rocket_mass'] - rocket_dict['ejected_nose_mass'],
+            'Para.DynPar.S_ref' : rocket_dict['parachute_sref'],
+            'Para.DynPar.Cd' : rocket_dict['parachute_Cd'],
+
+            'Traj.parachute_deploy_method' : 0 if rocket_dict['parachute_deploy_method'] == 'velocity' else 1,
+            'Traj.parachute_deploy_timer' : rocket_dict['parachute_deploy_timer'],
             }
     
 print("Initial parameters", init)
