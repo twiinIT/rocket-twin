@@ -29,13 +29,14 @@ driver.add_recorder(
 
 #Initial conditions and constants
 
-l = 0.834664
-angz = -np.deg2rad(80)
+l = 2
+angz = -np.pi/2
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
         rocket_dict = json.load(f)
     l = rocket_dict['tube_length'] + rocket_dict['nose_length'] #Rocket's length on the plot
+    angz = - rocket_dict['rocket_launch_angle']
     # Load the thrust.txt
     thrust = rocket_dict['motor']['samples']
     with open("model/Utility/thrust.txt", "w") as f:
@@ -64,7 +65,7 @@ if LOAD:
             'Rocket.l' : l,
             'Rocket.Mass.m' : rocket_dict['rocket_mass'],
             'Rocket.Mass.m0' : rocket_dict['rocket_mass'],
-            'Rocket.Mass.Dm' : rocket_dict['motor']['totalWeightG']/thrust[-1][0],
+            'Rocket.Mass.Dm' : rocket_dict['rocket_prop_weight']/thrust[-1][0],
             'Rocket.Mass.lastEngineTime' : thrust[-1][0],
             'Rocket.Mass.I0_geom' : [rocket_dict['rocket_inertia'][i][i] for i in range(3)],
 
@@ -77,14 +78,14 @@ if LOAD:
             'Rocket.Aero.Coefs.Ct' : rocket_dict['fins_Ct'],
             'Rocket.Aero.Coefs.tf' : rocket_dict['fins_thickness'],
 
-            'Rocket.Aero.Coefs.NFins' : rocket_dict['fins_number']
+            'Wind.wind_on' : rocket_dict['wind_on'],
             }
     
 print("Initial parameters", init)
 
 driver.set_scenario(
     init = init,
-    stop='Para.DynPar.r1[2] < -1'
+    stop='Para.DynPar.r2[2] < -1'
     )
 
 
@@ -145,14 +146,36 @@ r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
 pres = np.asarray(data['Atmo.Pres.P'].tolist())
-wind*=8 #on fait x8 pour l'affichage du vent sinon on verra rien
+
+
+# find time i where the parachute appears 
+time_parachute=0
+while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
+    time_parachute+=1
+
+r_then_r2 = []
+for i in range(time_parachute):
+    r_then_r2.append(r[i])
+for i in range(time_parachute,len(r2)):
+    r_then_r2.append(r2[i])
+
+r_then_r2 = np.array(r_then_r2)
+
+# We calculate the mean of the maximum of the trajectory according to the 3 axis
+K = (r_then_r2[:,0].max() + r_then_r2[:,1].max() +r_then_r2[:,2].max())/3 
+
+ratio = K*l/50
+#We then normalize the arrows on the plot
+wind*=2*ratio
 wind_b = []
+for i in range(len(r_then_r2)):
+    wind_b.append([-wind[i][0]/2,-wind[i][1]/2,r_then_r2[i][2]-wind[i][2]])
+
 #On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
 
-#Modélisation de l'axe de la fusée et de sa normale(grossie x5)
-rocket = np.array([l*8,0,0])
-y = np.array([0,l*5,0])
-z = np.array([0,0,l*5])
+rocket = np.array([2*l*ratio,0,0])
+y = np.array([0,l*ratio,0])
+z = np.array([0,0,l*ratio])
 
 indy = []
 indz = []
@@ -186,24 +209,8 @@ indz = np.asarray(indz)
 rt = rock
 
 
-# find time i where the parachute appears 
-time_parachute=0
-while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
-    time_parachute+=1
-
-r_then_r2 = []
-for i in range(time_parachute):
-    r_then_r2.append(r[i])
-for i in range(time_parachute,len(r2)):
-    r_then_r2.append(r2[i])
-
-for i in range(len(r_then_r2)):
-    wind_b.append([-wind[i][0]/2,-wind[i][1]/2,r_then_r2[i][2]-wind[i][2]])
-
 
 propagation_time_history = []
-
-
 i = 0
 for ti in time:
     iteration_results = {'t': ti, 
@@ -339,7 +346,6 @@ class Animator:
         self.ax1.set_zlim3d(z_lims)
         self.draw_xyz_axis(x_lims, y_lims, z_lims)
 
-        t_lims = self.get_limits(['t'], '')
 
 
 
@@ -387,7 +393,7 @@ class Animator:
         else:
             vectors = [vector_arrow_3d(0, 0, 0, row.r2x, row.r2y, row.r2z, 'g'), 
                     #    vector_arrow_3d(0, 0, 0, row.r1x, row.r1y, row.r1z, 'r'), 
-                    vector_arrow_3d(row.r2x, row.r2y, row.r2z, (row.r1x-row.r2x)*30, (row.r1y-row.r2y)*30, (row.r1z-row.r2z)*30, 'r'),
+                    vector_arrow_3d(row.r2x, row.r2y, row.r2z, (row.r1x-row.r2x)*ratio, (row.r1y-row.r2y)*ratio*5, (row.r1z-row.r2z)*ratio*5, 'r'),
                     vector_arrow_3d(row.wind_bx, row.wind_by, row.wind_bz, row.windx, row.windy, row.windz, 'b'),
                     ]
 
@@ -443,15 +449,6 @@ print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
 print('\n')
 print("Lowest Pressure", np.min(pres))
 print('\n')
-
-#plt.scatter(time, a[:,0], label = "x-axis Acceleration")
-#plt.scatter(time, a[:,1], label = "y-axis Acceleration")
-#plt.scatter(time, a[:,2], label = "z-axis Acceleration")
-#plt.title("Rocket Acceleration")
-#plt.xlabel("Time (s)")
-#plt.ylabel("Acceleration (m/s²)")
-#plt.legend()
-#plt.show()
 
 plt.plot(time, np.array(r_then_r2)[:,2])
 plt.title("Rocket Altitude")
