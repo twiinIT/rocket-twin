@@ -19,7 +19,7 @@ class DynamicsPar(System):
         self.add_inward('r_in', np.zeros(3), desc = "Rocket Position", unit = 'm')
         self.add_inward('temp', np.zeros(3), desc = "Temporary velcity", unit = 'm/s')
         self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = 'm')
-        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
         
         self.add_input(AclPort, 'g')
         self.add_input(VelPort, 'v_wind')

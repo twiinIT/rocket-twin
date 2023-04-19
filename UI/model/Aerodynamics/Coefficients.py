@@ -46,7 +46,7 @@ class Coefficients(System):
         self.add_outward('Xcp', 0., desc='CPA position from the rocket top', unit='m')
 
         #Parachute
-        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
     def compute(self):
         if self.ParaDep == 1:

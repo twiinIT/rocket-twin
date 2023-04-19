@@ -23,7 +23,7 @@ class Rocket(System):
         self.add_inward('l', 0.834664, desc='Rocket length', unit='m')
 
         #Parachute deployment
-        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
       
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang', 'ParaDep'])
@@ -43,3 +43,5 @@ class Rocket(System):
  
         #Execution order
         self.exec_order = ['Thrust', 'Mass', 'Aero', 'Dyn', 'Kin']
+
+        

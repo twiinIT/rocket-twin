@@ -15,10 +15,9 @@ class Wind(System):
 		self.add_inward('r1', np.zeros(3), desc='rocket position in earth referential after parachute deployment', unit='m')
         
 		#Parachute
-		self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+		self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
 	def compute(self):
-		print(self.ParaDep)
 		if self.ParaDep == 1:
 			self.v_wind.val = get_wind(self.parent.Para.DynPar.r1[2])
 		else:
