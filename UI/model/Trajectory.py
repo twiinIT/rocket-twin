@@ -23,8 +23,8 @@ class Trajectory(System):
         self.add_inward('l0', 1., desc = "Rope rest length", unit = 'm')
 
         #Event
-        self.add_event("Apogee", trigger='v.val[2] < 0')
-        self.add_event("ParachuteDeployed", trigger = 'time > 9.')
+        self.add_event("Apogee", trigger='v.val[2] < 0') # We can define the deployment of the parachute when the vertical velocity becomes negative
+        self.add_event("ParachuteDeployed", trigger = 'time > 9.') # We can also define the deployment of the parachute after a certain time, 9s here for example
         self.add_inward("apogee_time", np.Infinity, unit = "s")
         self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes .1 second to deploy itself
 
@@ -33,7 +33,7 @@ class Trajectory(System):
 
     def transition(self):
 
-        if self.ParachuteDeployed.present and not self.ParaDepStatus:
+        if self.Apogee.present and not self.ParaDepStatus:
 
             print("___PARACHUTE DEPLOYMENT___")
             print('\n')

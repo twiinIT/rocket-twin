@@ -35,7 +35,7 @@ class Coefficients(System):
         self.add_inward('Cr', 0.09, unit = 'm')
         self.add_inward('Ct', 0.03, unit = 'm')
         self.add_inward('GammaC', np.arctan2(self.Xt + 0.5*(self.Ct - self.Cr), self.s), desc = 'Fin mid-chord sweep angle', unit="m")
-        self.add_inward('delta', 0.00, desc="Cant angle", unit = '')
+        self.add_inward('delta', 0., desc="Cant angle", unit = '')
         self.add_inward('tf', 0.002, desc = 'Thickness', unit='m')
         
         #Coefficients outwards

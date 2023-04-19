@@ -17,8 +17,13 @@ class Wind(System):
 		#Parachute
 		self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
-	def compute(self):
+		self.add_inward('wind_on', True, desc="Is the wind on ?", unit='')
 
+	def compute(self):
+		if not self.wind_on:
+			self.v_wind.val = [0., 0. ,0.]
+			return
+		
 		if self.ParaDep:
 			self.v_wind.val = get_wind(self.parent.Para.DynPar.r1[2])
 		else:
@@ -71,7 +76,6 @@ sample_wind = wind()
 
 def get_wind(alt):
 	alt = int(alt//10) #on a un pas de 10 mètres pour cette fonction
-	return [0., 0., 0.]
-	#return [sample_wind[0][alt]*np.cos(sample_wind[1][alt]*np.pi/180), sample_wind[0][alt]*np.sin(sample_wind[1][alt]*np.pi/180),0]
+	return [sample_wind[0][alt]*np.cos(sample_wind[1][alt]*np.pi/180), sample_wind[0][alt]*np.sin(sample_wind[1][alt]*np.pi/180),0]
 
 
