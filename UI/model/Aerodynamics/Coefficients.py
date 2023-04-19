@@ -70,7 +70,10 @@ class Coefficients(System):
 
         Cna_one_fin = (2*np.pi*self.s**2/self.S_ref )/(1 + (1 + (Beta*self.s**2/(Afin*np.cos(self.GammaC)))**2)**0.5)
         # print("Normal coef for a single fin", Cna_one_fin)
-        Cna_all_fins = Cna_one_fin * self.NFins/2 # TODO The formula becomes false for NFins>5
+
+        normalisation_coeff = [1,1,1,1,0.948,0.913,0.854,0.810,0.750]
+        coeff = normalisation_coeff[self.NFins-1] if self.NFins<=8 else 0.750 #coeff to keep the formula valid for any number of fins
+        Cna_all_fins = Cna_one_fin * self.NFins/2*coeff
         Cna_all_fins = Cna_all_fins * (1 + r/(self.s + r)) # We need to take into account the fin-body interference
         # print("interference factor", (1 + r/(self.s + r)))
         # print("Normal coef for 4 fins", Cna_all_fins)
