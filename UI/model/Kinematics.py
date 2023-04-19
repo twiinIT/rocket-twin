@@ -26,7 +26,7 @@ class Kinematics(System):
         self.add_outward('av_out', np.zeros(3), desc = "Rocket Angular Velocity (pqr)", unit = '1/s')
         
         #Parachute
-        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
     def compute(self):
         # if self.ParaDep == 1:

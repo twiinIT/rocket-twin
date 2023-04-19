@@ -24,7 +24,7 @@ class Rocket(System):
         self.add_inward('CG', self.l/2, desc='Center of Gravity', unit='m')
 
         #Parachute deployment
-        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
       
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang', 'ParaDep'])
@@ -44,3 +44,5 @@ class Rocket(System):
  
         #Execution order
         self.exec_order = ['Thrust', 'Mass', 'Aero', 'Dyn', 'Kin']
+
+        

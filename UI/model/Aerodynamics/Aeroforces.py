@@ -24,7 +24,7 @@ class AeroForces(System):
         self.add_outward('F', np.zeros(3) , desc='Aerodynamic Forces', unit='N')
 
         #Parachute
-        self.add_inward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
     def compute(self):
         if self.ParaDep == 1:

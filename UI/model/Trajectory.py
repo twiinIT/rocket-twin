@@ -28,7 +28,7 @@ class Trajectory(System):
         self.add_inward("apogee_time", np.Infinity, unit = "s")
         self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes .1 second to deploy itself
 
-        self.add_outward_modevar('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_outward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
 
     def transition(self):
 
@@ -86,3 +86,4 @@ class Trajectory(System):
 
     def compute(self):
         self.r_out = self.r
+        # print(self.time)
