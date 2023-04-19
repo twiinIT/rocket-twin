@@ -39,7 +39,7 @@ class Coefficients(System):
         self.add_inward('tf', 0.002, desc = 'Thickness', unit='m')
         
         #Coefficients outwards
-        self.add_outward('Cd', 0.7, desc='Drag coefficient', unit='')
+        self.add_outward('Cd', 0.6, desc='Drag coefficient', unit='')
         self.add_outward('N', 0., desc='Normal force')
         self.add_outward('M', 0., desc='Pitch moment')
         self.add_outward('Mroll', 0., desc='Roll moment')
@@ -209,6 +209,5 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        #self.Cd = f(abs(alpha)) * C_D_0
-        self.Cd = 0.6
+        self.Cd = f(abs(alpha)) * C_D_0
         # print("Cd", self.Cd)

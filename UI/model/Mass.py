@@ -17,10 +17,10 @@ class Mass(System):
         self.add_outward('I', self.I0_geom*self.m, desc = "Rocket's Inertia Moment")
         self.add_inward('Dm', (0.16 - 0.084)/1, desc = "Rocket Mass' Rate of Change")
         self.add_outward('m_out', 0, desc= "Rocket's mass", unit='kg')
-
+        self.add_inward('lastEngineTime', 1., desc="There is no more engine after this time", unit="s")
 
         #Events
-        self.add_event('noMoreEngine', trigger="time >= 0.9") #voir thrust.txt
+        self.add_event('noMoreEngine', trigger="time >= lastEngineTime")
 
         #Transients
         self.add_transient('m', der='-Dm')

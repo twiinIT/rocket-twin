@@ -5,7 +5,7 @@ from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
 import json
 
-LOAD = False
+LOAD = True
 
 #Time-step
 dt = 0.05
@@ -54,7 +54,6 @@ init = {
     'Para.DynPar.v1' : np.array([0,0,0]),
     'Para.DynPar.v2' : np.array([0,0,0]),
 }
-# TODO Add center of gravity !
 # rocket_dict parameters
 if LOAD:
     init = {**init, 
@@ -63,9 +62,10 @@ if LOAD:
             'Para.DynPar.r2' : np.array([0., 0., rocket_dict['rocket_cog'][0]]),
             'Rocket.CG': rocket_dict['rocket_cog'][0],
             'Rocket.l' : l,
-            'Rocket.Mass.m' : rocket_dict['rocket_mass']/1000 + rocket_dict['motor']['propWeightG'],
-            'Rocket.Mass.m0' : rocket_dict['rocket_mass']/1000 + rocket_dict['motor']['propWeightG'],
-            'Rocket.Mass.Dm' : rocket_dict['motor']['propWeightG']/thrust[-1][0],
+            'Rocket.Mass.m' : rocket_dict['rocket_mass'],
+            'Rocket.Mass.m0' : rocket_dict['rocket_mass'],
+            'Rocket.Mass.Dm' : rocket_dict['motor']['totalWeightG']/thrust[-1][0],
+            'Rocket.Mass.lastEngineTime' : thrust[-1][0],
             'Rocket.Mass.I0_geom' : [rocket_dict['rocket_inertia'][i][i] for i in range(3)],
 
             'Rocket.Aero.Coefs.ln' : rocket_dict['nose_length'],
