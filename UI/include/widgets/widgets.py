@@ -274,13 +274,14 @@ motor_selection_widget.observe(set_motor_options, names='selected_index')
 
 # Parachute settings
 rope_rest_length = widgets.BoundedFloatText(value=1.,min=0.,max=1000.,step=.1,description='Rope rest length ($m$):',style={'description_width': 'initial'},disabled=False)
+parachute_weight = widgets.BoundedFloatText(value=.5,min=0.,max=1000.,step=.1,description='Parachute weight ($kg$):',style={'description_width': 'initial'},disabled=False)
 s_ref = widgets.BoundedFloatText(value=.29,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
 parachute_cd = widgets.BoundedFloatText(value=1.75,min=0.,max=100.,step=.1,description='Drag coefficient of parachute:',style={'description_width': 'initial'},disabled=False)
 deploy_method = widgets.Dropdown(options=[('timer','timer'), ('negative vertical velocity','velocity')],value='timer',description='Parachute deployment method:',style={'description_width': 'initial'},disabled=False)
 parachute_timer = widgets.BoundedFloatText(value=60.,min=0.,max=3600.,step=1,description='(*)Deployment time ($s$):',style={'description_width': 'initial'},disabled=False)
 timer_text = widgets.Label(value="(*)Time before parachute deployment in seconds.", style={'description_width':'initial'})
 
-parachute_widget = widgets.VBox([rope_rest_length, s_ref, parachute_cd, deploy_method, parachute_timer])
+parachute_widget = widgets.VBox([rope_rest_length, parachute_weight, s_ref, parachute_cd, deploy_method, parachute_timer])
 
 def show_timer(change):
     if change['new'] == 'timer':
@@ -382,13 +383,13 @@ def mass_dict_list():
 
 
 # Launching parameters
-rocket_mass = widgets.BoundedFloatText(value=0.,min=0.,max=1000000.,step=1.,description="Rocket's total mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-prop_weight = widgets.BoundedFloatText(value=0.,min=0.,max=1000000.,step=1.,description="Propellant mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-nose_mass = widgets.BoundedFloatText(value=0.,min=0.,max=1000000.,step=1.,description="(*)Nose mass ($kg$):",style={'description_width': 'initial'},disabled=False)
+rocket_mass = widgets.BoundedFloatText(value=2.,min=0.,max=1000000.,step=1.,description="Rocket's total mass ($kg$):",style={'description_width': 'initial'},disabled=False)
+prop_weight = widgets.BoundedFloatText(value=.2,min=0.,max=1000000.,step=1.,description="Propellant mass ($kg$):",style={'description_width': 'initial'},disabled=False)
+nose_mass = widgets.BoundedFloatText(value=.5,min=0.,max=1000000.,step=1.,description="(*)Nose mass ($kg$):",style={'description_width': 'initial'},disabled=False)
 nose_mass_text = widgets.Label( value="(*) The mass of the ejected part of the nose when the parachute is deployed.", style={'description_width':'initial'})
-rocket_launch_angle = widgets.BoundedFloatText(value=0.,min=0.,max=180,step=1,description="Rocket's launch angle (deg):",style={'description_width': 'initial'},disabled=False)
+rocket_launch_angle = widgets.BoundedFloatText(value=80.,min=0.,max=180,step=1,description="Rocket's launch angle (deg):",style={'description_width': 'initial'},disabled=False)
 wind_on = widgets.Checkbox(value=True,description='Generate random wind profile at launch time.',disabled=False,indent=True,style={'description_width':'initial'})
-wind_average_speed = widgets.BoundedFloatText(value=0.,min=0.,max=1000.,step=1.,description="Wind average speed ($m/s$):",style={'description_width': 'initial'},disabled=False)
+wind_average_speed = widgets.BoundedFloatText(value=5.,min=0.,max=1000.,step=1.,description="Wind average speed ($m/s$):",style={'description_width': 'initial'},disabled=False)
 
 launching_parameters_widget = widgets.VBox([rocket_mass, prop_weight, nose_mass, nose_mass_text, rocket_launch_angle, wind_on, wind_average_speed])
 
@@ -445,6 +446,7 @@ def rocket_dictionary():
               'motor_ring_material':ring_material.value,
               'motor_ring_density':ring_density.value,
               'parachute_l0':rope_rest_length.value,
+              'parachute_weight':parachute_weight.value,
               'parachute_sref':s_ref.value,
               'parachute_Cd':parachute_cd.value,
               'parachute_deploy_method':deploy_method.value,
