@@ -15,7 +15,7 @@ earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 40)
+driver.time_interval = (0, 70)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
@@ -29,7 +29,8 @@ driver.add_recorder(
 
 #Initial conditions and constants
 
-l = 2
+l = 0.834664
+angz = -np.deg2rad(80)
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -44,9 +45,9 @@ if LOAD:
                 f.write("\n")
 
 init = {
-    'Traj.r' : np.array([0., 0., l/2]),
+    'Traj.r' : np.array([-(l/2)*np.sin(angz), 0., (l/2)*np.cos(angz)]),
     'Rocket.Kin.v' : np.array([0,0,0]),
-    'Rocket.Kin.ar' : np.array([0, -np.pi/2 + 0.2, 0]),
+    'Rocket.Kin.ar' : np.array([0, angz, 0]),
     'Rocket.Kin.av' : np.zeros(3),
     'Para.DynPar.r1' : np.array([0., 0., l/2]),
     'Para.DynPar.r2' : np.array([0., 0., l/2]),
@@ -443,14 +444,14 @@ print('\n')
 print("Lowest Pressure", np.min(pres))
 print('\n')
 
-plt.scatter(time, a[:,0], label = "x-axis Acceleration")
-plt.scatter(time, a[:,1], label = "y-axis Acceleration")
-plt.scatter(time, a[:,2], label = "z-axis Acceleration")
-plt.title("Rocket Acceleration")
-plt.xlabel("Time (s)")
-plt.ylabel("Acceleration (m/s²)")
-plt.legend()
-plt.show()
+#plt.scatter(time, a[:,0], label = "x-axis Acceleration")
+#plt.scatter(time, a[:,1], label = "y-axis Acceleration")
+#plt.scatter(time, a[:,2], label = "z-axis Acceleration")
+#plt.title("Rocket Acceleration")
+#plt.xlabel("Time (s)")
+#plt.ylabel("Acceleration (m/s²)")
+#plt.legend()
+#plt.show()
 
 plt.plot(time, np.array(r_then_r2)[:,2])
 plt.title("Rocket Altitude")

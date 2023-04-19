@@ -209,5 +209,6 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        self.Cd = f(abs(alpha)) * C_D_0
+        #self.Cd = f(abs(alpha)) * C_D_0
+        self.Cd = 0.6
         # print("Cd", self.Cd)

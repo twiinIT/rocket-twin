@@ -23,8 +23,8 @@ class Trajectory(System):
         self.add_inward('l0', 1., desc = "Rope rest length", unit = 'm')
 
         #Event
-        self.add_event("ParachuteDeployed", trigger='v.val[2] < 0')
-        # self.add_event("ParachuteDeployed", trigger = 'time > 9.')
+        self.add_event("Apogee", trigger='v.val[2] < 0')
+        self.add_event("ParachuteDeployed", trigger = 'time > 9.')
         self.add_inward("apogee_time", np.Infinity, unit = "s")
         self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes .1 second to deploy itself
 
@@ -36,6 +36,7 @@ class Trajectory(System):
         if self.ParachuteDeployed.present and not self.ParaDepStatus:
 
             print("___PARACHUTE DEPLOYMENT___")
+            print('\n')
             self.apogee_time = self.time
             DynPar = self.parent.Para.DynPar
             DynPar.r1 = self.r
@@ -46,8 +47,22 @@ class Trajectory(System):
             rotation = R.from_euler('xyz', self.ang, degrees=False)
             vectEarth = rotation.apply(l0)
             DynPar.r1 = DynPar.r1 + vectEarth
-            print("coordinates (1,2) at apogee", DynPar.r1, DynPar.r2)
-            print("velocity (1,2) at apogee", DynPar.v1, DynPar.v2)
+            #print("coordinates (1,2) at apogee", DynPar.r1, DynPar.r2)
+            #print("velocity (1,2) at apogee", DynPar.v1, DynPar.v2)
+            #print('Apogee time', self.time)
+
+            print("Point 1 X Coordinate at Deployment: ", DynPar.r1[0], 'm')
+            print('\n')
+            print("Point 1 Y Coordinate at Deployment: ", DynPar.r1[1], 'm')
+            print('\n')
+            print("Point 1 Z Coordinate at Deployment: ", DynPar.r1[2], 'm')
+            print('\n')
+            print("Point 2 X Coordinate at Deployment: ", DynPar.r2[0], 'm')
+            print('\n')
+            print("Point 2 Y Coordinate at Deployment: ", DynPar.r2[1], 'm')
+            print('\n')
+            print("Point 2 Z Coordinate at Deployment: ", DynPar.r2[2], 'm')
+            print('\n')
             print("___PARACHUTE DEPLOYMENT___")
             
         
