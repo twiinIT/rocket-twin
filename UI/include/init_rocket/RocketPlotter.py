@@ -84,7 +84,6 @@ class RocketPlotter():
             plotter.add_mesh(mesh, show_edges=False, texture=tex, color=color, metallic=0.8)
 
         plotter.add_axes(interactive=True)
-        plotter.add_point_labels([0.5,0.,0.],['cog'])
         plotter.show(jupyter_backend = 'pythreejs')
 
 

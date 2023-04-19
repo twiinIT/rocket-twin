@@ -1,6 +1,7 @@
 import ipywidgets as widgets
 import json
 import matplotlib.pyplot as plt
+import numpy as np
 from include.init_rocket.CustomRocket import CustomRocket
 
 plt.close() # To avoid the code from plotting residual figures
@@ -355,6 +356,13 @@ def mass_dict_list():
 
     return dict_list
 
+
+rocket_mass = widgets.BoundedFloatText(value=0.,min=0.,max=1000000.,step=1.,description="Rocket's total mass ($kg$):",style={'description_width': 'initial'},disabled=False)
+rocket_launch_angle = widgets.BoundedFloatText(value=0.,min=0.,max=np.pi,step=np.pi/12,description="Rocket's launch angle (rad):",style={'description_width': 'initial'},disabled=False)
+wind_on = widgets.Checkbox(value=True,description='Generate random wind profile at launch time.',disabled=False,indent=True,style={'description_width':'initial'})
+
+launching_parameters_widget = widgets.VBox([rocket_mass, rocket_launch_angle, wind_on])
+
 ####################################################
 
 ####################################################
@@ -398,7 +406,9 @@ def rocket_dictionary():
               'motor_ring':motor_ring.value,
               'motor_ring_material':ring_material.value,
               'motor_ring_density':ring_density.value,
-              'additional_masses':mass_dict_list()}
+              'additional_masses':mass_dict_list(),
+              'rocket_mass':rocket_mass.value
+              }
 
     return rocket
 
@@ -412,7 +422,7 @@ def rocket_from_widgets():
     volume, mass, cog, inertia = rocket.get_mass_properties()
 
     rocket_dict['rocket_volume'] = volume
-    rocket_dict['rocket_mass'] = mass
+    # rocket_dict['rocket_mass'] = mass ### For now the mass is passed as the mass entered by the user in the mass user
     rocket_dict['rocket_cog'] = cog.tolist()
     rocket_dict['rocket_inertia'] = inertia.tolist()
 

@@ -141,16 +141,15 @@ class CustomRocket:
             mass += vmass
         cog/=mass
         cog[cog<1e-6]=0. # micrometric precision on the cog
-        return cog
+        return cog, mass
 
 
     def get_mass_properties(self):
         '''
         Get mass properties of the rocket (volume, mass, cog, inertia).
         '''
-        cog = self.get_cog()
+        cog, mass = self.get_cog()
         inertia = np.zeros((3,3))
-        mass = 0.
         volume = 0.
         rocket = self.asList()
 
@@ -158,7 +157,6 @@ class CustomRocket:
             tvolume, tmass, tinertia = component.get_inertia_wrt(cog)
 
             volume += tvolume
-            mass += tmass
             inertia += tinertia
 
         inertia[inertia<1e-6]=0.
