@@ -17,8 +17,5 @@ pip install -r requirements.txt
 
 ## How to use
 
-In order to use the graphic interface, just move to the UI directory
-```bash
-cd UI
-```
-and browse the
+In order to use the graphic interface, just move to the UI directory 
+and browse the jupyter notebook `user_interface.ipynb`.
