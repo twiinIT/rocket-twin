@@ -359,7 +359,7 @@ def mass_dict_list():
 
 rocket_mass = widgets.BoundedFloatText(value=0.,min=0.,max=1000000.,step=1.,description="Rocket's total mass ($kg$):",style={'description_width': 'initial'},disabled=False)
 prop_weight = widgets.BoundedFloatText(value=0.,min=0.,max=1000000.,step=1.,description="Propellant mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-rocket_launch_angle = widgets.BoundedFloatText(value=0.,min=0.,max=np.pi,step=np.pi/12,description="Rocket's launch angle (rad):",style={'description_width': 'initial'},disabled=False)
+rocket_launch_angle = widgets.BoundedFloatText(value=0.,min=0.,max=180,step=1,description="Rocket's launch angle (deg):",style={'description_width': 'initial'},disabled=False)
 wind_on = widgets.Checkbox(value=True,description='Generate random wind profile at launch time.',disabled=False,indent=True,style={'description_width':'initial'})
 
 launching_parameters_widget = widgets.VBox([rocket_mass, prop_weight, rocket_launch_angle, wind_on])
@@ -410,6 +410,7 @@ def rocket_dictionary():
               'additional_masses':mass_dict_list(),
               'rocket_mass':rocket_mass.value,
               'rocket_prop_weight':prop_weight.value,
+              'rocket_launch_angle':rocket_launch_angle.value*np.pi/180,
               'wind_on':wind_on.value
               }
 
