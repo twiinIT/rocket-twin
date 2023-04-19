@@ -278,7 +278,7 @@ parachute_weight = widgets.BoundedFloatText(value=.5,min=0.,max=1000.,step=.1,de
 s_ref = widgets.BoundedFloatText(value=.29,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
 parachute_cd = widgets.BoundedFloatText(value=1.75,min=0.,max=100.,step=.1,description='Drag coefficient of parachute:',style={'description_width': 'initial'},disabled=False)
 deploy_method = widgets.Dropdown(options=[('timer','timer'), ('negative vertical velocity','velocity')],value='timer',description='Parachute deployment method:',style={'description_width': 'initial'},disabled=False)
-parachute_timer = widgets.BoundedFloatText(value=60.,min=0.,max=3600.,step=1,description='(*)Deployment time ($s$):',style={'description_width': 'initial'},disabled=False)
+parachute_timer = widgets.BoundedFloatText(value=10.,min=0.,max=3600.,step=1,description='(*)Deployment time ($s$):',style={'description_width': 'initial'},disabled=False)
 timer_text = widgets.Label(value="(*)Time before parachute deployment in seconds.", style={'description_width':'initial'})
 
 parachute_widget = widgets.VBox([rope_rest_length, parachute_weight, s_ref, parachute_cd, deploy_method, parachute_timer])
