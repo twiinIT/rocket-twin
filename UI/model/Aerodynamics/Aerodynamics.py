@@ -22,7 +22,7 @@ class Aerodynamics(System):
         self.add_outward('Ma', np.zeros(3), desc = "Aerodynamics Moments", unit = 'N*m')
                 
         #Parachute
-        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
         self.add_child(AeroForces('Aeroforces'), pulling=['v_cpa', 'F','rho', 'v_wind', 'ParaDep'])
         self.add_child(Coefficients('Coefs'), pulling=['v_cpa', 'l', 'rho', 'v_wind', 'av', 'ParaDep'])

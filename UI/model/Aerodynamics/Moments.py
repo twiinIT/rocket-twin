@@ -20,10 +20,10 @@ class Moments(System):
         self.add_outward('Ma', np.zeros(3) , desc='Aerodynamic Moments', unit='N*m')
 
         #Parachute
-        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
     def compute(self):
-        if self.ParaDep == 1:
+        if self.ParaDep:
             return
 
         # Lever arm technique

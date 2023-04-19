@@ -28,11 +28,12 @@ class Trajectory(System):
         self.add_inward("apogee_time", np.Infinity, unit = "s")
         self.add_event("FinallyDeployed", trigger = "time > apogee_time + .1 ") # The parachute takes .1 second to deploy itself
 
-        self.add_outward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDepStatus', False, desc = "Parachute Deployed", unit = '')
+        self.add_outward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
     def transition(self):
 
-        if self.ParachuteDeployed.present and self.ParaDep == 0:
+        if self.ParachuteDeployed.present and not self.ParaDepStatus:
 
             print("___PARACHUTE DEPLOYMENT___")
             self.apogee_time = self.time
@@ -52,9 +53,9 @@ class Trajectory(System):
         
         if self.FinallyDeployed.present:
             print("Parachute fully deployed !")
-            self.ParaDep = 1
+            self.ParaDepStatus = True
 
 
     def compute(self):
         self.r_out = self.r
-        # print(self.time)
+        self.ParaDep = self.ParaDepStatus

@@ -15,7 +15,7 @@ class Pressure(System):
 
         #Parachute inputs
         self.add_inward('r2_in', np.zeros(3), desc = "Lower String's Position", unit = 'm')
-        self.add_inward_modevar('ParaDep', 1., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
         
         #Pressure outputs
         self.add_outward('P', 101325., desc = "Atmospheric Pressure at Rocket's Height", unit = 'Pa')
@@ -23,7 +23,7 @@ class Pressure(System):
     def compute(self):
         #Linear temperature evolution in the atmosphere. Formula found on wikipedia
         #The typical temperature gradient is -0.0065 in the troposphere
-        if self.ParaDep == 0:
+        if not self.ParaDep:
             self.P = self.P0 * (1 - (0.0065 * self.r_in[2])/self.T0)**5.226
         else:
             self.P = self.P0 * (1 - (0.0065 * self.r2_in[2])/self.T0)**5.226

@@ -8,7 +8,7 @@ import numpy as np
 earth = Earth("earth")
 
 l = 10 #Rocket's length on the plot
-dt = 0.05 #Time-step
+dt = 0.1 #Time-step
 
 
 from cosapp.utils.distributions import Normal
@@ -34,7 +34,7 @@ def run_analysis(syst, draws=10, linear=True):
         'Para.DynPar.r2' : np.array([0., 0., l/2]),
         'Para.DynPar.v1' : np.array([0,0,0]),
         'Para.DynPar.v2' : np.array([0,0,0]),
-        'Rocket.ParaDep': 0
+        'Traj.ParaDepStatus': False
     },
     stop='Para.DynPar.r1[2] < -1'
     )

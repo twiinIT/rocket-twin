@@ -20,7 +20,7 @@ class DynamicsPar(System):
         self.add_inward('temp', np.zeros(3), desc = "Temporary velcity", unit = 'm/s')
         self.add_inward('ang', np.zeros(3), desc = "Rocket angular position", unit = 'm')
         self.add_inward('rho', 1., desc = "Air Density at Rocket's Height", unit = 'kg/m**3')
-        self.add_inward('ParaDep', 0., desc = "Parachute Deployed", unit = '')
+        self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
         
         self.add_input(AclPort, 'g')
         self.add_input(VelPort, 'v_wind')
@@ -40,7 +40,7 @@ class DynamicsPar(System):
 
         
     def compute(self):
-        if self.ParaDep == 0:
+        if not self.ParaDep:
             return
 
         Drag = -.5 * self.rho * self.S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 

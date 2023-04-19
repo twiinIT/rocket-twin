@@ -21,18 +21,20 @@ class Earth(System):
         self.add_child(Parachute('Para'))
         
 
+        
+        self.connect(self.Traj, self.Grav, {'r_out' : 'r_in'})
+        self.connect(self.Traj, self.Atmo, {'r_out' : 'r_in', 'ParaDep' : 'ParaDep'})
+        self.connect(self.Traj, self.Wind, {'r_out' : 'r', 'ParaDep' : 'ParaDep'})
+        self.connect(self.Traj, self.Para, {'r_out' : 'r_in', 'ParaDep' : 'ParaDep', 'l0' : 'l0'})
+
         self.connect(self.Rocket, self.Traj, {'v_out' : 'v', 'Kin_ang' : 'ang', 'ParaDep' : 'ParaDep'})
         self.connect(self.Rocket, self.Grav, ['g'])
-        self.connect(self.Traj, self.Grav, {'r_out' : 'r_in'})
-        self.connect(self.Traj, self.Atmo, {'r_out' : 'r_in'})
-        self.connect(self.Traj, self.Wind, {'r_out' : 'r', 'ParaDep' : 'ParaDep'})
         self.connect(self.Wind, self.Rocket, ['v_wind'])
         self.connect(self.Atmo, self.Rocket, ['rho'])
         self.connect(self.Para, self.Grav, ['g'])
         self.connect(self.Rocket, self.Para, {'v_out' : 'v_in'})
-        self.connect(self.Traj, self.Para, {'r_out' : 'r_in', 'ParaDep' : 'ParaDep', 'l0' : 'l0'})
         self.connect(self.Wind, self.Para, ['v_wind'])
-        self.connect(self.Atmo, self.Para, {'ParaDep' : 'ParaDep', 'r2_in' : 'r2_out', 'rho' : 'rho'})
+        self.connect(self.Atmo, self.Para, {'r2_in' : 'r2_out', 'rho' : 'rho'})
 
         #Execution order
-        self.exec_order = ['Grav', 'Atmo', 'Rocket', 'Traj', 'Wind', 'Para']
+        self.exec_order = ['Traj', 'Grav', 'Atmo', 'Rocket', 'Wind', 'Para']
