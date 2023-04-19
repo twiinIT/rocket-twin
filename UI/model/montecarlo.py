@@ -8,7 +8,7 @@ import numpy as np
 earth = Earth("earth")
 
 l = 10 #Rocket's length on the plot
-dt = 0.1 #Time-step
+dt = 0.05 #Time-step
 
 
 from cosapp.utils.distributions import Normal

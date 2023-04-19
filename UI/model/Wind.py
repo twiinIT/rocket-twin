@@ -18,8 +18,6 @@ class Wind(System):
 		self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
 	def compute(self):
-		
-		print(self.time, ": ", self.ParaDep)
 
 		if self.ParaDep:
 			self.v_wind.val = get_wind(self.parent.Para.DynPar.r1[2])
