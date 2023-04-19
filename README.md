@@ -1,6 +1,8 @@
 # rocket-twin - PSC - X rocket
 
-rocket-twin is 
+rocket-twin is a 6 degree of freedom digital-twin of a rocket. You can create a rocket interactively through a jupyter notebook, visualize it and plot its flight trajectory.
+
+This library was built with CoSApp, an open source framework that allows to simulate complex systems. You can read more about it [here](https://cosapp.readthedocs.io/en/latest/).
 
 ## Getting Started
 
