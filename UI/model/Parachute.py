@@ -11,4 +11,4 @@ class Parachute(System):
         self.add_inward('m2', desc = "Mass of rocket - nosecone", unit = 'kg')
 
         #Rocket children
-        self.add_child(DynamicsPar('DynPar'), pulling = ['g', 'v_wind', 'm1', 'm2', 'l0', 'k', 'r_in', 'v_in', 'ParaDep'])
+        self.add_child(DynamicsPar('DynPar'), pulling = ['g', 'v_wind', 'm1', 'm2', 'l0', 'k', 'r_in', 'v_in', 'ParaDep', 'r2_out', 'rho'])

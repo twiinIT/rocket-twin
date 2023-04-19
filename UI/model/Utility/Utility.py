@@ -4,8 +4,8 @@ import os
 current_path = os.getcwd()
 assert current_path.endswith("UI") , f"Move to rocket-twin\\UI in order to run the model. You are now at {current_path}"
 
-thrust_data = pd.read_csv("model/Utility/thrustPandoraPro24.txt", header=None)
-times = list(thrust_data.iloc[0])
+thrust_data = pd.read_csv("model/Utility/thrust.txt", header=None)
+times = list(thrust_data.iloc[0]) 
 thrusts = list(thrust_data.iloc[1])
 
 def mean(x, y, fx, fy, t):

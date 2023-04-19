@@ -30,11 +30,11 @@ class Coefficients(System):
 
         #Fins' Geometry, check the documentation for explanation
         self.add_inward('NFins', 4, desc="Number of fins", unit="")
-        self.add_inward('GammaC', 0*np.pi/180, desc = 'Fin mid-chord sweep angle', unit="m")
         self.add_inward('s', 0.1, desc="Span of one fin", unit='m')
         self.add_inward('Xt', 0.03, unit = 'm')
         self.add_inward('Cr', 0.09, unit = 'm')
         self.add_inward('Ct', 0.03, unit = 'm')
+        self.add_inward('GammaC', np.arctan2(self.Xt + 0.5*(self.Ct - self.Cr), self.s), desc = 'Fin mid-chord sweep angle', unit="m")
         self.add_inward('delta', 0.00, desc="Cant angle", unit = '')
         self.add_inward('tf', 0.002, desc = 'Thickness', unit='m')
         
@@ -51,14 +51,13 @@ class Coefficients(System):
     def compute(self):
         if self.ParaDep == 1:
             return
-        
+                
         self.v_cpa += self.v_wind.val 
 
         v_norm = np.linalg.norm(self.v_cpa)
 
         alpha = np.arccos(self.v_cpa[0]/v_norm) if v_norm>0.1 else 0 #angle d'attaque
 
-        #TODO -v_wind
         M = v_norm / 340.29 # Mach number
         Beta = np.sqrt(abs(M**2-1)) #In our case, we will almost always have a subsonic flight with M<1
 
@@ -101,7 +100,7 @@ class Coefficients(System):
         # print(f'{Cm=}')
 
         self.N = 0.5*Cn*self.rho*v_norm**2*self.S_ref
-        self.M = 0.5*Cm*self.rho*v_norm**2*self.S_ref*self.d
+        self.M = 0.5*Cm*self.rho*v_norm**2*self.S_ref*self.d # TODO : Finish the calculation by taking into account the moment induced by the fins. It is not mandatory right now, because the moment is calculated by a lever arm technique.
           
         # Parameters for Roll Moment.
         # Documented at: https://github.com/RocketPy-Team/RocketPy/blob/master/docs/technical/aerodynamics/Roll_Equations.pdf
@@ -210,5 +209,5 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        self.Cd = 0.6 #f(abs(alpha)) * C_D_0
+        self.Cd = f(abs(alpha)) * C_D_0
         # print("Cd", self.Cd)

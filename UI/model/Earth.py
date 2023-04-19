@@ -32,6 +32,7 @@ class Earth(System):
         self.connect(self.Rocket, self.Para, {'v_out' : 'v_in'})
         self.connect(self.Traj, self.Para, {'r_out' : 'r_in', 'ParaDep' : 'ParaDep', 'l0' : 'l0'})
         self.connect(self.Wind, self.Para, ['v_wind'])
+        self.connect(self.Atmo, self.Para, {'ParaDep' : 'ParaDep', 'r2_in' : 'r2_out', 'rho' : 'rho'})
 
         #Execution order
         self.exec_order = ['Grav', 'Atmo', 'Rocket', 'Traj', 'Wind', 'Para']

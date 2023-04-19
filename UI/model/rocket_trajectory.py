@@ -3,7 +3,9 @@ import numpy as np
 from cosapp.drivers import RungeKutta, NonLinearSolver
 from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
+import json
 
+LOAD = False
 
 #Time-step
 dt = 0.05
@@ -20,26 +22,67 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.a_earth.val', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
-                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2']),
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
     period=.1,
 )
 
 #Initial conditions and constants
 
-l = 1 #Rocket's length on the plot
+l = 2
+
+if LOAD:
+    with open("./include/init_rocket/rocket_dict.json", "r") as f:
+        rocket_dict = json.load(f)
+    l = rocket_dict['tube_length'] + rocket_dict['nose_length'] #Rocket's length on the plot
+    # Load the thrust.txt
+    thrust = rocket_dict['motor']['samples']
+    with open("model/Utility/thrust.txt", "w") as f:
+        for i in range(len(thrust[0])):
+            f.write(", ".join([str(point[i]) for point in thrust]))
+            if i < len(thrust[0]) - 1:
+                f.write("\n")
+
+init = {
+    'Traj.r' : np.array([0., 0., l/2]),
+    'Rocket.Kin.v' : np.array([0,0,0]),
+    'Rocket.Kin.ar' : np.array([0, -np.pi/2 + 0.2, 0]),
+    'Rocket.Kin.av' : np.zeros(3),
+    'Para.DynPar.r1' : np.array([0., 0., l/2]),
+    'Para.DynPar.r2' : np.array([0., 0., l/2]),
+    'Para.DynPar.v1' : np.array([0,0,0]),
+    'Para.DynPar.v2' : np.array([0,0,0]),
+}
+# TODO Add center of gravity !
+# rocket_dict parameters
+if LOAD:
+    init = {**init, 
+            'Traj.r' : np.array([0,0, rocket_dict['rocket_cog'][0]]),
+            'Para.DynPar.r1' : np.array([0., 0., rocket_dict['rocket_cog'][0]]),
+            'Para.DynPar.r2' : np.array([0., 0., rocket_dict['rocket_cog'][0]]),
+            'Rocket.CG': rocket_dict['rocket_cog'][0],
+            'Rocket.l' : l,
+            'Rocket.Mass.m' : rocket_dict['rocket_mass']/1000 + rocket_dict['motor']['propWeightG'],
+            'Rocket.Mass.m0' : rocket_dict['rocket_mass']/1000 + rocket_dict['motor']['propWeightG'],
+            'Rocket.Mass.Dm' : rocket_dict['motor']['propWeightG']/thrust[-1][0],
+            'Rocket.Mass.I0_geom' : [rocket_dict['rocket_inertia'][i][i] for i in range(3)],
+
+            'Rocket.Aero.Coefs.ln' : rocket_dict['nose_length'],
+            'Rocket.Aero.Coefs.d' : 2*rocket_dict['tube_radius'],
+            'Rocket.Aero.Coefs.NFins' : rocket_dict['fins_number'],
+            'Rocket.Aero.Coefs.s' : rocket_dict['fins_s'],
+            'Rocket.Aero.Coefs.Xt' : rocket_dict['fins_Xt'],
+            'Rocket.Aero.Coefs.Cr' : rocket_dict['fins_Cr'],
+            'Rocket.Aero.Coefs.Ct' : rocket_dict['fins_Ct'],
+            'Rocket.Aero.Coefs.tf' : rocket_dict['fins_thickness'],
+
+            'Rocket.Aero.Coefs.NFins' : rocket_dict['fins_number']
+            }
+    
+print("Initial parameters", init)
 
 driver.set_scenario(
-    init = {
-        'Traj.r' : np.array([0., 0., l/2]),
-        'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + 0.2, 0]),
-        'Rocket.Kin.av' : np.zeros(3),
-        'Para.DynPar.r1' : np.array([0., 0., l/2]), #(should be l because the parachute is at the tip of the rocket)
-        'Para.DynPar.r2' : np.array([0., 0., l/2]),
-        'Para.DynPar.v1' : np.array([0,0,0]),
-        'Para.DynPar.v2' : np.array([0,0,0])
-    },
+    init = init,
     stop='Para.DynPar.r1[2] < -1'
     )
 
@@ -51,15 +94,11 @@ earth.run_drivers()
 # Rocket's trajectory visualisation 
 #==================================
 
-import os
 import numpy as np
-import sympy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 from matplotlib import animation
 from matplotlib.patches import FancyArrowPatch
-from mpl_toolkits.mplot3d import proj3d
 from mpl_toolkits.mplot3d.proj3d import proj_transform
 
 
@@ -99,11 +138,12 @@ data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 time = np.asarray(data['time'])
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
-a = np.asarray(data['Rocket.a_earth.val'].tolist())
+a = np.asarray(data['Rocket.Dyn.a'].tolist())
 r1 = np.asarray(data['Para.DynPar.r1'].tolist())
 r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
+pres = np.asarray(data['Atmo.Pres.P'].tolist())
 wind*=8 #on fait x8 pour l'affichage du vent sinon on verra rien
 wind_b = []
 #On affiche le vecteur vent a l'origine du repère et à la hauteur où est la fusée (le vent ne dépend pas du temps)
@@ -392,11 +432,15 @@ plt.show()
 # Flight Data
 
 print('\n')
-print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]))
+print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]), "m")
 print('\n')
+#print("Horizontal Position at Apogee: ", np.min(r2[:,0]), 'm')
+#print('\n')
 print("Total Flight Time: ", time[-1], "s")
 print('\n')
 print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
+print('\n')
+print("Lowest Pressure", np.min(pres))
 print('\n')
 
 plt.scatter(time, a[:,0], label = "x-axis Acceleration")
@@ -415,8 +459,14 @@ plt.ylabel("Height (m)")
 plt.show()
 
 plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
-plt.title("Rocket Altitude")
+plt.title("Rocket XZ Trajectory")
 plt.xlabel("Horizontal Displacement (m)")
 plt.ylabel("Height (m)")
+plt.show()
+
+plt.plot(time, pres)
+plt.title("Pressure over Time")
+plt.xlabel("Time (s)")
+plt.ylabel("Pressure (Pa)")
 plt.show()
 
