@@ -122,7 +122,7 @@ nose_parameter_desc = widgets.Label( value='')
 nose_length = widgets.BoundedFloatText(value=.5,min=0,max=50.0,step=0.1,description='Nose length ($m$):',style={'description_width': 'initial'},disabled=False)
 nose_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Nose radius ($m$):',style={'description_width': 'initial'},disabled=False)
 nose_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Nose thickness ($m$):',style={'description_width': 'initial'},disabled=False)
-nose_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Nose material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
+nose_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Nose material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 nose_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Nose density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 
 def show_nose_density(change):
@@ -206,8 +206,8 @@ motor_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.1,descrip
 motor_geometry = widgets.VBox([motor_diameter,motor_position])
 selected_motor = widgets.Dropdown(options = [], description = 'Designation:', style={'description_width': 'initial'}, disabled=False)
 motor_select_text = widgets.Label( value='(Keep this tab opened to ensure you have selected the right motor)', style={'description_width':'initial'})
-motor_ring = widgets.Checkbox(value=True,description='Automatic fixation ring around the motor',disabled=False,indent=True,style={'description_width':'initial'})
-ring_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fixation ring material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
+motor_ring = widgets.Checkbox(value=False,description='Automatic fixation ring around the motor',disabled=False,indent=True,style={'description_width':'initial'})
+ring_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Fixation ring material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fixation ring density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 ring_box = widgets.VBox([ring_material,ring_density])
 motor_file = open("./include/widgets/thrustcurve.png", "rb")
@@ -223,6 +223,7 @@ def show_ring(change):
     else:
         ring_box.layout.display = 'none'
 
+show_ring({'new':motor_ring.value})
 motor_ring.observe(show_ring, names='value')
 
 def show_ring_density(change):

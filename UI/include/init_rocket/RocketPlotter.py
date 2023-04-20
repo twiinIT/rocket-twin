@@ -1,6 +1,7 @@
 import pyvista as pv
 import include.init_rocket.CustomRocket
 import include.init_rocket.mesh.Solid
+import numpy as np
 
 class RocketPlotter():
     '''
