@@ -10,10 +10,10 @@ class DynamicsPar(System):
         #System orientation
         self.add_inward('DynPar_ang', np.zeros(3), desc = "Earth Euler Angles", unit = '')
         
-        self.add_inward('l0', 1., desc = "Rope rest length", unit = 'm')
-        self.add_inward('k', 100., desc = "rope's stiffness", unit='N/m')
-        self.add_inward('m1', 1., desc = "Mass of parachute + nosecone", unit = 'kg')
-        self.add_inward('m2', 2., desc = "Mass of rocket - nosecone", unit = 'kg')
+        self.add_inward('l0', desc = "Rope rest length", unit = 'm')
+        self.add_inward('k', desc = "rope's stiffness", unit='N/m')
+        self.add_inward('m1', desc = "Mass of parachute + nosecone", unit = 'kg')
+        self.add_inward('m2', desc = "Mass of rocket - nosecone", unit = 'kg')
         self.add_inward('S_ref', .29, desc = "Reference surface of parachute", unit = 'm**2')
         self.add_inward('Cd', 1., desc = "Drag coefficient of parachute", unit = '')
         self.add_inward('r_in', np.zeros(3), desc = "Rocket Position", unit = 'm')

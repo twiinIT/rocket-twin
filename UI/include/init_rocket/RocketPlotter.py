@@ -1,6 +1,7 @@
 import pyvista as pv
 import include.init_rocket.CustomRocket
 import include.init_rocket.mesh.Solid
+import numpy as np
 
 class RocketPlotter():
     '''
@@ -63,7 +64,7 @@ class RocketPlotter():
         if opened:
             cog = self.rocket.get_mass_properties()[2]
             plotter.add_mesh(pv.Sphere(0.01, cog), color='r')
-            cpa = [0.5,0.,0.]
+            cpa = self.rocket.get_cpa()
             plotter.add_mesh(pv.Sphere(0.01, cpa), color='b')
 
         components = self.rocket.asList(only_ext)
@@ -84,7 +85,6 @@ class RocketPlotter():
             plotter.add_mesh(mesh, show_edges=False, texture=tex, color=color, metallic=0.8)
 
         plotter.add_axes(interactive=True)
-        plotter.add_point_labels([0.5,0.,0.],['cog'])
         plotter.show(jupyter_backend = 'pythreejs')
 
 
