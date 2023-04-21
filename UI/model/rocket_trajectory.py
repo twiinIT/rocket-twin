@@ -4,6 +4,12 @@ from cosapp.drivers import RungeKutta, NonLinearSolver
 from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
 import json
+import IPython
+
+# Set the matplotlib backend to 'qt' for the jupyter notebook
+# The condition checks if the script is run using IPython
+if IPython.get_ipython() is not None:
+    IPython.get_ipython().run_line_magic('matplotlib', 'qt')
 
 LOAD = True
 
@@ -15,7 +21,7 @@ earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 100)
+driver.time_interval = (0, 30)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
@@ -92,7 +98,7 @@ if LOAD:
             'Traj.parachute_deploy_timer' : rocket_dict['parachute_deploy_timer'],
             }
     
-print("Initial parameters", init)
+# print("Initial parameters", init)
 
 driver.set_scenario(
     init = init,
@@ -169,6 +175,12 @@ for i in range(time_parachute):
     r_then_r2.append(r[i])
 for i in range(time_parachute,len(r2)):
     r_then_r2.append(r2[i])
+
+
+# # Raise an exception when the trajectory is not realistic and blame the creator of the rocket for the failure
+# if r_then_r2[1][2] < 0:
+#     raise Exception("Simulation fail: your rocket is maybe not realistic...")
+
 
 r_then_r2 = np.array(r_then_r2)
 
@@ -443,6 +455,7 @@ class Animator:
 
 animator = Animator(simulation_results=df)
 anim = animator.animate()
+# anim.save('rocket_traj.gif') # If you want to save the animation as a gif or mp4 etc.
 plt.show()
 
 
@@ -461,21 +474,33 @@ print('\n')
 print("Lowest Pressure", np.min(pres))
 print('\n')
 
-plt.plot(time, np.array(r_then_r2)[:,2])
-plt.title("Rocket Altitude")
-plt.xlabel("Time (s)")
-plt.ylabel("Height (m)")
-plt.show()
 
-plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
-plt.title("Rocket XZ Trajectory")
-plt.xlabel("Horizontal Displacement (m)")
-plt.ylabel("Height (m)")
-plt.show()
+def simulation_2d_plots():
+    '''
+    Plot various 2d plots
+    '''
+    if IPython.get_ipython() is not None:
+        IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
-plt.plot(time, pres)
-plt.title("Pressure over Time")
-plt.xlabel("Time (s)")
-plt.ylabel("Pressure (Pa)")
-plt.show()
+    global time, pres, r_then_r2
+    plt.plot(time, np.array(r_then_r2)[:,2])
+    plt.title("Rocket Altitude")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Height (m)")
+    plt.show()
 
+    plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
+    plt.title("Rocket XZ Trajectory")
+    plt.xlabel("Horizontal Displacement (m)")
+    plt.ylabel("Height (m)")
+    plt.show()
+
+    plt.plot(time, pres)
+    plt.title("Pressure over Time")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Pressure (Pa)")
+    plt.show()
+
+
+if IPython.get_ipython() is None:
+    simulation_2d_plots()
