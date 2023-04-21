@@ -7,6 +7,7 @@ from Gravity import Gravity
 from Wind import Wind
 from Atmosphere.Atmosphere import Atmosphere
 from Parachute import Parachute
+import numpy as np
 
 class Earth(System):
     
@@ -38,3 +39,11 @@ class Earth(System):
 
         #Execution order
         self.exec_order = ['Traj', 'Grav', 'Atmo', 'Rocket', 'Wind', 'Para']
+
+
+        self.add_inward('ar_0', np.array([0.0, -np.pi/2, 0.0]))
+        self.add_inward('pitch_init', 0.0)
+        self.add_inward('yaw_init', 0.0)
+
+    def compute(self):
+        self.ar_0 = np.array([0.0, -np.pi/2 + self.pitch_init, 0.0])

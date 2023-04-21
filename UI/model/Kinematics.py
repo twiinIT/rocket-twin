@@ -31,7 +31,7 @@ class Kinematics(System):
     def compute(self):
         # if self.ParaDep == 1:
         #     return
-
+        print(self.Kin_ang)
         #compute angular velocity to obtain angular position
         self.av2[0] = self.av[0] + np.tan(self.ar[1])*(self.av[2]*np.cos(self.ar[0]) + self.av[1]*np.sin(self.ar[0]))
         self.av2[1] = self.av[1]*np.cos(self.ar[0]) - self.av[2]*np.sin(self.ar[0])

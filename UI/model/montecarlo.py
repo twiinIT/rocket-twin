@@ -28,13 +28,16 @@ def run_analysis(syst, draws=10, linear=True):
         init = {
         'Traj.r' : np.array([0., 0., l/2]),
         'Rocket.Kin.v' : np.array([0,0,0]),
-        'Rocket.Kin.ar' : np.array([0, -np.pi/2 + 0.2, 0]),
+        # 'Rocket.Kin.ar' : np.array([0., -np.pi/2 + 0.1, 0.0]),
         'Rocket.Kin.av' : np.zeros(3),
         'Para.DynPar.r1' : np.array([0., 0., l/2]), #(should be l because the parachute is at the tip of the rocket)
         'Para.DynPar.r2' : np.array([0., 0., l/2]),
         'Para.DynPar.v1' : np.array([0,0,0]),
         'Para.DynPar.v2' : np.array([0,0,0]),
-        'Traj.ParaDepStatus': False
+        'Traj.ParaDepStatus': False,
+        'yaw_init': 0.1,
+        'pitch_init': 0.1,
+        'Rocket.Kin.ar' : 'ar_0',
     },
     stop='Para.DynPar.r1[2] < -1'
     )
@@ -50,10 +53,14 @@ def run_analysis(syst, draws=10, linear=True):
     # montecarlo.linear = linear
 
     # parameters for uncertainties in the data
-    cant_attr = syst.Rocket.Aero.Coefs.inwards.get_details('delta')
+    pitch_attr = syst.inwards.get_details('pitch_init')
+    yaw_attr = syst.inwards.get_details('yaw_init')
     # Set the distribution around the current value
-    cant_attr.distribution = Normal(best=.05, worst=-0.05)
-    montecarlo.add_random_variable('Rocket.Aero.Coefs.delta')
+    pitch_attr.distribution = Normal(best=.05, worst=-0.05)
+    yaw_attr.distribution = Normal(best=.05, worst=-0.05)
+
+    montecarlo.add_random_variable('pitch_init')
+    montecarlo.add_random_variable('yaw_init')
 
     # Computation
     syst.run_drivers()
