@@ -155,6 +155,7 @@ def vector_magnitude(vector):
 data = driver.recorder.export_data()
 data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 time = np.asarray(data['time'])
+print(time)
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
 a = np.asarray(data['Rocket.Dyn.a'].tolist())
