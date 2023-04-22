@@ -26,6 +26,9 @@ class AeroForces(System):
         #Parachute
         self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
+        #Lift
+        self.add_inward('isLift', False, desc = "Do we consider lift?", unit = '')
+
     def compute(self):
         if self.ParaDep:
             return
@@ -40,5 +43,11 @@ class AeroForces(System):
         Fnz = - Fn*np.sin(a)
         Fny = - Fn*np.cos(a)
 
-        #self.F = [-Fd, Fny, Fnz]
-        self.F = [-Fd, 0, 0]
+        if self.isLift == False:
+
+            self.F = [-Fd, 0., 0.]
+
+        else :
+
+            self.F = [-Fd, Fny, Fnz]
+

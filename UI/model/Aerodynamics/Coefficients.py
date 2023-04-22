@@ -48,8 +48,13 @@ class Coefficients(System):
         #Parachute
         self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
-        #Temporary
-        self.add_outward('test_cn')
+        #Choice of Cd
+        self.add_inward('TypeCd', True, desc = "Type of Drag Coefficient Used", unit = '')
+
+        #Calibration Coefficient
+        self.add_inward('Cd_exp', 0.6, desc = "Experimental Drag Coefficient", unit = '')
+        self.add_inward('eps', 1., desc = "Calibration Coefficient", unit = '')
+
 
     def compute(self):
         if self.ParaDep:
@@ -97,8 +102,8 @@ class Coefficients(System):
 
         Xfins = l_t + self.Xt/3*(self.Cr+2*self.Ct)/(self.Cr+self.Ct) + 1/6*(self.Cr**2 + self.Ct**2 +self.Cr*self.Ct)/(self.Cr+self.Ct)
         # print(Xfins - l_t)
-        self.Xcp = self.l - (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
-        #self.Xcp = (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
+        #self.Xcp = self.l - (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
+        self.Xcp = (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
 
         # print(f'{self.Xcp=}')
         # print(f'{Cna=}')
@@ -215,8 +220,12 @@ class Coefficients(System):
             else:
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
+        self.Cd = f(abs(alpha)) * C_D_0
+        self.eps = self.Cd/self.Cd_exp
 
-        #self.Cd = f(abs(alpha)) * C_D_0
-        self.Cd = 0.6
-        self.test_cn = Cn
+        if self.TypeCd == False:
+
+            self.Cd = self.Cd_exp
+
+        #self.Cd = 0.6
         # print("Cd", self.Cd)

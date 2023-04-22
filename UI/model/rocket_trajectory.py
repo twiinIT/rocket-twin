@@ -28,7 +28,7 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Rocket.Aero.Coefs.test_cn','Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
                                  'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
     period=.1,
 )
@@ -37,6 +37,9 @@ driver.add_recorder(
 
 l = 2
 angz = -np.deg2rad(80)
+AnalCoef = True #True for analytical drag coefficient (possibly innacurate), false for experimental
+Wind = False #True for wind effects, false for no wind
+Lift = True #True for lift effects (trajecto does not consider them), false for no lift
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -60,6 +63,9 @@ init = {
     'Para.DynPar.r2' : np.array([0., 0., l/2]),
     'Para.DynPar.v1' : np.array([0,0,0]),
     'Para.DynPar.v2' : np.array([0,0,0]),
+    'Rocket.Aero.Coefs.TypeCd' : AnalCoef,
+    'Wind.wind_on' : Wind,
+    'Rocket.Aero.Aeroforces.isLift': Lift,
 }
 # rocket_dict parameters
 if LOAD:
@@ -473,8 +479,6 @@ print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
 print('\n')
 print("Lowest Pressure", np.min(pres))
 print('\n')
-
-print(np.asarray(data['Rocket.Aero.Coefs.test_cn'].tolist()))
 
 
 def simulation_2d_plots():
