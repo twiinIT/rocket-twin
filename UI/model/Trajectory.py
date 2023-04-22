@@ -41,7 +41,6 @@ class Trajectory(System):
 
         if ((self.VelocityPara.present and self.parachute_deploy_method == 0) or (self.TimerPara.present and self.parachute_deploy_method == 1)) and not self.ParaDepStatus:
             print("___PARACHUTE DEPLOYMENT___")
-            print('\n')
             self.apogee_time = self.time
             DynPar = self.parent.Para.DynPar
             DynPar.r1 = self.r
@@ -56,22 +55,16 @@ class Trajectory(System):
             #print("velocity (1,2) at apogee", DynPar.v1, DynPar.v2)
             #print('Apogee time', self.time)
 
-            print("Point 1 X Coordinate at Deployment: ", DynPar.r1[0], 'm')
             print('\n')
-            print("Point 1 Y Coordinate at Deployment: ", DynPar.r1[1], 'm')
-            print('\n')
-            print("Point 1 Z Coordinate at Deployment: ", DynPar.r1[2], 'm')
-            print('\n')
-            print("Point 2 X Coordinate at Deployment: ", DynPar.r2[0], 'm')
-            print('\n')
-            print("Point 2 Y Coordinate at Deployment: ", DynPar.r2[1], 'm')
-            print('\n')
-            print("Point 2 Z Coordinate at Deployment: ", DynPar.r2[2], 'm')
+            print("Rocket X Coordinate at Deployment: ", DynPar.r2[0], 'm')
+            print("Rocket Y Coordinate at Deployment: ", DynPar.r2[1], 'm')
+            print("Rocket Z Coordinate at Deployment: ", DynPar.r2[2], 'm')
             print('\n')
             print("___PARACHUTE DEPLOYMENT___")
             
         
         if self.FinallyDeployed.present:
+            print('\n')
             print("Parachute fully deployed !")
             self.ParaDepStatus = True
 

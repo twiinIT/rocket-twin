@@ -130,11 +130,12 @@ def run_simulation(time_step):
     return np.max(np.array(r_then_r2)[:,2]), computation_time
 
 
-time_steps = np.logspace(-2.5,0, num=10)
+time_steps = np.logspace(-2.5,-0.8, num=15)
 
 # Run the simulation for each time step and store the apogee and simulation time
 apogees = []
 computation_times = []
+
 
 for time_step in time_steps:
     print("Computing time_step =", time_step, "...")
@@ -144,7 +145,7 @@ for time_step in time_steps:
 
 # Plot the apogee depending on the log of the time_step
 plt.figure()
-plt.semilogx(time_steps, apogees, marker="o")
+plt.semilogx(time_steps, apogees, "o")
 plt.xlabel("Time step")
 plt.ylabel("Apogee")
 plt.title("Apogee vs Time step")
@@ -153,7 +154,7 @@ plt.show()
 
 # Plot the simulation time depending on the log of the time_step
 plt.figure()
-plt.semilogx(time_steps, computation_times, marker="o")
+plt.semilogx(time_steps, computation_times, "o")
 plt.xlabel("Time step")
 plt.ylabel("Simulation time")
 plt.title("Simulation time vs Time step")
@@ -162,5 +163,12 @@ plt.show()
 
 
 
+# # Save the results to a JSON file
+# results_dict = {
+#     "time_steps": time_steps.tolist(),
+#     "apogees": apogees,
+#     "computation_times": computation_times
+# }
 
-
+# with open("time_step_simulation.json", "w") as outfile:
+#     json.dump(results_dict, outfile)

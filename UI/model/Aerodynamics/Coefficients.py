@@ -94,7 +94,7 @@ class Coefficients(System):
 
         Xfins = l_t + self.Xt/3*(self.Cr+2*self.Ct)/(self.Cr+self.Ct) + 1/6*(self.Cr**2 + self.Ct**2 +self.Cr*self.Ct)/(self.Cr+self.Ct)
         # print(Xfins - l_t)
-        self.Xcp = (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
+        self.Xcp = self.l - (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
 
         # print(f'{self.Xcp=}')
         # print(f'{Cna=}')

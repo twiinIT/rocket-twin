@@ -6,6 +6,10 @@ import numpy as np
 
 from scipy.interpolate import interp1d
 
+import json
+
+import matplotlib.pyplot as plt
+
 
 class Wind(System):
 	def setup(self):
@@ -29,7 +33,12 @@ class Wind(System):
 			self.v_wind.val = get_wind(self.r[2])
 
 
-def wind():
+with open("./include/init_rocket/rocket_dict.json", "r") as f:
+    rocket_dict = json.load(f)
+    average_speed = rocket_dict['wind_average_speed']
+
+
+def wind(average_speed):
 	# Define the number of altitude steps and the maximum height
 	n_steps_dir = 10  # number of steps for wind direction
 	n_steps_spd = 10  # number of steps for wind speed
@@ -38,13 +47,16 @@ def wind():
 	# Generate random wind directions and speeds for each altitude step
 	wind_initial_direction = np.random.uniform(low=0, high=360, size=1)  # in degrees
 	wind_directions = np.abs(np.random.normal(loc=wind_initial_direction, scale=20, size=n_steps_dir))  # in degrees
-	wind_speeds = np.abs(np.random.normal(loc=5, scale=1, size=n_steps_spd))
+	wind_speeds = np.abs(np.random.normal(loc=average_speed, scale=1, size=n_steps_spd))
+	wind_speeds = np.insert(wind_speeds,0,0) #couche limite au sol
+	print(wind_speeds)
 
 	# Create a cubic spline interpolation of wind direction and speed
 	altitudes_dir = np.linspace(0, max_height, n_steps_dir)  # in meters
-	altitudes_spd = np.linspace(0, max_height, n_steps_spd)  # in meters
+	altitudes_spd = np.linspace(0, max_height, n_steps_spd+1)  # in meters
+	altitudes_spd[1] = 100 #fin de la couche limite à 50 mètres de haut
 	interp_directions = interp1d(altitudes_dir, wind_directions, kind='cubic')
-	interp_speeds = interp1d(altitudes_spd, wind_speeds, kind='cubic')
+	interp_speeds = interp1d(altitudes_spd, wind_speeds, kind='linear')
 
 	# Create a plot of the wind direction profile
 	# fig1, ax1 = plt.subplots()
@@ -68,10 +80,12 @@ def wind():
 	# ax2.set_ylabel('Altitude (m)')
 	# ax2.set_title('Random wind speed profile')
 	# plt.show()
-	return speeds_plot,directions_plot
+	sample = speeds_plot,directions_plot
+	return sample
+
+sample_wind = wind(average_speed)
 
 
-sample_wind = wind()
 
 def get_wind(alt):
 	alt = int(alt//10) #on a un pas de 10 mètres pour cette fonction

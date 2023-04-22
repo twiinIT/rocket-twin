@@ -1,6 +1,10 @@
+import os
+import sys
 import numpy as np
+import IPython
 import include.init_rocket.mesh.mesh_creation as mc
 from include.init_rocket.mesh.Solid import Solid
+from include.init_rocket.RocketPlotter import RocketPlotter
 
 class CustomRocket:
     '''
@@ -101,7 +105,7 @@ class CustomRocket:
         self.textures = textures
 
 
-    def show(self, method = 'mpl', opened=True, only_ext = True):
+    def show(self, method = 'mpl', opened=True, only_ext = True, cpa = np.zeros(3), cog = np.zeros(3)):
         '''
         Plot the plotting mesh of the rocket and return the rocket.
         Args:
@@ -111,8 +115,28 @@ class CustomRocket:
         assert method in valid_methods, f"Invalid shape function. Valid options are: {', '.join(valid_methods)}"
 
         rocket = self.build(only_ext = only_ext)
-        rocket.show(method=method, opened=opened)
+        rocket.show(method=method, opened=opened, cpa=cpa, cog=cog)
 
+
+    def plot(self,only_ext=False, opened=True):
+        '''
+        Plot the 3D rocket in a jupyter notebook.
+        '''
+        if 'VSCODE_CWD' in os.environ:
+            rocketPlotter = RocketPlotter(self)
+            rocketPlotter.plot(only_ext=False, opened=True)
+
+        elif any('ipykernel' in arg for arg in sys.argv):
+            # Set the matplotlib backend to 'widgets' to have interactive plot
+            IPython.get_ipython().run_line_magic('matplotlib', 'widget')
+
+            volume, mass, cog, inertia = self.get_mass_properties()
+            cpa = self.get_cpa()
+
+            self.show(method = 'go', opened=opened, only_ext = only_ext, cpa = cpa, cog = cog)
+        else:
+            raise Exception("Wrong environment : run the code in either vscode or jupyter notebook.")
+ 
 
     def asList(self, only_ext = False):
         '''

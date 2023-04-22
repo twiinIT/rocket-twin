@@ -2,7 +2,12 @@ import ipywidgets as widgets
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+import IPython
 from include.init_rocket.CustomRocket import CustomRocket
+
+
+# By default the matplotlib backend for the jupyter notebook is set to 'inline'
+IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
 plt.close() # To avoid the code from plotting residual figures
 
@@ -197,7 +202,7 @@ rocket_properties_widget = widgets.Tab(children = children, titles = ['Tube prop
 
 # Motor Properties
 f = open('./include/widgets/motor_data.json')
-data = json.load(f)
+motor_data = json.load(f)
 
 impulse_class = widgets.Dropdown(options=impulse_options,description='Impulse Class (N.s):',style={'description_width': 'initial'},disabled=False)
 motor_diameter = widgets.FloatRangeSlider(value=[6, 161],min=6,max=161,step=1,description='Diameter ($mm$):',disabled=False,continuous_update=False,
@@ -212,7 +217,7 @@ ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,descript
 ring_box = widgets.VBox([ring_material,ring_density])
 motor_file = open("./include/widgets/thrustcurve.png", "rb")
 motor_image = motor_file.read()
-motor_wimg = widgets.Image(value=motor_image,format='png', height = 300, width=600)
+motor_wimg = widgets.Image(value=motor_image,format='png', height = 200, width=480)
 motorBox = widgets.VBox([selected_motor,motor_select_text,motor_ring,ring_box,motor_wimg])
 
 motor_selection_widget = widgets.Accordion(children=[impulse_class, motor_geometry, motorBox], titles=('Impulse class', 'Geometric parameters', 'Motor selection'), style={'description_width': 'initial'})
@@ -238,13 +243,15 @@ show_ring_density({'new':ring_material.value})
 ring_material.observe(show_ring_density, names='value')
 
 def thrustcurve(motor_name):
+    global motor_data
     d=[]
-    for elem in data:
+    for elem in motor_data:
         if elem['designation'] == motor_name:
             d = elem['samples']
     x = [d[i][0] for i in range(len(d))]
     y = [d[i][1] for i in range(len(d))]
 
+    IPython.get_ipython().run_line_magic('matplotlib', 'inline')
     plt.plot(x,y)
     plt.xlabel('time (s)')
     plt.ylabel('impulse (N)')
@@ -253,9 +260,10 @@ def thrustcurve(motor_name):
     plt.close()
 
 def set_motor_options(change):
+    global motor_data
     if change['new'] == 2:
         motors = []
-        for motor in data:
+        for motor in motor_data:
             if motor['impulseClass']==impulse_class.value and motor['diameter']>motor_diameter.value[0] and motor['diameter']<motor_diameter.value[1]:
                 motors.append(motor['designation'])
 
@@ -407,10 +415,11 @@ wind_on.observe(show_wind, names='value')
 ####################################################
 
 def find_motor(designation):
+    global motor_data
     '''
     Return the motor dictionary corresponding to the motor designation.
     '''
-    for motor in data:
+    for motor in motor_data:
         if motor['designation'] == designation:
             return motor
     raise ValueError('Motor not found : wrong motor designation.')
@@ -419,6 +428,9 @@ def rocket_dictionary():
     '''
     Return a dictionary representing the rocket.
     '''
+    if selected_motor.value == None:
+        raise Exception("None Motor: Please select a motor in the motor selector widget.")
+
     rocket = {'tube_length':tube_length.value,
               'tube_radius':tube_radius.value,
               'tube_thickness':tube_thickness.value,
@@ -462,22 +474,39 @@ def rocket_dictionary():
 
     return rocket
 
-def rocket_from_widgets():
+def rocket_creation(data_source = "widgets"):
     '''
+    When data_source = "widgets"
     Create a CustomRocket object representing the rocket from its dict, and write it content in 'rocket_dict.json'.
+
+    When data_source = "file_name.json"
+    Create a CustomRocket object representing the rocket from the file_name (which must contain a dictionnary).
+
+    Use the shortcut "json" for data_source to use the "rocket_dict.json" file.
     '''
-    rocket_dict = rocket_dictionary()
-    rocket = CustomRocket.fromDict(rocket_dict)
+    if data_source == "widgets":
+        rocket_dict = rocket_dictionary()
+        myrocket = CustomRocket.fromDict(rocket_dict)
 
-    volume, mass, cog, inertia = rocket.get_mass_properties()
+        volume, mass, cog, inertia = myrocket.get_mass_properties()
 
-    rocket_dict['rocket_volume'] = volume
-    # rocket_dict['rocket_mass'] = mass ### For now the mass is passed as the mass entered by the user
-    rocket_dict['rocket_cog'] = cog.tolist()
-    rocket_dict['rocket_inertia'] = inertia.tolist()
+        rocket_dict['rocket_volume'] = volume
+        # rocket_dict['rocket_mass'] = mass ### For now the mass is passed as the mass entered by the user
+        rocket_dict['rocket_cog'] = cog.tolist()
+        rocket_dict['rocket_inertia'] = inertia.tolist()
 
-    # Write the content of the dict in a file that will be passed to the model
-    with open("include/init_rocket/rocket_dict.json", "w") as f:
-        json.dump(rocket_dict, f)
+        # Write the content of the dict in a file that will be passed to the model
+        with open("include/init_rocket/rocket_dict.json", "w") as f:
+            json.dump(rocket_dict, f)
+
+    elif data_source == "json":
+        with open("./include/init_rocket/rocket_dict.json", "r") as f:
+            rocket_dict = json.load(f)
+        myrocket = CustomRocket.fromDict(rocket_dict)
     
-    return rocket
+    else:
+        with open(data_source, "r") as f:
+            rocket_dict = json.load(f)
+        myrocket = CustomRocket.fromDict(rocket_dict)
+    
+    return myrocket
