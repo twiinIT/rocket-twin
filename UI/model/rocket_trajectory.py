@@ -3,6 +3,7 @@ import numpy as np
 from cosapp.drivers import RungeKutta, NonLinearSolver
 from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
+from Utility.drawer import graph2list
 import json
 import IPython
 
@@ -29,17 +30,19 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
     DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
-                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
+                                'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2',
+                                'Atmo.Pres.P', 'Rocket.Aero.Coefs.eps']),
     period=.1,
 )
 
 #Initial conditions and constants
 
+rocketNum = 2623
 l = 2
 angz = -np.deg2rad(80)
-AnalCoef = True #True for analytical drag coefficient (possibly innacurate), false for experimental
+AnalCoef = False #True for analytical drag coefficient (possibly innacurate), false for experimental
 Wind = False #True for wind effects, false for no wind
-Lift = True #True for lift effects (trajecto does not consider them), false for no lift
+Lift = False #True for lift effects (trajecto does not consider them), false for no lift
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -479,6 +482,7 @@ print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
 print('\n')
 print("Lowest Pressure", np.min(pres))
 print('\n')
+print(np.asarray(data['Rocket.Aero.Coefs.eps'].tolist()))
 
 
 def simulation_2d_plots():
@@ -488,23 +492,33 @@ def simulation_2d_plots():
     if IPython.get_ipython() is not None:
         IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
+    time_pres, exp_pres = graph2list(f'{rocketNum}', 'Pression')
+    time_alt, exp_alt = graph2list(f'{rocketNum}', 'Altitude')
+    time_traj, exp_traj = graph2list(f'{rocketNum}', 'Trajectory')
+
     global time, pres, r_then_r2
-    plt.plot(time, np.array(r_then_r2)[:,2])
+    plt.plot(time, np.array(r_then_r2)[:,2], label = 'Model Prediction')
+    plt.plot(time_alt, exp_alt, label = 'Experimental Curve')
     plt.title("Rocket Altitude")
     plt.xlabel("Time (s)")
     plt.ylabel("Height (m)")
+    plt.legend()
     plt.show()
 
-    plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
+    plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2], label = 'Model Prediction')
+    plt.plot(time_traj, exp_traj, label = "Trajecto Prediction")
     plt.title("Rocket XZ Trajectory")
     plt.xlabel("Horizontal Displacement (m)")
     plt.ylabel("Height (m)")
+    plt.legend()
     plt.show()
 
-    plt.plot(time, pres)
+    plt.plot(time, pres, label = "Model Prediction")
+    plt.plot(time_pres, exp_pres, label = "Experimental Curve")
     plt.title("Pressure over Time")
     plt.xlabel("Time (s)")
     plt.ylabel("Pressure (Pa)")
+    plt.legend()
     plt.show()
 
 
