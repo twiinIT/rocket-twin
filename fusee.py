@@ -6,13 +6,13 @@ import numpy as np
 
 class Mass(System):
 	def setup(self):
-		self.add_inward("m_f", 2.)
-		self.add_inward("Dm", 1.)
-		self.add_inward("m_g")
-		self.add_outward("m")
-		self.add_outward("Dm_computed")
+		self.add_inward("m_f", 2., desc="Rocket mass without propellant", unit="kg")
+		self.add_inward("Dm", 1., desc="Initial mass flow rate", unit="kg/s")
+		self.add_inward("m_g", desc="Propellant mass", unit="kg")
+		self.add_outward("m", desc="Mass during flight", unit="kg")
+		self.add_outward("Dm_computed", desc="Mass flow rate during flight", unit="kg/s")
 		self.add_event('endCombustion', trigger="m <= m_f")
-		self.add_outward_modevar('end', False)
+		self.add_outward_modevar('end', False, desc="True if there is no more propellant", unit="")
 
 	def transition(self):
 		if self.endCombustion.present:
@@ -24,13 +24,13 @@ class Mass(System):
 
 class Dynamics(System):
 	def setup(self):
-		self.add_inward("end")
-		self.add_inward("Dm_computed")
-		self.add_inward("m")
-		self.add_inward("u")
-		self.add_inward("g")
-		self.add_outward("force")
-		self.add_outward("a")
+		self.add_inward("end", desc="True if there is no more propellant", unit="")
+		self.add_inward("Dm_computed",  desc="Mass flow rate during flight", unit="kg/s")
+		self.add_inward("m", desc="Mass during flight", unit="kg")
+		self.add_inward("u", desc="Ejection speed of the propellant", unit="m/s")
+		self.add_inward("g", desc="Gravity", unit="m/s**2")
+		self.add_outward("force", desc="Applied force", unit="N")
+		self.add_outward("a", desc="Rocket acceleration", unit="m/s**2")
 	
 	def compute(self):
 		self.force = self.m * self.g - self.Dm_computed * self.u
@@ -38,17 +38,17 @@ class Dynamics(System):
 
 
 
-class Fusee(System):
+class Rocket(System):
 	def setup(self):
+		self.add_inward('g', -9.81, desc="Gravity", unit="m/s**2")
+		self.add_inward('u', -100., desc="Ejection speed of the propellant", unit="m/s")
+
 		self.add_child(Mass('mass'), pulling = "Dm")
 		self.add_child(Dynamics("dynamics"), pulling = ["u", "g", "a"])
-		self.g = -9.81
-		self.u = -100. #m/s
 
 		self.add_transient('v', der='a')
 		self.add_transient('z', der='v')
 		self.connect(self.mass, self.dynamics, {"m" : "m", "Dm_computed" : "Dm_computed"})
-	
 
 		self.exec_order = ['mass', 'dynamics']
 
@@ -59,10 +59,10 @@ from cosapp.recorders import DataFrameRecorder
 
 
 
-fusee = Fusee("fusee")
+fusee = Rocket("fusee")
 fusee.mass.m_g = 7.0
 
-fusee2 = Fusee("fusee2")
+fusee2 = Rocket("fusee2")
 fusee2.mass.m_g = 1.0
 
 
