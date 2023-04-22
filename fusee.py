@@ -24,7 +24,6 @@ class Mass(System):
 
 class Dynamics(System):
 	def setup(self):
-		self.add_inward("end", desc="True if there is no more propellant", unit="")
 		self.add_inward("Dm_computed",  desc="Mass flow rate during flight", unit="kg/s")
 		self.add_inward("m", desc="Mass during flight", unit="kg")
 		self.add_inward("u", desc="Ejection speed of the propellant", unit="m/s")
