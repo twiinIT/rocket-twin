@@ -40,4 +40,5 @@ class AeroForces(System):
         Fnz = - Fn*np.sin(a)
         Fny = - Fn*np.cos(a)
 
-        self.F = [-Fd, Fny, Fnz]
+        #self.F = [-Fd, Fny, Fnz]
+        self.F = [-Fd, 0, 0]

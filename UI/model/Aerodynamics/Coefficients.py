@@ -48,6 +48,9 @@ class Coefficients(System):
         #Parachute
         self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
 
+        #Temporary
+        self.add_outward('test_cn')
+
     def compute(self):
         if self.ParaDep:
             return
@@ -95,6 +98,7 @@ class Coefficients(System):
         Xfins = l_t + self.Xt/3*(self.Cr+2*self.Ct)/(self.Cr+self.Ct) + 1/6*(self.Cr**2 + self.Ct**2 +self.Cr*self.Ct)/(self.Cr+self.Ct)
         # print(Xfins - l_t)
         self.Xcp = self.l - (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
+        #self.Xcp = (Xbody*Cna_body + Xfins*Cna_all_fins)/Cna
 
         # print(f'{self.Xcp=}')
         # print(f'{Cna=}')
@@ -212,5 +216,7 @@ class Coefficients(System):
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
 
-        self.Cd = f(abs(alpha)) * C_D_0
+        #self.Cd = f(abs(alpha)) * C_D_0
+        self.Cd = 0.6
+        self.test_cn = Cn
         # print("Cd", self.Cd)

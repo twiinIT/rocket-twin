@@ -11,7 +11,7 @@ import IPython
 if IPython.get_ipython() is not None:
     IPython.get_ipython().run_line_magic('matplotlib', 'qt')
 
-LOAD = True
+LOAD = False
 
 #Time-step
 dt = 0.01
@@ -28,7 +28,7 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
-    DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
+    DataFrameRecorder(includes=['Rocket.Aero.Coefs.test_cn','Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
                                  'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
     period=.1,
 )
@@ -36,7 +36,7 @@ driver.add_recorder(
 #Initial conditions and constants
 
 l = 2
-angz = -np.pi/2
+angz = -np.deg2rad(80)
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -473,6 +473,8 @@ print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
 print('\n')
 print("Lowest Pressure", np.min(pres))
 print('\n')
+
+print(np.asarray(data['Rocket.Aero.Coefs.test_cn'].tolist()))
 
 
 def simulation_2d_plots():
