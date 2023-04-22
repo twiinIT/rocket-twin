@@ -27,6 +27,7 @@ def run_analysis(syst, draws=10, linear=True):
     driver.set_scenario(
         init = {
         'Traj.r' : np.array([0., 0., l/2]),
+        'Rocket.Kin.ar' : 'initrot',
         'Rocket.Kin.v' : np.array([0,0,0]),
         # 'Rocket.Kin.ar' : np.array([0., -np.pi/2 + 0.1, 0.0]),
         'Rocket.Kin.av' : np.zeros(3),
@@ -35,9 +36,7 @@ def run_analysis(syst, draws=10, linear=True):
         'Para.DynPar.v1' : np.array([0,0,0]),
         'Para.DynPar.v2' : np.array([0,0,0]),
         'Traj.ParaDepStatus': False,
-        'yaw_init': 0.1,
-        'pitch_init': 0.1,
-        'Rocket.Kin.ar' : 'ar_0',
+        
     },
     stop='Para.DynPar.r1[2] < -1'
     )
@@ -55,6 +54,7 @@ def run_analysis(syst, draws=10, linear=True):
     # parameters for uncertainties in the data
     pitch_attr = syst.inwards.get_details('pitch_init')
     yaw_attr = syst.inwards.get_details('yaw_init')
+    
     # Set the distribution around the current value
     pitch_attr.distribution = Normal(best=.05, worst=-0.05)
     yaw_attr.distribution = Normal(best=.05, worst=-0.05)
