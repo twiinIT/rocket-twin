@@ -99,14 +99,14 @@ class Solid:
         return mesh
     
 
-    def show(self, method='mpl', opened = True):
+    def show(self, method='mpl', opened = True, cog=np.zeros(3), cpa=np.zeros(3)):
         valid_methods = ['mpl', 'go']  # predefined list of valid strings
         assert method in valid_methods, f"Invalid shape function. Valid options are: {', '.join(valid_methods)}"
 
         if method == 'mpl':
             self.show_mpl(opened = opened)
         elif method == 'go':
-            self.show_go(opened = opened)
+            self.show_go(opened = opened, cog=cog,cpa=cpa)
 
 
     def show_mpl(self, opened = True):
@@ -134,7 +134,7 @@ class Solid:
         return figure
 
 
-    def show_go(self, opened = True):
+    def show_go(self, opened = True, cog=np.zeros(3), cpa=np.zeros(3)):
         '''
         Plot the Solid using plotly.graph_objects.
         
@@ -151,9 +151,18 @@ class Solid:
         x,y,z = vertices.T
         i,j,k = faces.T
 
-        figure = go.Figure(data=[go.Mesh3d(x=x,y=y,z=z,i=i,j=j,k=k,showscale=True)])
+        surface_mesh = go.Mesh3d(x=x,y=y,z=z,i=i,j=j,k=k,showscale=True)
+
+        cog_x, cog_y, cog_z = cog
+        cog_text = 'COG'
+        cpa_x, cpa_y, cpa_z = cpa 
+        cpa_text = 'CPA'
+
+        scatter_cog = go.Scatter3d(x=[cog_x], y=[cog_y], z=[cog_z], mode='markers+text', text=cog_text, textposition='bottom center', marker=dict(color='red'), name=cog_text)
+        scatter_cpa = go.Scatter3d(x=[cpa_x], y=[cpa_y], z=[cpa_z], mode='markers+text', text=cpa_text, textposition='bottom center', marker=dict(color='green'), name=cpa_text)
 
         # Set the aspect ratio of the 3D scene to match the data
+        figure = go.Figure(data=[surface_mesh, scatter_cog, scatter_cpa])
         figure.update_layout(scene=dict(aspectmode="data"))
 
         figure.show()

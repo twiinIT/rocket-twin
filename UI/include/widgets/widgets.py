@@ -5,6 +5,10 @@ import numpy as np
 import IPython
 from include.init_rocket.CustomRocket import CustomRocket
 
+
+# By default the matplotlib backend for the jupyter notebook is set to 'inline'
+IPython.get_ipython().run_line_magic('matplotlib', 'inline')
+
 plt.close() # To avoid the code from plotting residual figures
 
 materials = {"custom": 0,
@@ -213,7 +217,7 @@ ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,descript
 ring_box = widgets.VBox([ring_material,ring_density])
 motor_file = open("./include/widgets/thrustcurve.png", "rb")
 motor_image = motor_file.read()
-motor_wimg = widgets.Image(value=motor_image,format='png', height = 300, width=600)
+motor_wimg = widgets.Image(value=motor_image,format='png', height = 200, width=480)
 motorBox = widgets.VBox([selected_motor,motor_select_text,motor_ring,ring_box,motor_wimg])
 
 motor_selection_widget = widgets.Accordion(children=[impulse_class, motor_geometry, motorBox], titles=('Impulse class', 'Geometric parameters', 'Motor selection'), style={'description_width': 'initial'})

@@ -65,7 +65,7 @@ class RocketPlotter():
             cog = self.rocket.get_mass_properties()[2]
             plotter.add_mesh(pv.Sphere(0.01, cog), color='r')
             cpa = self.rocket.get_cpa()
-            plotter.add_mesh(pv.Sphere(0.01, cpa), color='b')
+            plotter.add_mesh(pv.Sphere(0.01, cpa), color='g')
 
         components = self.rocket.asList(only_ext)
 

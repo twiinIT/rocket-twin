@@ -21,7 +21,7 @@ earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 30)
+driver.time_interval = (0, 70)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
