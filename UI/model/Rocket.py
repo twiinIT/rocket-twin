@@ -21,16 +21,15 @@ class Rocket(System):
         
         #Rocket parameters
         self.add_inward('l', 0.834664, desc='Rocket length', unit='m')
-        self.add_inward('CG', self.l/2, desc='Center of Gravity', unit='m')
 
         #Parachute deployment
         self.add_inward('ParaDep', False, desc = "Parachute Deployed", unit = '')
       
         #Rocket children
         self.add_child(Kinematics('Kin'), pulling = ['v_out', 'Kin_ang', 'ParaDep'])
-        self.add_child(Thrust('Thrust'), pulling=['l', 'CG'])
+        self.add_child(Thrust('Thrust'), pulling=['l'])
         self.add_child(Dynamics('Dyn'), pulling = ['g', 'l', 'ParaDep'])
-        self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind', 'ParaDep', 'CG'])
+        self.add_child(Aerodynamics('Aero'), pulling = ['l','rho', 'v_wind', 'ParaDep'])
         self.add_child(Mass('Mass'))
         
         #Child-Child connections
@@ -39,10 +38,10 @@ class Rocket(System):
         self.connect(self.Dyn, self.Aero, ['F', 'Ma'])
         self.connect(self.Thrust, self.Dyn, ['Fp', 'Mp'])
         self.connect(self.Mass, self.Dyn, {'m_out':'m', 'I':'I'})
-        self.connect(self.Mass, self.Aero, {'m_out':'m'})
+        self.connect(self.Mass, self.Aero, {'m_out':'m','CG_out':'CG'})
+        self.connect(self.Mass, self.Thrust, {'CG_out':'CG'})
 
- 
         #Execution order
-        self.exec_order = ['Thrust', 'Mass', 'Aero', 'Dyn', 'Kin']
+        self.exec_order = ['Mass', 'Thrust', 'Aero', 'Dyn', 'Kin']
 
         

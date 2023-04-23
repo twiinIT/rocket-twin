@@ -15,6 +15,7 @@ class Aerodynamics(System):
         
         #Geometry
         self.add_inward('m', desc = "mass", unit = 'kg')
+        self.add_inward('CG', desc='Rocket center of gravity', unit='m')
 
         self.add_input(VelPort, 'v_wind')
             

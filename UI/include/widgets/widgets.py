@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import IPython
 from include.init_rocket.CustomRocket import CustomRocket
+from include.widgets.fin_visualisation import draw_fin
 
 
 # By default the matplotlib backend for the jupyter notebook is set to 'inline'
@@ -167,9 +168,9 @@ show_nose_parameter({'new':nose_type.value})
 nose_type.observe(show_nose_parameter, names='value')
 
 # Fins properties
-fin_file = open("./include/widgets/fin.png", "rb")
-fin_image = fin_file.read()
-fin_wimg = widgets.Image(value=fin_image,format='png',height=100,width=200,)
+with open("./include/widgets/fin.png", "rb") as fin_file:
+    fin_image = fin_file.read()
+    fin_wimg = widgets.Image(value=fin_image,format='png', layout=widgets.Layout(width='300px', height='300px'))
 Cr = widgets.BoundedFloatText(value=.2,min=0,max=1,step=0.01,description='Cr ($m$):',style={'description_width': 'initial'},disabled=False)
 Ct = widgets.BoundedFloatText(value=.1,min=0,max=1,step=0.01,description='Ct ($m$):',style={'description_width': 'initial'},disabled=False)
 Xt = widgets.BoundedFloatText(value=.1,min=0,max=1,step=0.01,description='Xt ($m$):',style={'description_width': 'initial'},disabled=False)
@@ -180,6 +181,11 @@ fins_number = widgets.IntText(value=4,description='Number of fins:',style={'desc
 fins_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fins material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 fins_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fins density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 fins_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.01,description='Fins position from tube bottom ($m$):',style={'description_width': 'initial'},disabled=False)
+fin_plot_button = widgets.Button(description='Plot fin',disabled=False,button_style='',tooltip='Plot fin',icon='image')
+with open("./include/widgets/personal_fin_plot.png", "rb") as fin_file:
+    fin_image = fin_file.read()
+    fin_plot_wimg = widgets.Image(value=fin_image,format='png', height=200, layout=widgets.Layout(width='300px', height='300px'))
+
 
 def show_fins_density(change):
     if change['new'] == "custom":
@@ -192,11 +198,19 @@ def show_fins_density(change):
 show_fins_density({'new':fins_material.value})
 fins_material.observe(show_fins_density, names='value')
 
+def show_fin_plot(button):
+    draw_fin(Ct.value,Cr.value,Xt.value,s.value,save="./include/widgets/personal_fin_plot.png")
+    fin_file = open("./include/widgets/personal_fin_plot.png", "rb")
+    fin_image = fin_file.read()
+    fin_plot_wimg.value = fin_image
+
+fin_plot_button.on_click(show_fin_plot)
+
 # Combining everithing for geometry and mass
 tube = widgets.VBox([tube_length,tube_radius,tube_thickness,tube_material,tube_density])
 nose = widgets.VBox([nose_type,nose_parameter,nose_parameter_desc,nose_length,nose_radius,nose_thickness,nose_material,nose_density])
-fins_fields = widgets.VBox([Cr,Ct,Xt,s,fins_thickness,fins_cant,fins_number,fins_material,fins_density,fins_position])
-fins = widgets.HBox([fins_fields,fin_wimg])
+fins_fields = widgets.VBox([Cr,Ct,Xt,s,fins_thickness,fins_cant,fins_number,fins_material,fins_density,fins_position,fin_plot_button])
+fins = widgets.HBox([fins_fields,fin_wimg,fin_plot_wimg])
 children = [tube,nose,fins]
 rocket_properties_widget = widgets.Tab(children = children, titles = ['Tube prop.', 'Nose prop.', 'Fins prop.'])
 
