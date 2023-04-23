@@ -40,7 +40,7 @@ earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 70)
+driver.time_interval = (0, 15)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
@@ -489,30 +489,50 @@ def simulation_2d_plots():
     if IPython.get_ipython() is not None:
         IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
-    global time, pres, r_then_r2, cog, cpa
-    plt.plot(time, np.array(r_then_r2)[:,2])
-    plt.title("Rocket Altitude")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Height (m)")
-    plt.show()
+    # global time, pres, r_then_r2, cog, cpa
+    # plt.plot(time, np.array(r_then_r2)[:,2])
+    # plt.title("Rocket Altitude")
+    # plt.xlabel("Time (s)")
+    # plt.ylabel("Height (m)")
+    # plt.show()
 
-    plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
-    plt.title("Rocket XZ Trajectory")
-    plt.xlabel("Horizontal Displacement (m)")
-    plt.ylabel("Height (m)")
-    plt.show()
+    # plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
+    # plt.title("Rocket XZ Trajectory")
+    # plt.xlabel("Horizontal Displacement (m)")
+    # plt.ylabel("Height (m)")
+    # plt.show()
 
-    plt.plot(time, pres)
-    plt.title("Pressure over Time")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Pressure (Pa)")
-    plt.show()
+    # plt.plot(time, pres)
+    # plt.title("Pressure over Time")
+    # plt.xlabel("Time (s)")
+    # plt.ylabel("Pressure (Pa)")
+    # plt.show()
 
     stability_margin = cog-cpa
-    plt.plot(time[:100], stability_margin[:100])
+    plt.plot(time, stability_margin, label = 'margin')
+    # plt.plot(time[:duree], cog[:duree], label='cog')
+    # plt.plot(time[:duree],cpa[:duree], label='cpa')
     plt.title("Stability margin over Time")
     plt.xlabel("Time (s)")
     plt.ylabel("Stability margin (m)")
+    plt.show()
+
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+
+    ax1.plot(time, cog, label = 'COG',color='blue')
+    ax1.set_xlabel('Time (s)')
+    ax1.set_ylabel('COG position (m)', color='blue')
+
+    ax2.plot(time,cpa, color='green', label='CPA')
+    ax2.set_ylabel('CPA position (m)', color='green')
+
+    lines, labels = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax2.legend(lines + lines2, labels + labels2, loc='lower right')
+
+    ax1.set_title('COG and CPA position over Time')
+    plt.tight_layout()
     plt.show()
 
 
