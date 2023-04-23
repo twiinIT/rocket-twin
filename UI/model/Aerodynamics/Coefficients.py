@@ -52,7 +52,7 @@ class Coefficients(System):
         if self.ParaDep:
             return
                 
-        self.v_cpa += self.v_wind.val 
+        self.v_cpa -= self.v_wind.val 
 
         v_norm = np.linalg.norm(self.v_cpa)
 
