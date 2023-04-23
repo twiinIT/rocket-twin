@@ -555,3 +555,4 @@ def simulation_2d_plots():
 if IPython.get_ipython() is None:
     simulation_values()
     simulation_2d_plots()
+    json.dump()
