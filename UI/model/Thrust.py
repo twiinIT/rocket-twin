@@ -23,6 +23,6 @@ class Thrust(System):
 
     def compute(self):
         self.Fp = np.array([thrust(self.time), 0, 0])
-        rot = R.from_euler('xyz', np.array([0, 0, self.inclinaison]))
+        rot = R.from_euler('xyz', np.array([0, self.inclinaison, 0]))
         self.Fp = rot.apply(self.Fp)
         self.Mp = np.cross(np.array([- self.CG, 0, 0]), self.Fp)
