@@ -159,6 +159,7 @@ layout3 = go.Layout(
 fig3 = go.Figure(data=traces3, layout=layout3)
 fig3.show()
 
+print("Apogee : ", np.max(traj[:,1]), "m")
 
 
 # fig =  ff.create_quiver(
