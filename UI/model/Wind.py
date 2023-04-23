@@ -49,7 +49,7 @@ def wind(average_speed):
 	wind_directions = np.abs(np.random.normal(loc=wind_initial_direction, scale=20, size=n_steps_dir))  # in degrees
 	wind_speeds = np.abs(np.random.normal(loc=average_speed, scale=1, size=n_steps_spd))
 	wind_speeds = np.insert(wind_speeds,0,0) #couche limite au sol
-	print(wind_speeds)
+	# print(wind_speeds)
 
 	# Create a cubic spline interpolation of wind direction and speed
 	altitudes_dir = np.linspace(0, max_height, n_steps_dir)  # in meters
