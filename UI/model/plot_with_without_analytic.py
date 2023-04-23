@@ -26,10 +26,19 @@ exp_alt = given_coef['exp_alt']
 time_traj = given_coef['time_traj']
 exp_traj = given_coef['exp_traj']
 
+# Interpolate data points to have the same length
+max_time = max(max(time_given), max(time_analytic))
+time_common = np.linspace(0, max_time, num=max(len(time_given), len(time_analytic)))
 
-plt.plot(time_given, np.array(r_then_r2_given)[:,2], label = 'Model Prediction for given coefficient')
-plt.plot(time_analytic, np.array(r_then_r2_analytic)[:,2], label = 'Model Prediction for analytic coefficient')
-plt.plot(time_alt, exp_alt, label = 'Experimental Curve')
+r_then_r2_given_interp = np.interp(time_common, time_given, np.array(r_then_r2_given)[:, 2])
+r_then_r2_analytic_interp = np.interp(time_common, time_analytic, np.array(r_then_r2_analytic)[:, 2])
+
+pres_given_interp = np.interp(time_common, time_given, pres_given)
+pres_analytic_interp = np.interp(time_common, time_analytic, pres_analytic)
+
+plt.plot(time_common, r_then_r2_given_interp, label='Model Prediction for given coefficient')
+plt.plot(time_common, r_then_r2_analytic_interp, label='Model Prediction for analytic coefficient')
+plt.plot(time_alt, exp_alt, label='Experimental Curve')
 plt.title("Rocket Altitude")
 plt.xlabel("Time (s)")
 plt.ylabel("Height (m)")
