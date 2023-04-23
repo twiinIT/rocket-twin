@@ -41,10 +41,9 @@ class Earth(System):
         self.exec_order = ['Traj', 'Grav', 'Atmo', 'Rocket', 'Wind', 'Para']
 
 
-        self.add_inward('initrot', np.zeros(3))
+        self.add_inward('ar_0', np.array([0.0, -np.pi/2, 0.0]))
         self.add_inward('pitch_init', 0.0)
-        self.add_inward('yaw_init', -np.pi/2 + 0.1)
+        self.add_inward('yaw_init', 0.0)
 
     def compute(self):
-        # print(self.time)
-        self.initrot = np.array([0.0, self.yaw_init, self.pitch_init])
+        self.ar_0 = np.array([0.0, -np.pi/2 + self.pitch_init, 0.0])

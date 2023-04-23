@@ -200,6 +200,7 @@ euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
 pres = np.asarray(data['Atmo.Pres.P'].tolist())
 
+
 # find time i where the parachute appears 
 time_parachute=0
 while r1[time_parachute][0]==r2[time_parachute][0] and r1[time_parachute][1]==r2[time_parachute][1] and r1[time_parachute][2]==r2[time_parachute][2]:
