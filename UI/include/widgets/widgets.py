@@ -99,8 +99,8 @@ impulse_options = [("[1.26 - 2.50]",'A'),
 
 
 # Tube properties
-tube_length = widgets.BoundedFloatText(value=2,min=0,max=500.0,step=0.1,description='Tube length ($m$):',style={'description_width': 'initial'},disabled=False)
-tube_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Tube radius ($m$):',style={'description_width': 'initial'},disabled=False)
+tube_length = widgets.BoundedFloatText(value=2,min=0,max=500.0,step=0.01,description='Tube length ($m$):',style={'description_width': 'initial'},disabled=False)
+tube_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.01,description='Tube radius ($m$):',style={'description_width': 'initial'},disabled=False)
 tube_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Tube thickness ($m$):',style={'description_width': 'initial'},disabled=False)
 tube_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Tube material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 tube_density = widgets.BoundedFloatText(value=0.,min=0,max=100000,step=1,description='Tube density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
@@ -120,8 +120,8 @@ tube_material.observe(show_tube_density, names='value')
 nose_type = widgets.Dropdown(layout={'width': 'strech'},options=nose_options,style={'description_width': 'initial'},value='ellipse',description='Nose type:',disabled=False)
 nose_parameter = widgets.BoundedFloatText(value=0.,min=0.,max=1.,step=0.1,description='Nose parameter C*:',style={'description_width': 'initial'},disabled=False)
 nose_parameter_desc = widgets.Label( value='')
-nose_length = widgets.BoundedFloatText(value=.5,min=0,max=50.0,step=0.1,description='Nose length ($m$):',style={'description_width': 'initial'},disabled=False)
-nose_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Nose radius ($m$):',style={'description_width': 'initial'},disabled=False)
+nose_length = widgets.BoundedFloatText(value=.5,min=0,max=50.0,step=0.01,description='Nose length ($m$):',style={'description_width': 'initial'},disabled=False)
+nose_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.01,description='Nose radius ($m$):',style={'description_width': 'initial'},disabled=False)
 nose_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Nose thickness ($m$):',style={'description_width': 'initial'},disabled=False)
 nose_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Nose material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 nose_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Nose density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
@@ -389,14 +389,17 @@ def mass_dict_list():
 
 # Launching parameters
 rocket_mass = widgets.BoundedFloatText(value=2.,min=0.,max=1000000.,step=1.,description="Rocket's total mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-prop_weight = widgets.BoundedFloatText(value=.2,min=0.,max=1000000.,step=1.,description="Propellant mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-nose_mass = widgets.BoundedFloatText(value=.5,min=0.,max=1000000.,step=1.,description="(*)Nose mass ($kg$):",style={'description_width': 'initial'},disabled=False)
+prop_weight = widgets.BoundedFloatText(value=.2,min=0.,max=1000000.,step=0.001,description="Propellant mass ($kg$):",style={'description_width': 'initial'},disabled=False)
+nose_mass = widgets.BoundedFloatText(value=.5,min=0.,max=1000000.,step=0.1,description="(*)Nose mass ($kg$):",style={'description_width': 'initial'},disabled=False)
 nose_mass_text = widgets.Label( value="(*) The mass of the ejected part of the nose when the parachute is deployed.", style={'description_width':'initial'})
 rocket_launch_angle = widgets.BoundedFloatText(value=80.,min=0.,max=180,step=1,description="Rocket's launch angle (deg):",style={'description_width': 'initial'},disabled=False)
 wind_on = widgets.Checkbox(value=True,description='Generate random wind profile at launch time.',disabled=False,indent=True,style={'description_width':'initial'})
 wind_average_speed = widgets.BoundedFloatText(value=5.,min=0.,max=1000.,step=1.,description="Wind average speed ($m/s$):",style={'description_width': 'initial'},disabled=False)
+lift_on = widgets.Checkbox(value=True,description='Include the lift force in the simulation',disabled=False,indent=True,style={'description_width':'initial'})
+exp_coefs = widgets.Checkbox(value=True,description='Use user-given drag coefficient',disabled=False,indent=True,style={'description_width':'initial'})
+Cd_exp = widgets.BoundedFloatText(value=2.,min=0.,max=1000000.,step=0.1,description="Empiric drag coefficient",style={'description_width': 'initial'},disabled=False)
 
-launching_parameters_widget = widgets.VBox([rocket_mass, prop_weight, nose_mass, nose_mass_text, rocket_launch_angle, wind_on, wind_average_speed])
+launching_parameters_widget = widgets.VBox([rocket_mass, prop_weight, nose_mass, nose_mass_text, rocket_launch_angle, wind_on, wind_average_speed, lift_on, exp_coefs, Cd_exp])
 
 def show_wind(change):
     if change['new']:
@@ -404,7 +407,14 @@ def show_wind(change):
     else:
         wind_average_speed.layout.display = 'none'
 
+def show_Cd(change):
+    if change['new']:
+        Cd_exp.layout.display = ''
+    else:
+        Cd_exp.layout.display = 'none'
+
 wind_on.observe(show_wind, names='value')
+exp_coefs.observe(show_Cd, names='value')
 
 ####################################################
 
@@ -466,7 +476,10 @@ def rocket_dictionary():
               'ejected_nose_mass':nose_mass.value,
               'rocket_launch_angle':rocket_launch_angle.value*np.pi/180, # conversion to radians
               'wind_on':wind_on.value,
-              'wind_average_speed':wind_average_speed.value}
+              'wind_average_speed':wind_average_speed.value,
+              'lift_on':lift_on.value,
+              'exp_coefs':exp_coefs.value,
+              'Cd_exp':Cd_exp.value}
 
     return rocket
 

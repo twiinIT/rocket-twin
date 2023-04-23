@@ -12,7 +12,7 @@ import IPython
 if IPython.get_ipython() is not None:
     IPython.get_ipython().run_line_magic('matplotlib', 'qt')
 
-LOAD = False
+LOAD = True
 
 #Time-step
 dt = 0.01
@@ -40,7 +40,7 @@ driver.add_recorder(
 rocketNum = 2623
 l = 2
 angz = -np.deg2rad(80)
-AnalCoef = False #True for analytical drag coefficient (possibly innacurate), false for experimental
+AnalCoef = True #True for experimental drag coefficient, false for analytical (possibly innacurate)
 Wind = False #True for wind effects, false for no wind
 Lift = False #True for lift effects (trajecto does not consider them), false for no lift
 
@@ -95,6 +95,9 @@ if LOAD:
             'Rocket.Aero.Coefs.delta' : rocket_dict['delta'],
 
             'Wind.wind_on' : rocket_dict['wind_on'],
+            'Rocket.Aero.Coefs.TypeCd': rocket_dict['exp_coefs'],
+            'Rocket.Aero.Aeroforces.isLift': rocket_dict['lift_on'],
+            'Rocket.Aero.Coefs.Cd_exp': rocket_dict['Cd_exp'],
             # 'Wind.wind_average_speed' : rocket_dict['wind_average_speed'],
 
             'Para.l0' : rocket_dict['parachute_l0'],
@@ -471,21 +474,24 @@ plt.show()
 # =======================================
 # Flight Data
 
-print('\n')
-print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]), "m")
-print('\n')
-#print("Horizontal Position at Apogee: ", np.min(r2[:,0]), 'm')
-#print('\n')
-print("Total Flight Time: ", time[-1], "s")
-print('\n')
-print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
-print('\n')
-print("Lowest Pressure", np.min(pres))
-print('\n')
-print(np.asarray(data['Rocket.Aero.Coefs.eps'].tolist()))
+def simulation_values():
+
+    print('\n')
+    print("Apogee Height: ", np.max(np.array(r_then_r2)[:,2]), "m")
+    print('\n')
+    #print("Horizontal Position at Apogee: ", np.min(r2[:,0]), 'm')
+    #print('\n')
+    print("Total Flight Time: ", time[-1], "s")
+    print('\n')
+    print("Landing Point: ", np.array(r_then_r2)[-1,0], "m")
+    print('\n')
+    print("Lowest Pressure", np.min(pres))
+    print('\n')
+    #print(np.asarray(data['Rocket.Aero.Coefs.eps'].tolist()))
 
 
 def simulation_2d_plots():
+
     '''
     Plot various 2d plots
     '''
