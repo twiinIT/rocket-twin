@@ -40,7 +40,7 @@ driver.add_recorder(
 rocketNum = 2623
 l = 0.684664
 angz = -np.deg2rad(80)
-expCoef = False #True for experimental drag coefficient, false for analytical (possibly innacurate)
+expCoef = True #True for experimental drag coefficient, false for analytical (possibly innacurate)
 Wind = False #True for wind effects, false for no wind
 Lift = False #True for lift effects (trajecto does not consider them), false for no lift
 
@@ -82,7 +82,7 @@ init = {
     'Rocket.Aero.Coefs.TypeCd' : expCoef,
     'Wind.wind_on' : Wind,
     'Rocket.Aero.Aeroforces.isLift': Lift,
-    'Rocket.Aero.Coefs.Cd_exp': 0.6,
+    'Rocket.Aero.Coefs.Cd_exp': 0.64,
 
     #'Para.l0' : 1.,
    # 'Para.m1' : 0.2 + 0.2,
@@ -563,7 +563,7 @@ def simulation_2d_plots():
          "time_pres" : time_pres.tolist(),
          "exp_pres" : exp_pres.tolist(),
          }
-    with open("2623_2.json", "w") as outfile:
+    with open("2623_11.json", "w") as outfile:
         json.dump(d, outfile)
 
 
