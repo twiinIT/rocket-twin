@@ -8,6 +8,7 @@ import numpy as np
 class Thrust(System):
     def setup(self):
         self.add_inward('bang', np.zeros(3), desc="bracage angle", unit="")
+        self.add_inward('inclinaison', 0.0)
 
         #Geometry
         self.add_inward('l', desc = "Rocket length", unit = 'm')
@@ -22,6 +23,6 @@ class Thrust(System):
 
     def compute(self):
         self.Fp = np.array([thrust(self.time), 0, 0])
-        rot = R.from_euler('xyz', self.bang)
+        rot = R.from_euler('xyz', np.array([0, 0, self.inclinaison]))
         self.Fp = rot.apply(self.Fp)
         self.Mp = np.cross(np.array([- self.CG, 0, 0]), self.Fp)
