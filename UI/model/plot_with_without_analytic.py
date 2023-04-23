@@ -17,8 +17,8 @@ pres_given = given_coef['pressure']
 time_analytic = analytic_coef['time']
 pres_analytic = analytic_coef['pressure']
 
-time_pres = given_coef['time_pres']
-exp_pres = given_coef['exp_pres']
+#time_pres = given_coef['time_pres']
+#exp_pres = given_coef['exp_pres']
 
 time_alt = given_coef['time_alt']
 exp_alt = given_coef['exp_alt']
@@ -80,7 +80,7 @@ plt.show()
 
 plt.plot(time_given, pres_given, label = "Model Prediction for given coefficient")
 plt.plot(time_analytic, pres_analytic, label = "Model Prediction for analytic coefficient")
-plt.plot(time_pres, exp_pres, label = "Experimental Curve")
+#plt.plot(time_pres, exp_pres, label = "Experimental Curve")
 plt.title("Pressure over Time")
 plt.xlabel("Time (s)")
 plt.ylabel("Pressure (Pa)")
