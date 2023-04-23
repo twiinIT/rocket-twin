@@ -15,14 +15,14 @@ if IPython.get_ipython() is not None:
 LOAD = False
 
 #Time-step
-dt = 0.01
+dt = 0.05
 
 #Create System
 earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 70)
+driver.time_interval = (0, 250)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
@@ -37,12 +37,12 @@ driver.add_recorder(
 
 #Initial conditions and constants
 
-rocketNum = 2622
-l = 0.855
-angz = -np.deg2rad(85)
-expCoef = False #True for experimental drag coefficient, false for analytical (possibly innacurate)
+rocketNum = 3122
+l = 2.093
+angz = -np.deg2rad(80)
+expCoef = True #True for experimental drag coefficient, false for analytical (possibly innacurate)
 Wind = False #True for wind effects, false for no wind
-Lift = False #True for lift effects (trajecto does not consider them), false for no lift
+Lift = True #True for lift effects (trajecto does not consider them), false for no lift
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -63,32 +63,32 @@ init = {
     'Para.DynPar.r2' : np.array([0., 0., l/2]),
     'Rocket.CG' : l/2,
     'Rocket.Kin.ar' : np.array([0, angz, 0]),
-    'Rocket.Mass.m' : 2.0783,
-    'Rocket.Mass.m0' : 2.0783,
-    'Rocket.Mass.Dm' : 0.076,
-    'Rocket.Mass.lastEngineTime' : 1.,
+    'Rocket.Mass.m' : 6.685,
+    'Rocket.Mass.m0' : 6.685,
+    'Rocket.Mass.Dm' : 0.99/3.59,
+    'Rocket.Mass.lastEngineTime' : 3.59,
     'Rocket.Mass.I0_geom' : 1*np.array([1., 100., 100.]),
 
-    'Rocket.Aero.Coefs.ln' : 0.159,
-    'Rocket.Aero.Coefs.d' : 0.08,
+    'Rocket.Aero.Coefs.ln' : 0.4,
+    'Rocket.Aero.Coefs.d' : 0.11,
     'Rocket.Aero.Coefs.NFins' : 4,
-    'Rocket.Aero.Coefs.s' : 0.13,
-    'Rocket.Aero.Coefs.Xt' : 0.09,
-    'Rocket.Aero.Coefs.Cr' : 0.145,
+    'Rocket.Aero.Coefs.s' : 0.16,
+    'Rocket.Aero.Coefs.Xt' : 0.13,
+    'Rocket.Aero.Coefs.Cr' : 0.24,
     'Rocket.Aero.Coefs.Ct' : 0.09,
-    'Rocket.Aero.Coefs.tf' : 0.002,
+    'Rocket.Aero.Coefs.tf' : 0.003,
     'Rocket.Aero.Coefs.delta' : 0.,
 
     'Rocket.Aero.Coefs.TypeCd' : expCoef,
     'Wind.wind_on' : Wind,
     'Rocket.Aero.Aeroforces.isLift': Lift,
-    'Rocket.Aero.Coefs.Cd_exp': 0.6,
+    'Rocket.Aero.Coefs.Cd_exp': 0.5,
 
-    #'Para.l0' : 1.,
-   # 'Para.m1' : 0.2 + 0.2,
-  #  'Para.m2' : 1.6 - 0.2,
- #   'Para.DynPar.S_ref' : 0.29,
-#    'Para.DynPar.Cd' : 1.,
+    'Para.l0' : 1.,
+    'Para.m1' : 0.8,
+    'Para.m2' : 5.8,
+    'Para.DynPar.S_ref' : 1.72,
+    'Para.DynPar.Cd' : 1.,
 
     'Traj.parachute_deploy_method' : 0,
     'Traj.parachute_deploy_timer' : 0.,
@@ -522,9 +522,9 @@ def simulation_2d_plots():
     if IPython.get_ipython() is not None:
         IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
-    #time_pres, exp_pres = graph2list(f'{rocketNum}', 'Pression')
+    time_pres, exp_pres = graph2list(f'{rocketNum}', 'Pression')
     time_alt, exp_alt = graph2list(f'{rocketNum}', 'Altitude')
-    time_traj, exp_traj = graph2list(f'{rocketNum}', 'Trajectory')
+    # time_traj, exp_traj = graph2list(f'{rocketNum}', 'Trajectory')
 
     global time, pres, r_then_r2
     plt.plot(time, np.array(r_then_r2)[:,2], label = 'Model Prediction')
@@ -535,16 +535,16 @@ def simulation_2d_plots():
     plt.legend()
     plt.show()
 
-    plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2], label = 'Model Prediction')
-    plt.plot(time_traj, exp_traj, label = "Trajecto Prediction")
-    plt.title("Rocket XZ Trajectory")
-    plt.xlabel("Horizontal Displacement (m)")
-    plt.ylabel("Height (m)")
-    plt.legend()
-    plt.show()
+    # plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2], label = 'Model Prediction')
+    # plt.plot(time_traj, exp_traj, label = "Trajecto Prediction")
+    # plt.title("Rocket XZ Trajectory")
+    # plt.xlabel("Horizontal Displacement (m)")
+    # plt.ylabel("Height (m)")
+    # plt.legend()
+    # plt.show()
 
     plt.plot(time, pres, label = "Model Prediction")
-    #plt.plot(time_pres, exp_pres, label = "Experimental Curve")
+    plt.plot(time_pres, exp_pres, label = "Experimental Curve")
     plt.title("Pressure over Time")
     plt.xlabel("Time (s)")
     plt.ylabel("Pressure (Pa)")
@@ -555,15 +555,15 @@ def simulation_2d_plots():
          "exp_alt" : exp_alt.tolist(),
          
          "r_then_r2" : r_then_r2.tolist(),
-         "time_traj" : time_traj.tolist(),
-         "exp_traj" : exp_traj.tolist(),
+        #  "time_traj" : time_traj.tolist(),
+        #  "exp_traj" : exp_traj.tolist(),
          
          "time" : time.tolist(),
          "pressure" : pres.tolist(),
-         #"time_pres" : time_pres.tolist(),
-         #"exp_pres" : exp_pres.tolist(),
+         "time_pres" : time_pres.tolist(),
+         "exp_pres" : exp_pres.tolist(),
          }
-    with open("2623_2.json", "w") as outfile:
+    with open("3122_0.json", "w") as outfile:
         json.dump(d, outfile)
 
 
