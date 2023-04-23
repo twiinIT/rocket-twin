@@ -1,9 +1,29 @@
-from Earth import Earth
+import json
 import numpy as np
+
+LOAD = True
+
+# We need to read from the dict before importing the Earth class, otherwise the thrust.txt file will not be the good one.
+l = 2
+angz = -np.pi/2
+
+if LOAD:
+    with open("./include/init_rocket/rocket_dict.json", "r") as f:
+        rocket_dict = json.load(f)
+    l = rocket_dict['tube_length'] + rocket_dict['nose_length'] #Rocket's length on the plot
+    angz = - rocket_dict['rocket_launch_angle']
+    # Load the thrust.txt
+    thrust = rocket_dict['motor']['samples']
+    with open("model/Utility/thrust.txt", "w") as f:
+        for i in range(len(thrust[0])):
+            f.write(", ".join([str(point[i]) for point in thrust]))
+            if i < len(thrust[0]) - 1:
+                f.write("\n")
+
+from Earth import Earth
 from cosapp.drivers import RungeKutta, NonLinearSolver
 from cosapp.recorders import DataFrameRecorder
 from scipy.spatial.transform import Rotation as R
-import json
 import IPython
 
 # Set the matplotlib backend to 'qt' for the jupyter notebook
@@ -11,7 +31,6 @@ import IPython
 if IPython.get_ipython() is not None:
     IPython.get_ipython().run_line_magic('matplotlib', 'qt')
 
-LOAD = True
 
 #Time-step
 dt = 0.05
@@ -34,22 +53,6 @@ driver.add_recorder(
 )
 
 #Initial conditions and constants
-
-l = 2
-angz = -np.pi/2
-
-if LOAD:
-    with open("./include/init_rocket/rocket_dict.json", "r") as f:
-        rocket_dict = json.load(f)
-    l = rocket_dict['tube_length'] + rocket_dict['nose_length'] #Rocket's length on the plot
-    angz = - rocket_dict['rocket_launch_angle']
-    # Load the thrust.txt
-    thrust = rocket_dict['motor']['samples']
-    with open("model/Utility/thrust.txt", "w") as f:
-        for i in range(len(thrust[0])):
-            f.write(", ".join([str(point[i]) for point in thrust]))
-            if i < len(thrust[0]) - 1:
-                f.write("\n")
 
 init = {
     'Traj.r' : np.array([-(l/2)*np.sin(angz), 0., (l/2)*np.cos(angz)]),
@@ -155,7 +158,6 @@ def vector_magnitude(vector):
 data = driver.recorder.export_data()
 data = data.drop(['Section', 'Status', 'Error code'], axis=1)
 time = np.asarray(data['time'])
-print(time)
 r = np.asarray(data['Traj.r'].tolist())
 v = np.asarray(data['Rocket.Kin.v'].tolist())
 a = np.asarray(data['Rocket.Dyn.a'].tolist())

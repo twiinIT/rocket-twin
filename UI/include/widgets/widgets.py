@@ -204,7 +204,7 @@ rocket_properties_widget = widgets.Tab(children = children, titles = ['Tube prop
 f = open('./include/widgets/motor_data.json')
 motor_data = json.load(f)
 
-impulse_class = widgets.Dropdown(options=impulse_options,description='Impulse Class (N.s):',style={'description_width': 'initial'},disabled=False)
+impulse_class = widgets.Dropdown(options=impulse_options,description='Impulse Class ($N.s$):',style={'description_width': 'initial'},disabled=False)
 motor_diameter = widgets.FloatRangeSlider(value=[6, 161],min=6,max=161,step=1,description='Diameter ($mm$):',disabled=False,continuous_update=False,
                                           orientation='horizontal',readout=True,readout_format='.1f',style={'description_width': 'initial'})
 motor_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.1,description='Motor position from tube bottom ($m$):',style={'description_width': 'initial'},disabled=False)

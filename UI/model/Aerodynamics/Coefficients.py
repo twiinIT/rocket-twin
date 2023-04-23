@@ -52,7 +52,7 @@ class Coefficients(System):
         if self.ParaDep:
             return
                 
-        self.v_cpa += self.v_wind.val 
+        self.v_cpa -= self.v_wind.val 
 
         v_norm = np.linalg.norm(self.v_cpa)
 
@@ -106,7 +106,7 @@ class Coefficients(System):
         self.M = 0.5*Cm*self.rho*v_norm**2*self.S_ref*self.d # TODO : Finish the calculation by taking into account the moment induced by the fins. It is not mandatory right now, because the moment is calculated by a lever arm technique.
           
         # Parameters for Roll Moment.
-        # Documented at: https://github.com/RocketPy-Team/RocketPy/blob/master/docs/technical/aerodynamics/Roll_Equations.pdf
+        # Documented at: https://github.com/RocketPy-Team/RocketPy/blob/master/docs/technical/aerodynamics/roll_equations.rst
         λ = self.Ct / self.Cr
         tau = (self.s + r) / r
 
