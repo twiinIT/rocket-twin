@@ -37,12 +37,12 @@ driver.add_recorder(
 
 #Initial conditions and constants
 
-rocketNum = 2623
-l = 0.684664
-angz = -np.deg2rad(80)
-expCoef = True #True for experimental drag coefficient, false for analytical (possibly innacurate)
+rocketNum = 2622
+l = 0.855
+angz = -np.deg2rad(85)
+expCoef = False #True for experimental drag coefficient, false for analytical (possibly innacurate)
 Wind = False #True for wind effects, false for no wind
-Lift = True #True for lift effects (trajecto does not consider them), false for no lift
+Lift = False #True for lift effects (trajecto does not consider them), false for no lift
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -63,19 +63,19 @@ init = {
     'Para.DynPar.r2' : np.array([0., 0., l/2]),
     'Rocket.CG' : l/2,
     'Rocket.Kin.ar' : np.array([0, angz, 0]),
-    'Rocket.Mass.m' : 1.639,
-    'Rocket.Mass.m0' : 1.639,
+    'Rocket.Mass.m' : 2.0783,
+    'Rocket.Mass.m0' : 2.0783,
     'Rocket.Mass.Dm' : 0.076,
     'Rocket.Mass.lastEngineTime' : 1.,
     'Rocket.Mass.I0_geom' : 1*np.array([1., 100., 100.]),
 
-    'Rocket.Aero.Coefs.ln' : 0.15,
-    'Rocket.Aero.Coefs.d' : 0.6,
+    'Rocket.Aero.Coefs.ln' : 0.159,
+    'Rocket.Aero.Coefs.d' : 0.08,
     'Rocket.Aero.Coefs.NFins' : 4,
-    'Rocket.Aero.Coefs.s' : 0.1,
-    'Rocket.Aero.Coefs.Xt' : 0.03,
-    'Rocket.Aero.Coefs.Cr' : 0.09,
-    'Rocket.Aero.Coefs.Ct' : 0.03,
+    'Rocket.Aero.Coefs.s' : 0.13,
+    'Rocket.Aero.Coefs.Xt' : 0.09,
+    'Rocket.Aero.Coefs.Cr' : 0.145,
+    'Rocket.Aero.Coefs.Ct' : 0.09,
     'Rocket.Aero.Coefs.tf' : 0.002,
     'Rocket.Aero.Coefs.delta' : 0.,
 
@@ -522,7 +522,7 @@ def simulation_2d_plots():
     if IPython.get_ipython() is not None:
         IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
-    time_pres, exp_pres = graph2list(f'{rocketNum}', 'Pression')
+    #time_pres, exp_pres = graph2list(f'{rocketNum}', 'Pression')
     time_alt, exp_alt = graph2list(f'{rocketNum}', 'Altitude')
     time_traj, exp_traj = graph2list(f'{rocketNum}', 'Trajectory')
 
@@ -544,7 +544,7 @@ def simulation_2d_plots():
     plt.show()
 
     plt.plot(time, pres, label = "Model Prediction")
-    plt.plot(time_pres, exp_pres, label = "Experimental Curve")
+    #plt.plot(time_pres, exp_pres, label = "Experimental Curve")
     plt.title("Pressure over Time")
     plt.xlabel("Time (s)")
     plt.ylabel("Pressure (Pa)")
@@ -560,10 +560,10 @@ def simulation_2d_plots():
          
          "time" : time.tolist(),
          "pressure" : pres.tolist(),
-         "time_pres" : time_pres.tolist(),
-         "exp_pres" : exp_pres.tolist(),
+         #"time_pres" : time_pres.tolist(),
+         #"exp_pres" : exp_pres.tolist(),
          }
-    with open("2623_3.json", "w") as outfile:
+    with open("2623_2.json", "w") as outfile:
         json.dump(d, outfile)
 
 
@@ -571,4 +571,3 @@ def simulation_2d_plots():
 if IPython.get_ipython() is None:
     simulation_values()
     simulation_2d_plots()
-    json.dump()

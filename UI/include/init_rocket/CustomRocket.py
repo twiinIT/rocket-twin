@@ -147,7 +147,7 @@ class CustomRocket:
 
     def get_mass_properties(self):
         '''
-        Get mass properties of the rocket (volume, mass, cog, inertia).
+        Get calculated mass properties of the rocket (volume, mass, cog, inertia).
         '''
         cog, mass = self.get_cog()
         inertia = np.zeros((3,3))
@@ -206,7 +206,11 @@ class CustomRocket:
         '''
         Print and return mass properties.
         '''
+        input_mass = self.dictionnary['rocket_mass']
         volume, mass, cog, inertia = self.get_mass_properties()
+
+        mass = input_mass if mass==0 else mass # Change the value of the mass to the calculated one if the input is 0
+
         cpa = self.get_cpa()
         print("Volume (m^3)                                 = {0}".format(volume))
         print("Mass   (kg)                                  = {0}".format(mass))
