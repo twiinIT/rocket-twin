@@ -551,6 +551,22 @@ def simulation_2d_plots():
     plt.legend()
     plt.show()
 
+    d = {"time_alt" : time_alt.tolist(),
+         "exp_alt" : exp_alt.tolist(),
+         
+         "r_then_r2" : r_then_r2.tolist(),
+         "time_traj" : time_traj.tolist(),
+         "exp_traj" : exp_traj.tolist(),
+         
+         "time" : time.tolist(),
+         "pressure" : pres.tolist(),
+         "time_pres" : time_pres.tolist(),
+         "exp_pres" : exp_pres.tolist(),
+         }
+    with open("2623_3.json", "w") as outfile:
+        json.dump(d, outfile)
+
+
 
 if IPython.get_ipython() is None:
     simulation_values()
