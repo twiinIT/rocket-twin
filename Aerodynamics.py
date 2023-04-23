@@ -11,10 +11,6 @@ class Aerodynamics(System):
         #Rocket inputsèè
         self.add_inward('Sref', 1.767e-2, desc = "Aerodynamic Surface of Reference")
 
-        # self.add_inward('Cd', 1., desc = "Drag Coefficient")
-        # self.add_inward('Cl', 1., desc = "Lift Coefficient")
-        # self.add_inward('gf', 1., desc = "GF Distance")
-
         #Trajectory inputs
         self.add_input(ReferentialPort, 'v') # desc = "Rocket velocity"
 
@@ -27,9 +23,10 @@ class Aerodynamics(System):
         
     def compute(self):
         incidence = self.parent.parent.theta - np.arctan2(self.parent.parent.v.vector[1],self.parent.parent.v.vector[0]) # The y axis is the axis of the rocket and the x axis is perpendicular 
+
         incidence = incidence%(2*np.pi) - np.pi
 
-        Cx, Cn, Z_CPA = aeroCoefs(incidence) # !!!!!!!!!!! The tables are supposed to be in degree, This line should be changed in the future
+        Cx, Cn, Z_CPA = aeroCoefs(incidence) 
         
         self.Fa.vector = 0.5*self.rho*np.linalg.norm(self.v.vector)**2*self.Sref*np.array([Cn, Cx]) # Selon l'axe de la fusée
 

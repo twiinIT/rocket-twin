@@ -2,7 +2,6 @@ from Earth import Earth
 import numpy as np
 from cosapp.drivers import RungeKutta
 import plotly.graph_objs as go
-import plotly.figure_factory as ff
 from cosapp.recorders import DataFrameRecorder
 
 earth = Earth('earth')
@@ -128,7 +127,15 @@ fig.show()
 
 
 #Rocket' trajectory
+# import matplotlib.pyplot as plt
 
+# # Matplotlib vizualisation
+# plt.plot([traj[i,0] for i in range(len(traj))], [traj[i,1] for i in range(len(traj))], 'r')
+# plt.xlabel("x (m)")
+# plt.ylabel("z (m)")
+
+# plt.title("Trajectoire du modèle 2D")
+# plt.show()
 
 traces3 = [
     go.Scatter(
