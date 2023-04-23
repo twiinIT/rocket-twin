@@ -2,10 +2,10 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 
-with open("2623_3.json", "r") as outfile:
+with open("2623_1.json", "r") as outfile:
     given_coef = json.load(outfile)
 
-with open("2623_4.json", "r") as outfile:
+with open("2623_2.json", "r") as outfile:
     analytic_coef = json.load(outfile)
 
 r_then_r2_given = given_coef['r_then_r2']
