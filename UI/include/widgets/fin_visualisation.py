@@ -46,4 +46,5 @@ def draw_fin(C_t,C_r,X_t,s, save = None):
     else:
         plt.show()
 
+
     return None
