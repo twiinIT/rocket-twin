@@ -48,7 +48,8 @@ solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
 # Add a recorder to capture time evolution in a dataframe
 driver.add_recorder(
     DataFrameRecorder(includes=['Traj.r', 'Rocket.Kin.v', 'Rocket.Dyn.a', 'Rocket.Dyn.m', 'Rocket.Thrust.Fp', 'Rocket.Kin.Kin_ang',
-                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P']),
+                                 'Rocket.Kin.av', 'Rocket.Aero.F', 'Traj.v.val', 'Wind.v_wind.val', 'Para.DynPar.r1', 'Para.DynPar.r2', 'Atmo.Pres.P', 'Rocket.Mass.CG_out',
+                                 'Rocket.Aero.Coefs.Xcp']),
     period=.1,
 )
 
@@ -168,7 +169,8 @@ r2 = np.asarray(data['Para.DynPar.r2'].tolist())
 euler = np.asarray(data['Rocket.Kin.Kin_ang'].tolist())
 wind = np.asarray(data['Wind.v_wind.val'].tolist())
 pres = np.asarray(data['Atmo.Pres.P'].tolist())
-
+cog = np.asarray(data['Rocket.Mass.CG_out'].tolist())
+cpa = np.asarray(data['Rocket.Aero.Coefs.Xcp'].tolist())
 
 # find time i where the parachute appears 
 time_parachute=0
@@ -487,7 +489,7 @@ def simulation_2d_plots():
     if IPython.get_ipython() is not None:
         IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
-    global time, pres, r_then_r2
+    global time, pres, r_then_r2, cog, cpa
     plt.plot(time, np.array(r_then_r2)[:,2])
     plt.title("Rocket Altitude")
     plt.xlabel("Time (s)")
@@ -504,6 +506,13 @@ def simulation_2d_plots():
     plt.title("Pressure over Time")
     plt.xlabel("Time (s)")
     plt.ylabel("Pressure (Pa)")
+    plt.show()
+
+    stability_margin = cog-cpa
+    plt.plot(time[:100], stability_margin[:100])
+    plt.title("Stability margin over Time")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Stability margin (m)")
     plt.show()
 
 
