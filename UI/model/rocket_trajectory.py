@@ -41,8 +41,8 @@ rocketNum = 2622
 l = 0.855
 angz = -np.deg2rad(85)
 expCoef = False #True for experimental drag coefficient, false for analytical (possibly innacurate)
-Wind = False #True for wind effects, false for no wind
-Lift = False #True for lift effects (trajecto does not consider them), false for no lift
+Wind = True #True for wind effects, false for no wind
+Lift = True #True for lift effects (trajecto does not consider them), false for no lift
 
 if LOAD:
     with open("./include/init_rocket/rocket_dict.json", "r") as f:
@@ -77,7 +77,7 @@ init = {
     'Rocket.Aero.Coefs.Cr' : 0.145,
     'Rocket.Aero.Coefs.Ct' : 0.09,
     'Rocket.Aero.Coefs.tf' : 0.002,
-    'Rocket.Aero.Coefs.delta' : 0.,
+    'Rocket.Aero.Coefs.delta' : 0.1,
 
     'Rocket.Aero.Coefs.TypeCd' : expCoef,
     'Wind.wind_on' : Wind,
@@ -223,7 +223,7 @@ r_then_r2 = np.array(r_then_r2)
 # We calculate the mean of the maximum of the trajectory according to the 3 axis
 K = (r_then_r2[:,0].max() + r_then_r2[:,1].max() +r_then_r2[:,2].max())/3 
 
-ratio = K*l/50
+ratio = K*l/20
 #We then normalize the arrows on the plot
 wind*=2*ratio
 wind_b = []
@@ -551,20 +551,20 @@ def simulation_2d_plots():
     plt.legend()
     plt.show()
 
-    d = {"time_alt" : time_alt.tolist(),
-         "exp_alt" : exp_alt.tolist(),
+    # d = {"time_alt" : time_alt.tolist(),
+    #      "exp_alt" : exp_alt.tolist(),
          
-         "r_then_r2" : r_then_r2.tolist(),
-         "time_traj" : time_traj.tolist(),
-         "exp_traj" : exp_traj.tolist(),
+    #      "r_then_r2" : r_then_r2.tolist(),
+    #      "time_traj" : time_traj.tolist(),
+    #      "exp_traj" : exp_traj.tolist(),
          
-         "time" : time.tolist(),
-         "pressure" : pres.tolist(),
-         #"time_pres" : time_pres.tolist(),
-         #"exp_pres" : exp_pres.tolist(),
-         }
-    with open("2623_2.json", "w") as outfile:
-        json.dump(d, outfile)
+    #      "time" : time.tolist(),
+    #      "pressure" : pres.tolist(),
+    #      #"time_pres" : time_pres.tolist(),
+    #      #"exp_pres" : exp_pres.tolist(),
+    #      }
+    # with open("2623_2.json", "w") as outfile:
+    #     json.dump(d, outfile)
 
 
 
