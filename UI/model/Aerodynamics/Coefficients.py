@@ -30,7 +30,7 @@ class Coefficients(System):
 
         #Fins' Geometry, check the documentation for explanation
         self.add_inward('NFins', 4, desc="Number of fins", unit="")
-        self.add_inward('s', 0.1, desc="Span of one fin", unit='m')
+        self.add_inward('s', 0.13, desc="Span of one fin", unit='m')
         self.add_inward('Xt', 0.03, unit = 'm')
         self.add_inward('Cr', 0.09, unit = 'm')
         self.add_inward('Ct', 0.03, unit = 'm')
