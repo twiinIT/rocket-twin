@@ -33,7 +33,7 @@ class AeroForces(System):
         if self.ParaDep:
             return
 
-        self.v_cpa += self.v_wind.val 
+        self.v_cpa -= self.v_wind.val 
         
         Fd = .5 * self.rho * np.linalg.norm(self.v_cpa)**2 * self.S_ref * self.Cd
         Fn = self.N

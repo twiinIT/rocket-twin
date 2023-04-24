@@ -40,8 +40,8 @@ driver.add_recorder(
 rocketNum = 3122
 l = 2.093
 angz = -np.deg2rad(80)
-expCoef = True #True for experimental drag coefficient, false for analytical (possibly innacurate)
-Wind = False #True for wind effects, false for no wind
+expCoef = False #True for experimental drag coefficient, false for analytical (possibly innacurate)
+Wind = True #True for wind effects, false for no wind
 Lift = True #True for lift effects (trajecto does not consider them), false for no lift
 
 if LOAD:
@@ -77,7 +77,7 @@ init = {
     'Rocket.Aero.Coefs.Cr' : 0.24,
     'Rocket.Aero.Coefs.Ct' : 0.09,
     'Rocket.Aero.Coefs.tf' : 0.003,
-    'Rocket.Aero.Coefs.delta' : 0.,
+    'Rocket.Aero.Coefs.delta' : 0.1,
 
     'Rocket.Aero.Coefs.TypeCd' : expCoef,
     'Wind.wind_on' : Wind,
@@ -551,20 +551,20 @@ def simulation_2d_plots():
     plt.legend()
     plt.show()
 
-    d = {"time_alt" : time_alt.tolist(),
-         "exp_alt" : exp_alt.tolist(),
+    # d = {"time_alt" : time_alt.tolist(),
+    #       "exp_alt" : exp_alt.tolist(),
          
-         "r_then_r2" : r_then_r2.tolist(),
-        #  "time_traj" : time_traj.tolist(),
-        #  "exp_traj" : exp_traj.tolist(),
+    #      "r_then_r2" : r_then_r2.tolist(),
+    #     #  "time_traj" : time_traj.tolist(),
+    #     #  "exp_traj" : exp_traj.tolist(),
          
-         "time" : time.tolist(),
-         "pressure" : pres.tolist(),
-         "time_pres" : time_pres.tolist(),
-         "exp_pres" : exp_pres.tolist(),
-         }
-    with open("3122_0.json", "w") as outfile:
-        json.dump(d, outfile)
+    #      "time" : time.tolist(),
+    #      "pressure" : pres.tolist(),
+    #      "time_pres" : time_pres.tolist(),
+    #      "exp_pres" : exp_pres.tolist(),
+    #      }
+    # with open("3122_0.json", "w") as outfile:
+    #     json.dump(d, outfile)
 
 
 
