@@ -314,7 +314,7 @@ class Animator:
         # =======================================
         #  configure plots and data structures
 
-        self.fig = plt.figure(figsize=(15, 8))
+        self.fig = plt.figure(figsize=(8, 8))
         self.fig.subplots_adjust(left=0.05,
                                  bottom=None,
                                  right=0.95,
@@ -324,7 +324,6 @@ class Animator:
 
 
         self.ax1 = self.fig.add_subplot(projection='3d')
-        # self.ax2 = self.fig.add_subplot()
 
         self.set_axes_limits()
 
@@ -401,7 +400,7 @@ class Animator:
         Setting the axes properties such as title, limits, labels
         """
         self.ax1.set_title('Trajectory Visualisation')
-        self.ax1.set_position([0.25, 0, 0.5, 1])
+        # self.ax1.set_position([0.25, 0, 0.5, 1])
         self.ax1.set_aspect('equal')
 
     def visualize(self, i):
