@@ -106,10 +106,10 @@ length = traj.size
 
 import matplotlib.pyplot as plt
 
-plt.plot(time, traj, 'r', label = "Masse de gaz : 1 kg")
-plt.plot(time2, traj2, 'b', label = "Masse de gaz : 7 kg")
+plt.plot(time, traj, 'r', label = "Masse de gaz : 7 kg")
+plt.plot(time2, traj2, 'b', label = "Masse de gaz : 1 kg")
 
-plt.title("Trajectoire d'une fusée de 2kg à vide, débit massique de 1.0kg/s,\n soumise à son poids et à une force de poussée")
+plt.title("Altitude en fonction du temps de la simulation 1D")
 plt.xlabel("time"),
 plt.ylabel("altitude")
 
