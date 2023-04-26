@@ -298,13 +298,15 @@ motor_selection_widget.observe(set_motor_options, names='selected_index')
 # Parachute settings
 rope_rest_length = widgets.BoundedFloatText(value=1.,min=0.,max=1000.,step=.1,description='Rope rest length ($m$):',style={'description_width': 'initial'},disabled=False)
 parachute_weight = widgets.BoundedFloatText(value=.5,min=0.,max=1000.,step=.1,description='Parachute weight ($kg$):',style={'description_width': 'initial'},disabled=False)
-s_ref = widgets.BoundedFloatText(value=.29,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
+s_ref1 = widgets.BoundedFloatText(value=.05,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
+s_ref2 = widgets.BoundedFloatText(value=.5,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
 parachute_cd = widgets.BoundedFloatText(value=1.75,min=0.,max=100.,step=.1,description='Drag coefficient of parachute:',style={'description_width': 'initial'},disabled=False)
-deploy_method = widgets.Dropdown(options=[('timer','timer'), ('negative vertical velocity','velocity')],value='timer',description='Parachute deployment method:',style={'description_width': 'initial'},disabled=False)
+deploy_method = widgets.Dropdown(options=[('timer','timer'), ('negative vertical velocity','velocity')],value='timer',description='First parachute deployment method:',style={'description_width': 'initial'},disabled=False)
+deploy_alt = widgets.BoundedFloatText(value=100., min=0.,max=1000000., step = 1., description = "Second para. deployment alt. ($m$):",style={'description_width': 'initial'},disabled=False)
 parachute_timer = widgets.BoundedFloatText(value=10.,min=0.,max=3600.,step=1,description='(*)Deployment time ($s$):',style={'description_width': 'initial'},disabled=False)
-timer_text = widgets.Label(value="(*)Time before parachute deployment in seconds.", style={'description_width':'initial'})
+timer_text = widgets.Label(value="(*)Time before first parachute deployment in seconds.", style={'description_width':'initial'})
 
-parachute_widget = widgets.VBox([rope_rest_length, parachute_weight, s_ref, parachute_cd, deploy_method, parachute_timer])
+parachute_widget = widgets.VBox([rope_rest_length, parachute_weight, s_ref1, s_ref2, parachute_cd, deploy_method, parachute_timer, timer_text, deploy_alt])
 
 def show_timer(change):
     if change['new'] == 'timer':
@@ -474,9 +476,11 @@ def rocket_dictionary():
               'motor_ring_density':ring_density.value,
               'parachute_l0':rope_rest_length.value,
               'parachute_weight':parachute_weight.value,
-              'parachute_sref':s_ref.value,
+              'parachute_sref1':s_ref1.value,
+              'parachute_sref2':s_ref2.value,
               'parachute_Cd':parachute_cd.value,
               'parachute_deploy_method':deploy_method.value,
+              'second_para_deploy_alt':deploy_alt.value,
               'parachute_deploy_timer':parachute_timer.value,
               'additional_masses':mass_dict_list(),
               'rocket_mass':rocket_mass.value,

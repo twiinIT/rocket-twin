@@ -40,7 +40,7 @@ earth = Earth('earth')
 
 #Add RungeKutta driver
 driver = earth.add_driver(RungeKutta(order=4, dt=dt))
-driver.time_interval = (0, 50)
+driver.time_interval = (0, 100)
 
 #Add NonLinearSolver driver
 solver = driver.add_child(NonLinearSolver('solver', factor=1.0))
@@ -97,7 +97,11 @@ if LOAD:
             'Para.l0' : rocket_dict['parachute_l0'],
             'Para.m1' : rocket_dict['parachute_weight'] + rocket_dict['ejected_nose_mass'],
             'Para.m2' : rocket_dict['rocket_mass'] - rocket_dict['ejected_nose_mass'],
-            'Para.DynPar.S_ref' : rocket_dict['parachute_sref'],
+            'Para.DynPar.S_ref1' : rocket_dict['parachute_sref1'],
+            'Para.DynPar.S_ref2' : rocket_dict['parachute_sref2'],
+            'Para.DynPar.AltPara' : rocket_dict['second_para_deploy_alt'],
+
+
             'Para.DynPar.Cd' : rocket_dict['parachute_Cd'],
 
             'Traj.parachute_deploy_method' : 0 if rocket_dict['parachute_deploy_method'] == 'velocity' else 1,
@@ -488,29 +492,27 @@ def simulation_2d_plots():
     if IPython.get_ipython() is not None:
         IPython.get_ipython().run_line_magic('matplotlib', 'inline')
 
-    # global time, pres, r_then_r2, cog, cpa
-    # plt.plot(time, np.array(r_then_r2)[:,2])
-    # plt.title("Rocket Altitude")
-    # plt.xlabel("Time (s)")
-    # plt.ylabel("Height (m)")
-    # plt.show()
+    global time, pres, r_then_r2, cog, cpa
+    plt.plot(time, np.array(r_then_r2)[:,2])
+    plt.title("Rocket Altitude")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Height (m)")
+    plt.show()
 
-    # plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
-    # plt.title("Rocket XZ Trajectory")
-    # plt.xlabel("Horizontal Displacement (m)")
-    # plt.ylabel("Height (m)")
-    # plt.show()
+    plt.plot(np.array(r_then_r2)[:,0], np.array(r_then_r2)[:,2])
+    plt.title("Rocket XZ Trajectory")
+    plt.xlabel("Horizontal Displacement (m)")
+    plt.ylabel("Height (m)")
+    plt.show()
 
-    # plt.plot(time, pres)
-    # plt.title("Pressure over Time")
-    # plt.xlabel("Time (s)")
-    # plt.ylabel("Pressure (Pa)")
-    # plt.show()
+    plt.plot(time, pres)
+    plt.title("Pressure over Time")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Pressure (Pa)")
+    plt.show()
 
     stability_margin = cog-cpa
     plt.plot(time, stability_margin, label = 'margin')
-    # plt.plot(time[:duree], cog[:duree], label='cog')
-    # plt.plot(time[:duree],cpa[:duree], label='cpa')
     plt.title("Stability margin over Time")
     plt.xlabel("Time (s)")
     plt.ylabel("Stability margin (m)")
@@ -534,6 +536,9 @@ def simulation_2d_plots():
     plt.tight_layout()
     plt.show()
 
+###################################################################
+# Call the code bellow to plot additional curves after simulation #
+###################################################################
 
-if IPython.get_ipython() is None:
-    simulation_2d_plots()
+# if IPython.get_ipython() is None:
+#     simulation_2d_plots()

@@ -47,7 +47,7 @@ class DynamicsPar(System):
         
         S_ref = self.S_ref1
 
-        if self.r2<self.AltPara:
+        if self.r2[2]<self.AltPara:
             S_ref = self.S_ref2
 
         Drag = -.5 * self.rho * S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
