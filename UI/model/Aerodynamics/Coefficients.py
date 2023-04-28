@@ -55,6 +55,7 @@ class Coefficients(System):
         self.add_inward('Cd_exp', 0.6, desc = "Experimental Drag Coefficient", unit = '')
         self.add_inward('eps', 1., desc = "Calibration Coefficient", unit = '')
 
+        self.add_inward('montecarlo_coef', 1., desc= "Montecarlo coef for drag/lift", unit='')
 
     def compute(self):
         if self.ParaDep:
@@ -94,7 +95,7 @@ class Coefficients(System):
         Cna = Cna_all_fins + Cna_body
         Cma = Cma_body
 
-        Cn = Cna*alpha
+        Cn = Cna*alpha * self.montecarlo_coef
         Cm = Cma*alpha #Check the formula, it is calculated at the top nose here and should be calculated at the CG
 
         Xbody = (self.l*self.Al - V)/(self.Al - self.A0)
@@ -220,7 +221,7 @@ class Coefficients(System):
             else:
                 return 1.25711*(alpha - 17*np.pi/180)**3 -2.40250*(alpha - 17*np.pi/180)**2 + 1.3
 
-        self.Cd = f(abs(alpha)) * C_D_0
+        self.Cd = f(abs(alpha)) * C_D_0 * self.montecarlo_coef
         #self.eps = self.Cd/self.Cd_exp
 
         if self.TypeCd == True:
