@@ -124,7 +124,7 @@ class CustomRocket:
         '''
         if 'VSCODE_CWD' in os.environ:
             rocketPlotter = RocketPlotter(self)
-            rocketPlotter.plot(only_ext=False, opened=True)
+            rocketPlotter.plot(only_ext=only_ext, opened=opened)
 
         elif any('ipykernel' in arg for arg in sys.argv):
             # Set the matplotlib backend to 'widgets' to have interactive plot

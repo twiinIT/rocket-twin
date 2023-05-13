@@ -168,7 +168,7 @@ show_nose_parameter({'new':nose_type.value})
 nose_type.observe(show_nose_parameter, names='value')
 
 # Fins properties
-with open("./include/widgets/fin.png", "rb") as fin_file:
+with open("./include/widgets/imgs/fin.png", "rb") as fin_file:
     fin_image = fin_file.read()
     fin_wimg = widgets.Image(value=fin_image,format='png', layout=widgets.Layout(width='300px', height='300px'))
 Cr = widgets.BoundedFloatText(value=.2,min=0,max=1,step=0.01,description='Cr ($m$):',style={'description_width': 'initial'},disabled=False)
@@ -181,8 +181,8 @@ fins_number = widgets.IntText(value=4,description='Number of fins:',style={'desc
 fins_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fins material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 fins_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fins density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 fins_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.01,description='Fins position from tube bottom ($m$):',style={'description_width': 'initial'},disabled=False)
-fin_plot_button = widgets.Button(description='Plot fin',disabled=False,button_style='',tooltip='Plot fin',icon='image')
-with open("./include/widgets/personal_fin_plot.png", "rb") as fin_file:
+fin_plot_button = widgets.Button(description='Fin preview',disabled=False,button_style='',tooltip='Plot fin',icon='eye')
+with open("./include/widgets/imgs/personal_fin_plot.png", "rb") as fin_file:
     fin_image = fin_file.read()
     fin_plot_wimg = widgets.Image(value=fin_image,format='png', height=200, layout=widgets.Layout(width='300px', height='300px'))
 
@@ -199,10 +199,11 @@ show_fins_density({'new':fins_material.value})
 fins_material.observe(show_fins_density, names='value')
 
 def show_fin_plot(button):
-    draw_fin(Ct.value,Cr.value,Xt.value,s.value,save="./include/widgets/personal_fin_plot.png")
-    fin_file = open("./include/widgets/personal_fin_plot.png", "rb")
+    draw_fin(Ct.value,Cr.value,Xt.value,s.value,save="./include/widgets/imgs/personal_fin_plot.png")
+    fin_file = open("./include/widgets/imgs/personal_fin_plot.png", "rb")
     fin_image = fin_file.read()
     fin_plot_wimg.value = fin_image
+    fin_file.close()
 
 fin_plot_button.on_click(show_fin_plot)
 
@@ -229,7 +230,7 @@ motor_ring = widgets.Checkbox(value=False,description='Automatic fixation ring a
 ring_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Fixation ring material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
 ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fixation ring density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
 ring_box = widgets.VBox([ring_material,ring_density])
-motor_file = open("./include/widgets/thrustcurve.png", "rb")
+motor_file = open("./include/widgets/imgs/thrustcurve.png", "rb")
 motor_image = motor_file.read()
 motor_wimg = widgets.Image(value=motor_image,format='png', height = 200, width=480)
 motorBox = widgets.VBox([selected_motor,motor_select_text,motor_ring,ring_box,motor_wimg])
@@ -270,7 +271,7 @@ def thrustcurve(motor_name):
     plt.xlabel('time (s)')
     plt.ylabel('impulse (N)')
     plt.title(f'{motor_name} thrust curve')
-    plt.savefig('./include/widgets/thrustcurve.png')
+    plt.savefig('./include/widgets/imgs/thrustcurve.png')
     plt.close()
 
 def set_motor_options(change):
@@ -287,9 +288,10 @@ def set_motor_options(change):
 
 def change_thrustcurve(change):
     thrustcurve(change['new'])
-    motor_file = open("./include/widgets/thrustcurve.png", "rb")
+    motor_file = open("./include/widgets/imgs/thrustcurve.png", "rb")
     motor_image = motor_file.read()
     motor_wimg.value = motor_image
+    motor_file.close()
 
 selected_motor.observe(change_thrustcurve, names='value')
 motor_selection_widget.observe(set_motor_options, names='selected_index')
