@@ -28,6 +28,10 @@ class DynamicsPar(System):
         self.add_input(VelPort, 'v_wind')
         self.add_input(VelPort, 'v_in')
 
+        #Design Method
+        self.add_inward('eps', 1., desc = "Calibration Coefficient", unit = '')
+        self.add_inward('Cd_F', 1., desc = "Targeted Parachute Drag Coefficient", unit = '')
+
 
         #Dynamics outputs
         self.add_outward('a1', np.zeros(3), desc = "Parachute + nosecone Acceleration", unit = 'm/s**2')
@@ -50,7 +54,9 @@ class DynamicsPar(System):
         if self.r2[2]<self.AltPara:
             S_ref = self.S_ref2
 
-        Drag = -.5 * self.rho * S_ref * self.Cd * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
+        self.Cd_F = self.Cd*self.eps
+
+        Drag = -.5 * self.rho * S_ref * self.Cd_F * np.linalg.norm(self.v1) * (self.v1-self.v_wind.val) 
         d = -self.r2 + self.r1
         self.a1 = -(self.k / self.m1) * (d-self.l0*d/np.linalg.norm(d)) + np.array([0.,0.,-9.8]) + Drag/self.m1
         self.a2 = -(self.k / self.m2) * (-d+self.l0*d/np.linalg.norm(d)) + np.array([0.,0.,-9.8])
