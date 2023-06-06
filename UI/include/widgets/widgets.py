@@ -1,99 +1,107 @@
-import ipywidgets as widgets
 import json
+
+import IPython
+import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import numpy as np
-import IPython
 from include.init_rocket.CustomRocket import CustomRocket
 from include.widgets.fin_visualisation import draw_fin
 
-
 # By default the matplotlib backend for the jupyter notebook is set to 'inline'
-IPython.get_ipython().run_line_magic('matplotlib', 'inline')
+IPython.get_ipython().run_line_magic("matplotlib", "inline")
 
-plt.close() # To avoid the code from plotting residual figures
+plt.close()  # To avoid the code from plotting residual figures
 
-materials = {"custom": 0,
-             "blue_xps": 32,
-             "acier": 7850,
-             "acrylique": 1190,
-             "aluminium": 2700,
-             "balsa": 170, 
-             "blue_tube": 1300,
-             "bouleau": 670,
-             "carton": 680,
-             "contre_plaque": 630, 
-             "delrin": 1420, 
-             "depron (XPS)": 40, 
-             "erable": 755,
-             "fibre_carbon": 1780,
-             "fibre_verre": 1850, 
-             "kraft_phenolique": 950, 
-             "laiton": 8600, 
-             "liege": 240, 
-             "nylon": 1150, 
-             "pvc": 1390, 
-             "papier": 820,
-             "pin": 530, 
-             "polycarbonate": 1200, 
-             "polystyrene": 1050, 
-             "polystyrene_eps": 20, 
-             "sapin": 450, 
-             "tilleul": 500,
-             "titane": 4500, 
-             "tube_quantum": 1050}
+materials = {
+    "custom": 0,
+    "blue_xps": 32,
+    "acier": 7850,
+    "acrylique": 1190,
+    "aluminium": 2700,
+    "balsa": 170,
+    "blue_tube": 1300,
+    "bouleau": 670,
+    "carton": 680,
+    "contre_plaque": 630,
+    "delrin": 1420,
+    "depron (XPS)": 40,
+    "erable": 755,
+    "fibre_carbon": 1780,
+    "fibre_verre": 1850,
+    "kraft_phenolique": 950,
+    "laiton": 8600,
+    "liege": 240,
+    "nylon": 1150,
+    "pvc": 1390,
+    "papier": 820,
+    "pin": 530,
+    "polycarbonate": 1200,
+    "polystyrene": 1050,
+    "polystyrene_eps": 20,
+    "sapin": 450,
+    "tilleul": 500,
+    "titane": 4500,
+    "tube_quantum": 1050,
+}
 
-textures = {"Customized":"custom",
-             "Acier": "acier",
-             "Acrylique": "acrylique",
-             "Aluminium": "aluminium",
-             "Balsa": "balsa", 
-             "Blue tube": "blue_tube",
-             "Bouleau": "bouleau",
-             "Carton": "carton",
-             "Contre-plaqué (bouleau)": "contre_plaque", 
-             "Delrin": "delrin", 
-             "Depron (XPS)": "depron_xps", 
-             "Erable": "erable", 
-             "Fibre de carbone": "fibre_carbon",
-             "Fibre de verre": "fibre_verre", 
-             "Kraft phénolique": "kraft_phenolique", 
-             "Laiton": "laiton", 
-             "Liège": "liege", 
-             "Mousse Bleue de polystyrène (XPS)": "blue_xps",
-             "Nylon": "nylon", 
-             "Papier (bureau)": "papier",
-             "Pin": "pin", 
-             "Polycarbonate (Lexan)": "polycarbonate", 
-             "Polystyrène": "polystyrene", 
-             "Polystyrène (générique EPS)": "polystyrene_eps", 
-             "PVC": "pvc", 
-             "Sapin": "sapin", 
-             "Tilleul": "tilleul",
-             "Titane": "titane", 
-             "Tube Quantum": "tube_quantum"}
+textures = {
+    "Customized": "custom",
+    "Acier": "acier",
+    "Acrylique": "acrylique",
+    "Aluminium": "aluminium",
+    "Balsa": "balsa",
+    "Blue tube": "blue_tube",
+    "Bouleau": "bouleau",
+    "Carton": "carton",
+    "Contre-plaqué (bouleau)": "contre_plaque",
+    "Delrin": "delrin",
+    "Depron (XPS)": "depron_xps",
+    "Erable": "erable",
+    "Fibre de carbone": "fibre_carbon",
+    "Fibre de verre": "fibre_verre",
+    "Kraft phénolique": "kraft_phenolique",
+    "Laiton": "laiton",
+    "Liège": "liege",
+    "Mousse Bleue de polystyrène (XPS)": "blue_xps",
+    "Nylon": "nylon",
+    "Papier (bureau)": "papier",
+    "Pin": "pin",
+    "Polycarbonate (Lexan)": "polycarbonate",
+    "Polystyrène": "polystyrene",
+    "Polystyrène (générique EPS)": "polystyrene_eps",
+    "PVC": "pvc",
+    "Sapin": "sapin",
+    "Tilleul": "tilleul",
+    "Titane": "titane",
+    "Tube Quantum": "tube_quantum",
+}
 
-nose_options = [('Ellipse','ellipse'),
-                ('Cone','cone'),
-                ('Haack','haack_series'),
-                ('Parabole','parabole'),
-                ('Tangent Ogive','tangent_ogive'),
-                ('Power Series', 'power_series')]
+nose_options = [
+    ("Ellipse", "ellipse"),
+    ("Cone", "cone"),
+    ("Haack", "haack_series"),
+    ("Parabole", "parabole"),
+    ("Tangent Ogive", "tangent_ogive"),
+    ("Power Series", "power_series"),
+]
 
-impulse_options = [("[1.26 - 2.50]",'A'),
-                   ("[2.51 - 5.00]",'B'),
-                   ("[5.01 - 10.0]",'C'),
-                   ("[10.01 - 20.0]",'D'),
-                   ("[20.01 - 40.0]",'E'),
-                   ("[40.01 - 80.0]",'F'),
-                   ("[80.01 - 160]",'G'),
-                   ("[160.01 - 320]",'H'),
-                   ("[320.01 - 640]",'I'),
-                   ("[640.01 - 1280]",'J'),
-                   ("[1,280.01 - 2,560]",'K'),
-                   ("[2,560.01 - 5,120]",'L'),
-                   ("[5,120.01 - 10,240]",'M'),
-                   ("[10,240.01 - 20,480]",'N'),
-                   ("[20,480.01 - 40,960]",'O')]
+impulse_options = [
+    ("[1.26 - 2.50]", "A"),
+    ("[2.51 - 5.00]", "B"),
+    ("[5.01 - 10.0]", "C"),
+    ("[10.01 - 20.0]", "D"),
+    ("[20.01 - 40.0]", "E"),
+    ("[40.01 - 80.0]", "F"),
+    ("[80.01 - 160]", "G"),
+    ("[160.01 - 320]", "H"),
+    ("[320.01 - 640]", "I"),
+    ("[640.01 - 1280]", "J"),
+    ("[1,280.01 - 2,560]", "K"),
+    ("[2,560.01 - 5,120]", "L"),
+    ("[5,120.01 - 10,240]", "M"),
+    ("[10,240.01 - 20,480]", "N"),
+    ("[20,480.01 - 40,960]", "O"),
+]
 
 
 ####################################################
@@ -104,68 +112,165 @@ impulse_options = [("[1.26 - 2.50]",'A'),
 
 
 # Tube properties
-tube_length = widgets.BoundedFloatText(value=2,min=0,max=500.0,step=0.1,description='Tube length ($m$):',style={'description_width': 'initial'},disabled=False)
-tube_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Tube radius ($m$):',style={'description_width': 'initial'},disabled=False)
-tube_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Tube thickness ($m$):',style={'description_width': 'initial'},disabled=False)
-tube_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Tube material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
-tube_density = widgets.BoundedFloatText(value=0.,min=0,max=100000,step=1,description='Tube density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
+tube_length = widgets.BoundedFloatText(
+    value=2,
+    min=0,
+    max=500.0,
+    step=0.1,
+    description="Tube length ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+tube_radius = widgets.BoundedFloatText(
+    value=0.1,
+    min=0,
+    max=50.0,
+    step=0.1,
+    description="Tube radius ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+tube_thickness = widgets.BoundedFloatText(
+    value=0.01,
+    min=0,
+    max=0.1,
+    step=0.001,
+    description="Tube thickness ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+tube_material = widgets.Dropdown(
+    layout={"width": "strech"},
+    description="Tube material",
+    value="fibre_carbon",
+    options=textures.items(),
+    style={"description_width": "initial"},
+    disabled=False,
+)
+tube_density = widgets.BoundedFloatText(
+    value=0.0,
+    min=0,
+    max=100000,
+    step=1,
+    description="Tube density ($kg/m^3$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+
 
 def show_tube_density(change):
-    if change['new'] == "custom":
-        tube_density.value = 0.
-        tube_density.layout.display = ''
+    if change["new"] == "custom":
+        tube_density.value = 0.0
+        tube_density.layout.display = ""
     else:
-        tube_density.layout.display = 'none'
-        tube_density.value = materials[change['new']]
+        tube_density.layout.display = "none"
+        tube_density.value = materials[change["new"]]
 
-show_tube_density({'new':tube_material.value})
-tube_material.observe(show_tube_density, names='value')
+
+show_tube_density({"new": tube_material.value})
+tube_material.observe(show_tube_density, names="value")
 
 # Nose properties
-nose_type = widgets.Dropdown(layout={'width': 'strech'},options=nose_options,style={'description_width': 'initial'},value='ellipse',description='Nose type:',disabled=False)
-nose_parameter = widgets.BoundedFloatText(value=0.,min=0.,max=1.,step=0.1,description='Nose parameter C*:',style={'description_width': 'initial'},disabled=False)
-nose_parameter_desc = widgets.Label( value='')
-nose_length = widgets.BoundedFloatText(value=.5,min=0,max=50.0,step=0.1,description='Nose length ($m$):',style={'description_width': 'initial'},disabled=False)
-nose_radius = widgets.BoundedFloatText(value=.1,min=0,max=50.0,step=0.1,description='Nose radius ($m$):',style={'description_width': 'initial'},disabled=False)
-nose_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='Nose thickness ($m$):',style={'description_width': 'initial'},disabled=False)
-nose_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Nose material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
-nose_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Nose density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
+nose_type = widgets.Dropdown(
+    layout={"width": "strech"},
+    options=nose_options,
+    style={"description_width": "initial"},
+    value="ellipse",
+    description="Nose type:",
+    disabled=False,
+)
+nose_parameter = widgets.BoundedFloatText(
+    value=0.0,
+    min=0.0,
+    max=1.0,
+    step=0.1,
+    description="Nose parameter C*:",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_parameter_desc = widgets.Label(value="")
+nose_length = widgets.BoundedFloatText(
+    value=0.5,
+    min=0,
+    max=50.0,
+    step=0.1,
+    description="Nose length ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_radius = widgets.BoundedFloatText(
+    value=0.1,
+    min=0,
+    max=50.0,
+    step=0.1,
+    description="Nose radius ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_thickness = widgets.BoundedFloatText(
+    value=0.01,
+    min=0,
+    max=0.1,
+    step=0.001,
+    description="Nose thickness ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_material = widgets.Dropdown(
+    layout={"width": "strech"},
+    description="Nose material",
+    value="fibre_carbon",
+    options=textures.items(),
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_density = widgets.BoundedFloatText(
+    value=0,
+    min=0,
+    max=100000,
+    step=1,
+    description="Nose density ($kg/m^3$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+
 
 def show_nose_density(change):
-    if change['new'] == "custom":
-        nose_density.value = 0.
-        nose_density.layout.display = ''
+    if change["new"] == "custom":
+        nose_density.value = 0.0
+        nose_density.layout.display = ""
     else:
-        nose_density.layout.display = 'none'
-        nose_density.value = materials[change['new']]
+        nose_density.layout.display = "none"
+        nose_density.value = materials[change["new"]]
+
 
 def show_nose_parameter(change):
-    nose_parameter.min = 0.
-    nose_parameter.max = 1.
-    if change['new'] in ['haack_series','power_series','parabole']:
-        if change['new'] == 'haack_series':
-            nose_parameter_desc.value = '(*) C=0 : LD-Haack - C=1/3 : LV-Haack (min drag) - C=2/3 : tangent to the body'
-            nose_parameter.value = 0.
-        elif change['new'] == 'power_series':
-            nose_parameter_desc.value = '(*) Curve parameter C in (0,1)'
+    nose_parameter.min = 0.0
+    nose_parameter.max = 1.0
+    if change["new"] in ["haack_series", "power_series", "parabole"]:
+        if change["new"] == "haack_series":
+            nose_parameter_desc.value = "(*) C=0 : LD-Haack - C=1/3 : LV-Haack (min drag) - C=2/3 : tangent to the body"
+            nose_parameter.value = 0.0
+        elif change["new"] == "power_series":
+            nose_parameter_desc.value = "(*) Curve parameter C in (0,1)"
             nose_parameter.value = 0.1
             nose_parameter.min = 0.001
             nose_parameter.max = 0.999
-        elif change['new'] == 'parabole':
-            nose_parameter_desc.value = '(*) Parabola parameter C in [0,1]'
-            nose_parameter.value = 0.
-        nose_parameter.layout.display = ''
-        nose_parameter_desc.layout.display = ''
+        elif change["new"] == "parabole":
+            nose_parameter_desc.value = "(*) Parabola parameter C in [0,1]"
+            nose_parameter.value = 0.0
+        nose_parameter.layout.display = ""
+        nose_parameter_desc.layout.display = ""
     else:
-        nose_parameter.layout.display = 'none'
-        nose_parameter_desc.layout.display = 'none'
-        nose_parameter.value = 0.
+        nose_parameter.layout.display = "none"
+        nose_parameter_desc.layout.display = "none"
+        nose_parameter.value = 0.0
 
 
-show_nose_density({'new':nose_material.value})
-nose_material.observe(show_nose_density, names='value')
-show_nose_parameter({'new':nose_type.value})
-nose_type.observe(show_nose_parameter, names='value')
+show_nose_density({"new": nose_material.value})
+nose_material.observe(show_nose_density, names="value")
+show_nose_parameter({"new": nose_type.value})
+nose_type.observe(show_nose_parameter, names="value")
 
 # Fins properties
 with open("./include/widgets/imgs/fin.png", "rb") as fin_file:
@@ -184,19 +289,26 @@ fins_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.01,descrip
 fin_plot_button = widgets.Button(description='Fin preview',disabled=False,button_style='',tooltip='Plot fin',icon='eye')
 with open("./include/widgets/imgs/personal_fin_plot.png", "rb") as fin_file:
     fin_image = fin_file.read()
-    fin_plot_wimg = widgets.Image(value=fin_image,format='png', height=200, layout=widgets.Layout(width='300px', height='300px'))
+    fin_plot_wimg = widgets.Image(
+        value=fin_image,
+        format="png",
+        height=200,
+        layout=widgets.Layout(width="300px", height="300px"),
+    )
 
 
 def show_fins_density(change):
-    if change['new'] == "custom":
-        fins_density.value = 0.
-        fins_density.layout.display = ''
+    if change["new"] == "custom":
+        fins_density.value = 0.0
+        fins_density.layout.display = ""
     else:
-        fins_density.layout.display = 'none'
-        fins_density.value = materials[change['new']]
+        fins_density.layout.display = "none"
+        fins_density.value = materials[change["new"]]
 
-show_fins_density({'new':fins_material.value})
-fins_material.observe(show_fins_density, names='value')
+
+show_fins_density({"new": fins_material.value})
+fins_material.observe(show_fins_density, names="value")
+
 
 def show_fin_plot(button):
     draw_fin(Ct.value,Cr.value,Xt.value,s.value,save="./include/widgets/imgs/personal_fin_plot.png")
@@ -205,18 +317,48 @@ def show_fin_plot(button):
     fin_plot_wimg.value = fin_image
     fin_file.close()
 
+
 fin_plot_button.on_click(show_fin_plot)
 
 # Combining everithing for geometry and mass
-tube = widgets.VBox([tube_length,tube_radius,tube_thickness,tube_material,tube_density])
-nose = widgets.VBox([nose_type,nose_parameter,nose_parameter_desc,nose_length,nose_radius,nose_thickness,nose_material,nose_density])
-fins_fields = widgets.VBox([Cr,Ct,Xt,s,fins_thickness,fins_cant,fins_number,fins_material,fins_density,fins_position,fin_plot_button])
-fins = widgets.HBox([fins_fields,fin_wimg,fin_plot_wimg])
-children = [tube,nose,fins]
-rocket_properties_widget = widgets.Tab(children = children, titles = ['Tube prop.', 'Nose prop.', 'Fins prop.'])
+tube = widgets.VBox(
+    [tube_length, tube_radius, tube_thickness, tube_material, tube_density]
+)
+nose = widgets.VBox(
+    [
+        nose_type,
+        nose_parameter,
+        nose_parameter_desc,
+        nose_length,
+        nose_radius,
+        nose_thickness,
+        nose_material,
+        nose_density,
+    ]
+)
+fins_fields = widgets.VBox(
+    [
+        Cr,
+        Ct,
+        Xt,
+        s,
+        fins_thickness,
+        fins_cant,
+        fins_number,
+        fins_material,
+        fins_density,
+        fins_position,
+        fin_plot_button,
+    ]
+)
+fins = widgets.HBox([fins_fields, fin_wimg, fin_plot_wimg])
+children = [tube, nose, fins]
+rocket_properties_widget = widgets.Tab(
+    children=children, titles=["Tube prop.", "Nose prop.", "Fins prop."]
+)
 
 # Motor Properties
-f = open('./include/widgets/motor_data.json')
+f = open("./include/widgets/motor_data.json")
 motor_data = json.load(f)
 
 impulse_class = widgets.Dropdown(options=impulse_options,description='Impulse Class ($N.s$):',style={'description_width': 'initial'},disabled=False)
@@ -232,37 +374,48 @@ ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,descript
 ring_box = widgets.VBox([ring_material,ring_density])
 motor_file = open("./include/widgets/imgs/thrustcurve.png", "rb")
 motor_image = motor_file.read()
-motor_wimg = widgets.Image(value=motor_image,format='png', height = 200, width=480)
-motorBox = widgets.VBox([selected_motor,motor_select_text,motor_ring,ring_box,motor_wimg])
+motor_wimg = widgets.Image(value=motor_image, format="png", height=200, width=480)
+motorBox = widgets.VBox(
+    [selected_motor, motor_select_text, motor_ring, ring_box, motor_wimg]
+)
 
-motor_selection_widget = widgets.Accordion(children=[impulse_class, motor_geometry, motorBox], titles=('Impulse class', 'Geometric parameters', 'Motor selection'), style={'description_width': 'initial'})
+motor_selection_widget = widgets.Accordion(
+    children=[impulse_class, motor_geometry, motorBox],
+    titles=("Impulse class", "Geometric parameters", "Motor selection"),
+    style={"description_width": "initial"},
+)
+
 
 def show_ring(change):
-    if change['new']:
-        ring_box.layout.display = ''
+    if change["new"]:
+        ring_box.layout.display = ""
     else:
-        ring_box.layout.display = 'none'
+        ring_box.layout.display = "none"
 
-show_ring({'new':motor_ring.value})
-motor_ring.observe(show_ring, names='value')
+
+show_ring({"new": motor_ring.value})
+motor_ring.observe(show_ring, names="value")
+
 
 def show_ring_density(change):
-    if change['new'] == "custom":
-        ring_density.value = 0.
-        ring_density.layout.display = ''
+    if change["new"] == "custom":
+        ring_density.value = 0.0
+        ring_density.layout.display = ""
     else:
-        ring_density.layout.display = 'none'
-        ring_density.value = materials[change['new']]
+        ring_density.layout.display = "none"
+        ring_density.value = materials[change["new"]]
 
-show_ring_density({'new':ring_material.value})
-ring_material.observe(show_ring_density, names='value')
+
+show_ring_density({"new": ring_material.value})
+ring_material.observe(show_ring_density, names="value")
+
 
 def thrustcurve(motor_name):
     global motor_data
-    d=[]
+    d = []
     for elem in motor_data:
-        if elem['designation'] == motor_name:
-            d = elem['samples']
+        if elem["designation"] == motor_name:
+            d = elem["samples"]
     x = [d[i][0] for i in range(len(d))]
     y = [d[i][1] for i in range(len(d))]
 
@@ -274,17 +427,23 @@ def thrustcurve(motor_name):
     plt.savefig('./include/widgets/imgs/thrustcurve.png')
     plt.close()
 
+
 def set_motor_options(change):
     global motor_data
-    if change['new'] == 2:
+    if change["new"] == 2:
         motors = []
         for motor in motor_data:
-            if motor['impulseClass']==impulse_class.value and motor['diameter']>motor_diameter.value[0] and motor['diameter']<motor_diameter.value[1]:
-                motors.append(motor['designation'])
+            if (
+                motor["impulseClass"] == impulse_class.value
+                and motor["diameter"] > motor_diameter.value[0]
+                and motor["diameter"] < motor_diameter.value[1]
+            ):
+                motors.append(motor["designation"])
 
         selected_motor.options = motors
-        if len(motors)!=0:
+        if len(motors) != 0:
             selected_motor.value = motors[0]
+
 
 def change_thrustcurve(change):
     thrustcurve(change['new'])
@@ -293,209 +452,445 @@ def change_thrustcurve(change):
     motor_wimg.value = motor_image
     motor_file.close()
 
-selected_motor.observe(change_thrustcurve, names='value')
-motor_selection_widget.observe(set_motor_options, names='selected_index')
+
+selected_motor.observe(change_thrustcurve, names="value")
+motor_selection_widget.observe(set_motor_options, names="selected_index")
 
 
 # Parachute settings
-rope_rest_length = widgets.BoundedFloatText(value=1.,min=0.,max=1000.,step=.1,description='Rope rest length ($m$):',style={'description_width': 'initial'},disabled=False)
-parachute_weight = widgets.BoundedFloatText(value=.5,min=0.,max=1000.,step=.1,description='Parachute weight ($kg$):',style={'description_width': 'initial'},disabled=False)
-s_ref1 = widgets.BoundedFloatText(value=.05,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
-s_ref2 = widgets.BoundedFloatText(value=.5,min=0.,max=1000.,step=.1,description='Reference surface of parachute ($m^2$):',style={'description_width': 'initial'},disabled=False)
-parachute_cd = widgets.BoundedFloatText(value=1.75,min=0.,max=100.,step=.1,description='Drag coefficient of parachute:',style={'description_width': 'initial'},disabled=False)
-deploy_method = widgets.Dropdown(options=[('timer','timer'), ('negative vertical velocity','velocity')],value='timer',description='First parachute deployment method:',style={'description_width': 'initial'},disabled=False)
-deploy_alt = widgets.BoundedFloatText(value=100., min=0.,max=1000000., step = 1., description = "Second para. deployment alt. ($m$):",style={'description_width': 'initial'},disabled=False)
-parachute_timer = widgets.BoundedFloatText(value=10.,min=0.,max=3600.,step=1,description='(*)Deployment time ($s$):',style={'description_width': 'initial'},disabled=False)
-timer_text = widgets.Label(value="(*)Time before first parachute deployment in seconds.", style={'description_width':'initial'})
+rope_rest_length = widgets.BoundedFloatText(
+    value=1.0,
+    min=0.0,
+    max=1000.0,
+    step=0.1,
+    description="Rope rest length ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+parachute_weight = widgets.BoundedFloatText(
+    value=0.5,
+    min=0.0,
+    max=1000.0,
+    step=0.1,
+    description="Parachute weight ($kg$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+s_ref1 = widgets.BoundedFloatText(
+    value=0.05,
+    min=0.0,
+    max=1000.0,
+    step=0.1,
+    description="Reference surface of parachute ($m^2$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+s_ref2 = widgets.BoundedFloatText(
+    value=0.5,
+    min=0.0,
+    max=1000.0,
+    step=0.1,
+    description="Reference surface of parachute ($m^2$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+parachute_cd = widgets.BoundedFloatText(
+    value=1.75,
+    min=0.0,
+    max=100.0,
+    step=0.1,
+    description="Drag coefficient of parachute:",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+deploy_method = widgets.Dropdown(
+    options=[("timer", "timer"), ("negative vertical velocity", "velocity")],
+    value="timer",
+    description="First parachute deployment method:",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+deploy_alt = widgets.BoundedFloatText(
+    value=100.0,
+    min=0.0,
+    max=1000000.0,
+    step=1.0,
+    description="Second para. deployment alt. ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+parachute_timer = widgets.BoundedFloatText(
+    value=10.0,
+    min=0.0,
+    max=3600.0,
+    step=1,
+    description="(*)Deployment time ($s$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+timer_text = widgets.Label(
+    value="(*)Time before first parachute deployment in seconds.",
+    style={"description_width": "initial"},
+)
 
-parachute_widget = widgets.VBox([rope_rest_length, parachute_weight, s_ref1, s_ref2, parachute_cd, deploy_method, parachute_timer, timer_text, deploy_alt])
+parachute_widget = widgets.VBox(
+    [
+        rope_rest_length,
+        parachute_weight,
+        s_ref1,
+        s_ref2,
+        parachute_cd,
+        deploy_method,
+        parachute_timer,
+        timer_text,
+        deploy_alt,
+    ]
+)
+
 
 def show_timer(change):
-    if change['new'] == 'timer':
-        parachute_timer.layout.display = ''
-        timer_text.layout.display = ''
+    if change["new"] == "timer":
+        parachute_timer.layout.display = ""
+        timer_text.layout.display = ""
     else:
-        parachute_timer.layout.display = 'none'
-        timer_text.layout.display = 'none'
-        parachute_timer.value = 60.
+        parachute_timer.layout.display = "none"
+        timer_text.layout.display = "none"
+        parachute_timer.value = 60.0
 
-deploy_method.observe(show_timer, names='value')
+
+deploy_method.observe(show_timer, names="value")
 
 # Additional masses
-number_int = widgets.BoundedIntText(value=0,min=0,max=100,description='Number of additional masses',style={'description_width': 'initial'},disabled=False)
-number_text = widgets.Label(value="- Please ensure that you have entered the desired number of additional masses. If you reduce the number of masses, the last mass you specified will be lost.", style={'description_width':'initial'})
-masses_number = widgets.VBox([number_int,number_text])
-mass_text = widgets.Label(value="- You must specify each mass' properties in order to move to the next step.", style={'description_width':'initial'})
+number_int = widgets.BoundedIntText(
+    value=0,
+    min=0,
+    max=100,
+    description="Number of additional masses",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+number_text = widgets.Label(
+    value="- Please ensure that you have entered the desired number of additional masses. If you reduce the number of masses, the last mass you specified will be lost.",
+    style={"description_width": "initial"},
+)
+masses_number = widgets.VBox([number_int, number_text])
+mass_text = widgets.Label(
+    value="- You must specify each mass' properties in order to move to the next step.",
+    style={"description_width": "initial"},
+)
 masses_properties = widgets.Tab()
-mass_box = widgets.VBox([mass_text,masses_properties])
-additional_masses_widget = widgets.Accordion(children=[masses_number,mass_box], titles=('Mass Number', 'Mass properties'), style={'description_width': 'initial'})
+mass_box = widgets.VBox([mass_text, masses_properties])
+additional_masses_widget = widgets.Accordion(
+    children=[masses_number, mass_box],
+    titles=("Mass Number", "Mass properties"),
+    style={"description_width": "initial"},
+)
 
 masses_children = []
 masses_titles = []
 
+
 def on_number_change(change):
-    global masses_children,masses_titles
-    number = change['new']
+    global masses_children, masses_titles
+    number = change["new"]
     nchild = len(masses_children)
     if number > nchild:
-        for i in range(number-nchild):
+        for i in range(number - nchild):
             masses_children.append(create_mass_form())
-            masses_titles.append(f'Mass-{len(masses_children)+i}')
+            masses_titles.append(f"Mass-{len(masses_children)+i}")
     elif number < nchild:
         masses_children = masses_children[:number]
         masses_titles = masses_titles[:number]
 
+
 def on_number_selected(change):
-    global masses_children,masses_titles
-    if change['new'] == 1:
+    global masses_children, masses_titles
+    if change["new"] == 1:
         masses_properties.children = masses_children
         masses_properties.titles = masses_titles
 
-number_int.observe(on_number_change,names='value')
-additional_masses_widget.observe(on_number_selected,names='selected_index')
+
+number_int.observe(on_number_change, names="value")
+additional_masses_widget.observe(on_number_selected, names="selected_index")
+
 
 def create_mass_form():
-    mass_type = widgets.Dropdown(value = 'cylinder', options=[('Cylinder','cylinder'), ('Empty cylinder','empty_cylinder')], description='Shape of mass',style={'description_width': 'initial'},disabled=False)
-    mass_length= widgets.BoundedFloatText(value=0.,min=0.,max=1000.,step=.1,description='Mass length ($m$):',style={'description_width': 'initial'},disabled=False)
-    mass_outer_radius= widgets.BoundedFloatText(value=0.,min=0.,max=100.,step=.1,description='Mass outer radius ($m$):',style={'description_width': 'initial'},disabled=False)
-    mass_inner_radius= widgets.BoundedFloatText(value=0.,min=0.,max=100.,step=.1,description='Mass inner radius ($m$):',style={'description_width': 'initial'},layout={'display':'none'},disabled=False)
-    mass_material = widgets.Dropdown(description = 'Mass material',value = "custom",options = textures.items(),style={'description_width': 'initial'},disabled=False)
-    mass_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Mass density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
-    mass_position= widgets.BoundedFloatText(value=0.,min=0.,max=1000.,step=0.1,description='Mass position form rocket bottom ($m$):',style={'description_width': 'initial'},disabled=False)
+    mass_type = widgets.Dropdown(
+        value="cylinder",
+        options=[("Cylinder", "cylinder"), ("Empty cylinder", "empty_cylinder")],
+        description="Shape of mass",
+        style={"description_width": "initial"},
+        disabled=False,
+    )
+    mass_length = widgets.BoundedFloatText(
+        value=0.0,
+        min=0.0,
+        max=1000.0,
+        step=0.1,
+        description="Mass length ($m$):",
+        style={"description_width": "initial"},
+        disabled=False,
+    )
+    mass_outer_radius = widgets.BoundedFloatText(
+        value=0.0,
+        min=0.0,
+        max=100.0,
+        step=0.1,
+        description="Mass outer radius ($m$):",
+        style={"description_width": "initial"},
+        disabled=False,
+    )
+    mass_inner_radius = widgets.BoundedFloatText(
+        value=0.0,
+        min=0.0,
+        max=100.0,
+        step=0.1,
+        description="Mass inner radius ($m$):",
+        style={"description_width": "initial"},
+        layout={"display": "none"},
+        disabled=False,
+    )
+    mass_material = widgets.Dropdown(
+        description="Mass material",
+        value="custom",
+        options=textures.items(),
+        style={"description_width": "initial"},
+        disabled=False,
+    )
+    mass_density = widgets.BoundedFloatText(
+        value=0,
+        min=0,
+        max=100000,
+        step=1,
+        description="Mass density ($kg/m^3$):",
+        style={"description_width": "initial"},
+        disabled=False,
+    )
+    mass_position = widgets.BoundedFloatText(
+        value=0.0,
+        min=0.0,
+        max=1000.0,
+        step=0.1,
+        description="Mass position form rocket bottom ($m$):",
+        style={"description_width": "initial"},
+        disabled=False,
+    )
 
-    form = widgets.VBox([mass_type,mass_length,mass_outer_radius,mass_inner_radius,mass_material,mass_density,mass_position])
+    form = widgets.VBox(
+        [
+            mass_type,
+            mass_length,
+            mass_outer_radius,
+            mass_inner_radius,
+            mass_material,
+            mass_density,
+            mass_position,
+        ]
+    )
 
     def on_type_selected(change):
-        if change['new'] == 'empty_cylinder':
-            mass_inner_radius.layout.display = ''
+        if change["new"] == "empty_cylinder":
+            mass_inner_radius.layout.display = ""
         else:
-            mass_inner_radius.layout.display = 'none'
-            mass_inner_radius.value = 0.
+            mass_inner_radius.layout.display = "none"
+            mass_inner_radius.value = 0.0
 
     def update_max(change):
-        mass_inner_radius.max = change['new']
-    
-    def show_mass_density(change):
-        if change['new'] == "custom":
-            mass_density.value = 0.
-            mass_density.layout.display = ''
-        else:
-            mass_density.layout.display = 'none'
-            mass_density.value = materials[change['new']]
+        mass_inner_radius.max = change["new"]
 
-    mass_type.observe(on_type_selected,names='value')
-    mass_outer_radius.observe(update_max,names='value')
-    mass_material.observe(show_mass_density,names='value')
+    def show_mass_density(change):
+        if change["new"] == "custom":
+            mass_density.value = 0.0
+            mass_density.layout.display = ""
+        else:
+            mass_density.layout.display = "none"
+            mass_density.value = materials[change["new"]]
+
+    mass_type.observe(on_type_selected, names="value")
+    mass_outer_radius.observe(update_max, names="value")
+    mass_material.observe(show_mass_density, names="value")
 
     return form
 
+
 def mass_dict_list():
-    '''
+    """
     Return a list of dict representing additinal masses.
-    '''
+    """
     dict_list = []
     for i in range(number_int.value):
         parent = masses_properties.children[i]
-        dict = {'type':parent.children[0].value,
-                'length':parent.children[1].value,
-                'outer_radius':parent.children[2].value,
-                'inner_radius':parent.children[3].value,
-                'material':parent.children[4].value,
-                'density':parent.children[5].value,
-                'position':parent.children[6].value}
+        dict = {
+            "type": parent.children[0].value,
+            "length": parent.children[1].value,
+            "outer_radius": parent.children[2].value,
+            "inner_radius": parent.children[3].value,
+            "material": parent.children[4].value,
+            "density": parent.children[5].value,
+            "position": parent.children[6].value,
+        }
         dict_list.append(dict)
 
     return dict_list
 
 
-
 # Launching parameters
-rocket_mass = widgets.BoundedFloatText(value=2.,min=0.,max=1000000.,step=1.,description="Rocket's total mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-prop_weight = widgets.BoundedFloatText(value=.2,min=0.,max=1000000.,step=1.,description="Propellant mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-nose_mass = widgets.BoundedFloatText(value=.5,min=0.,max=1000000.,step=1.,description="(*)Nose mass ($kg$):",style={'description_width': 'initial'},disabled=False)
-nose_mass_text = widgets.Label( value="(*) The mass of the ejected part of the nose when the parachute is deployed.", style={'description_width':'initial'})
-rocket_launch_angle = widgets.BoundedFloatText(value=80.,min=0.,max=180,step=1,description="Rocket's launch angle (deg):",style={'description_width': 'initial'},disabled=False)
-wind_on = widgets.Checkbox(value=True,description='Generate random wind profile at launch time.',disabled=False,indent=True,style={'description_width':'initial'})
-wind_average_speed = widgets.BoundedFloatText(value=5.,min=0.,max=1000.,step=1.,description="Wind average speed ($m/s$):",style={'description_width': 'initial'},disabled=False)
+rocket_mass = widgets.BoundedFloatText(
+    value=2.0,
+    min=0.0,
+    max=1000000.0,
+    step=1.0,
+    description="Rocket's total mass ($kg$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+prop_weight = widgets.BoundedFloatText(
+    value=0.2,
+    min=0.0,
+    max=1000000.0,
+    step=1.0,
+    description="Propellant mass ($kg$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_mass = widgets.BoundedFloatText(
+    value=0.5,
+    min=0.0,
+    max=1000000.0,
+    step=1.0,
+    description="(*)Nose mass ($kg$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+nose_mass_text = widgets.Label(
+    value="(*) The mass of the ejected part of the nose when the parachute is deployed.",
+    style={"description_width": "initial"},
+)
+rocket_launch_angle = widgets.BoundedFloatText(
+    value=80.0,
+    min=0.0,
+    max=180,
+    step=1,
+    description="Rocket's launch angle (deg):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+wind_on = widgets.Checkbox(
+    value=True,
+    description="Generate random wind profile at launch time.",
+    disabled=False,
+    indent=True,
+    style={"description_width": "initial"},
+)
+wind_average_speed = widgets.BoundedFloatText(
+    value=5.0,
+    min=0.0,
+    max=1000.0,
+    step=1.0,
+    description="Wind average speed ($m/s$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
 
-launching_parameters_widget = widgets.VBox([rocket_mass, prop_weight, nose_mass, nose_mass_text, rocket_launch_angle, wind_on, wind_average_speed])
+launching_parameters_widget = widgets.VBox(
+    [
+        rocket_mass,
+        prop_weight,
+        nose_mass,
+        nose_mass_text,
+        rocket_launch_angle,
+        wind_on,
+        wind_average_speed,
+    ]
+)
+
 
 def show_wind(change):
-    if change['new']:
-        wind_average_speed.layout.display = ''
+    if change["new"]:
+        wind_average_speed.layout.display = ""
     else:
-        wind_average_speed.layout.display = 'none'
+        wind_average_speed.layout.display = "none"
 
-wind_on.observe(show_wind, names='value')
+
+wind_on.observe(show_wind, names="value")
 
 ####################################################
 
 ####################################################
+
 
 def find_motor(designation):
     global motor_data
-    '''
+    """
     Return the motor dictionary corresponding to the motor designation.
-    '''
+    """
     for motor in motor_data:
-        if motor['designation'] == designation:
+        if motor["designation"] == designation:
             return motor
-    raise ValueError('Motor not found : wrong motor designation.')
+    raise ValueError("Motor not found : wrong motor designation.")
+
 
 def rocket_dictionary():
-    '''
+    """
     Return a dictionary representing the rocket.
-    '''
+    """
     if selected_motor.value == None:
-        raise Exception("None Motor: Please select a motor in the motor selector widget.")
+        raise Exception(
+            "None Motor: Please select a motor in the motor selector widget."
+        )
 
-    rocket = {'tube_length':tube_length.value,
-              'tube_radius':tube_radius.value,
-              'tube_thickness':tube_thickness.value,
-              'tube_material':tube_material.value,
-              'tube_density':tube_density.value,
-              'nose_type':nose_type.value,
-              'nose_parameter':nose_parameter.value,
-              'nose_length':nose_length.value,
-              'nose_radius':nose_radius.value,
-              'nose_thickness':nose_thickness.value,
-              'nose_material':nose_material.value,
-              'nose_density':nose_density.value,
-              'fins_Cr':Cr.value,
-              'fins_Ct':Ct.value,
-              'fins_Xt':Xt.value,
-              'fins_s':s.value,
-              'fins_thickness':fins_thickness.value,
-              'delta':fins_cant.value*np.pi/180, # conversion to radians
-              'fins_number':fins_number.value,
-              'fins_material':fins_material.value,
-              'fins_density':fins_density.value,
-              'fins_position':fins_position.value,
-              'motor':find_motor(selected_motor.value),
-              'motor_position':motor_position.value,
-              'motor_ring':motor_ring.value,
-              'motor_ring_material':ring_material.value,
-              'motor_ring_density':ring_density.value,
-              'parachute_l0':rope_rest_length.value,
-              'parachute_weight':parachute_weight.value,
-              'parachute_sref1':s_ref1.value,
-              'parachute_sref2':s_ref2.value,
-              'parachute_Cd':parachute_cd.value,
-              'parachute_deploy_method':deploy_method.value,
-              'second_para_deploy_alt':deploy_alt.value,
-              'parachute_deploy_timer':parachute_timer.value,
-              'additional_masses':mass_dict_list(),
-              'rocket_mass':rocket_mass.value,
-              'rocket_prop_weight':prop_weight.value,
-              'ejected_nose_mass':nose_mass.value,
-              'rocket_launch_angle':rocket_launch_angle.value*np.pi/180, # conversion to radians
-              'wind_on':wind_on.value,
-              'wind_average_speed':wind_average_speed.value}
+    rocket = {
+        "tube_length": tube_length.value,
+        "tube_radius": tube_radius.value,
+        "tube_thickness": tube_thickness.value,
+        "tube_material": tube_material.value,
+        "tube_density": tube_density.value,
+        "nose_type": nose_type.value,
+        "nose_parameter": nose_parameter.value,
+        "nose_length": nose_length.value,
+        "nose_radius": nose_radius.value,
+        "nose_thickness": nose_thickness.value,
+        "nose_material": nose_material.value,
+        "nose_density": nose_density.value,
+        "fins_Cr": Cr.value,
+        "fins_Ct": Ct.value,
+        "fins_Xt": Xt.value,
+        "fins_s": s.value,
+        "fins_thickness": fins_thickness.value,
+        "delta": fins_cant.value * np.pi / 180,  # conversion to radians
+        "fins_number": fins_number.value,
+        "fins_material": fins_material.value,
+        "fins_density": fins_density.value,
+        "fins_position": fins_position.value,
+        "motor": find_motor(selected_motor.value),
+        "motor_position": motor_position.value,
+        "motor_ring": motor_ring.value,
+        "motor_ring_material": ring_material.value,
+        "motor_ring_density": ring_density.value,
+        "parachute_l0": rope_rest_length.value,
+        "parachute_weight": parachute_weight.value,
+        "parachute_sref1": s_ref1.value,
+        "parachute_sref2": s_ref2.value,
+        "parachute_Cd": parachute_cd.value,
+        "parachute_deploy_method": deploy_method.value,
+        "second_para_deploy_alt": deploy_alt.value,
+        "parachute_deploy_timer": parachute_timer.value,
+        "additional_masses": mass_dict_list(),
+        "rocket_mass": rocket_mass.value,
+        "rocket_prop_weight": prop_weight.value,
+        "ejected_nose_mass": nose_mass.value,
+        "rocket_launch_angle": rocket_launch_angle.value
+        * np.pi
+        / 180,  # conversion to radians
+        "wind_on": wind_on.value,
+        "wind_average_speed": wind_average_speed.value,
+    }
 
     return rocket
 
-def rocket_creation(data_source = "widgets"):
-    '''
+
+def rocket_creation(data_source="widgets"):
+    """
     When data_source = "widgets"
     Create a CustomRocket object representing the rocket from its dict, and write it content in 'rocket_dict.json'.
 
@@ -503,17 +898,17 @@ def rocket_creation(data_source = "widgets"):
     Create a CustomRocket object representing the rocket from the file_name (which must contain a dictionnary).
 
     Use the shortcut "json" for data_source to use the "rocket_dict.json" file.
-    '''
+    """
     if data_source == "widgets":
         rocket_dict = rocket_dictionary()
         myrocket = CustomRocket.fromDict(rocket_dict)
 
         volume, mass, cog, inertia = myrocket.get_mass_properties()
 
-        rocket_dict['rocket_volume'] = volume
+        rocket_dict["rocket_volume"] = volume
         # rocket_dict['rocket_mass'] = mass ### For now the mass is passed as the mass entered by the user
-        rocket_dict['rocket_cog'] = cog.tolist()
-        rocket_dict['rocket_inertia'] = inertia.tolist()
+        rocket_dict["rocket_cog"] = cog.tolist()
+        rocket_dict["rocket_inertia"] = inertia.tolist()
 
         # Write the content of the dict in a file that will be passed to the model
         with open("include/init_rocket/rocket_dict.json", "w") as f:
@@ -523,10 +918,10 @@ def rocket_creation(data_source = "widgets"):
         with open("./include/init_rocket/rocket_dict.json", "r") as f:
             rocket_dict = json.load(f)
         myrocket = CustomRocket.fromDict(rocket_dict)
-    
+
     else:
         with open(data_source, "r") as f:
             rocket_dict = json.load(f)
         myrocket = CustomRocket.fromDict(rocket_dict)
-    
+
     return myrocket

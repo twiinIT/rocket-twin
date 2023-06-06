@@ -1,12 +1,13 @@
 import json
+
 import matplotlib.pyplot as plt
 
 with open("time_step_simulation.json", "r") as outfile:
     loaded_results = json.load(outfile)
 
-time_steps = loaded_results['time_steps'][:-1]
-apogees = loaded_results['apogees'][:-1]
-computation_times = loaded_results['computation_times'][:-1]
+time_steps = loaded_results["time_steps"][:-1]
+apogees = loaded_results["apogees"][:-1]
+computation_times = loaded_results["computation_times"][:-1]
 
 # Plot the apogee depending on the log of the time_step
 plt.figure()
