@@ -13,3 +13,8 @@ ipympl
 plotly
 nbformat
 PyQt5
+pytest
+flake8
+isort
+black
+pre-commit
