@@ -1,5 +1,5 @@
-import include.init_rocket.CustomRocket
-import include.init_rocket.mesh.Solid
+import include.init_rocket.custom_rocket
+import include.init_rocket.mesh.solid
 import pyvista as pv
 
 

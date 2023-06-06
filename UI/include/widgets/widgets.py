@@ -4,7 +4,7 @@ import IPython
 import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import numpy as np
-from include.init_rocket.CustomRocket import CustomRocket
+from include.init_rocket.custom_rocket import CustomRocket
 from include.widgets.fin_visualisation import draw_fin
 
 # By default the matplotlib backend for the jupyter notebook is set to 'inline'

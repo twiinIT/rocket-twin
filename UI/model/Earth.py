@@ -1,11 +1,11 @@
 import numpy as np
-from Atmosphere.Atmosphere import Atmosphere
+from atmosphere.atmosphere import Atmosphere
 from cosapp.base import System
-from Gravity import Gravity
-from Parachute import Parachute
-from Rocket import Rocket
-from Trajectory import Trajectory
-from Wind import Wind
+from gravity import Gravity
+from parachute import Parachute
+from rocket import Rocket
+from trajectory import Trajectory
+from wind import Wind
 
 
 class Earth(System):

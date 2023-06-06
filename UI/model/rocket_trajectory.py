@@ -1,6 +1,16 @@
 import json
 
+import IPython
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from cosapp.drivers import NonLinearSolver, RungeKutta
+from cosapp.recorders import DataFrameRecorder
+from earth import Earth
+from matplotlib import animation
+from matplotlib.patches import FancyArrowPatch
+from mpl_toolkits.mplot3d.proj3d import proj_transform
+from scipy.spatial.transform import Rotation as R
 
 LOAD = True
 
@@ -22,12 +32,6 @@ if LOAD:
             f.write(", ".join([str(point[i]) for point in thrust]))
             if i < len(thrust[0]) - 1:
                 f.write("\n")
-
-import IPython
-from cosapp.drivers import NonLinearSolver, RungeKutta
-from cosapp.recorders import DataFrameRecorder
-from Earth import Earth
-from scipy.spatial.transform import Rotation as R
 
 # Set the matplotlib backend to 'qt' for the jupyter notebook
 # The condition checks if the script is run using IPython
@@ -139,13 +143,6 @@ earth.run_drivers()
 # ==================================
 # Rocket's trajectory visualisation
 # ==================================
-
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from matplotlib import animation
-from matplotlib.patches import FancyArrowPatch
-from mpl_toolkits.mplot3d.proj3d import proj_transform
 
 # ==================================
 # INPUTS

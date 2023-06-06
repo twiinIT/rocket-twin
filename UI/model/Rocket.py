@@ -1,11 +1,11 @@
 import numpy as np
-from Aerodynamics.Aerodynamics import Aerodynamics
+from aerodynamics.aerodynamics import Aerodynamics
 from cosapp.base import System
-from Dynamics import Dynamics
-from Kinematics import Kinematics
-from Mass import Mass
-from Ports import AclPort, VelPort
-from Thrust import Thrust
+from dynamics import Dynamics
+from kinematics import Kinematics
+from mass import Mass
+from ports import AclPort, VelPort
+from thrust import Thrust
 
 
 class Rocket(System):

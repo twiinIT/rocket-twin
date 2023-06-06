@@ -1,7 +1,7 @@
 import json
 
-from include.init_rocket.CustomRocket import CustomRocket
-from include.init_rocket.RocketPlotter import RocketPlotter
+from include.init_rocket.custom_rocket import CustomRocket
+from include.init_rocket.rocket_plotter import RocketPlotter
 
 # plot the rocket using pyvista
 

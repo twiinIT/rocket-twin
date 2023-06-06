@@ -4,8 +4,8 @@ import sys
 import include.init_rocket.mesh.mesh_creation as mc
 import IPython
 import numpy as np
-from include.init_rocket.mesh.Solid import Solid
-from include.init_rocket.RocketPlotter import RocketPlotter
+from include.init_rocket.mesh.solid import Solid
+from include.init_rocket.rocket_plotter import RocketPlotter
 
 
 class CustomRocket:

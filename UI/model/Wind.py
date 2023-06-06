@@ -1,9 +1,8 @@
 import json
 
-import matplotlib.pyplot as plt
 import numpy as np
 from cosapp.base import System
-from Ports import VelPort
+from ports import VelPort
 from scipy.interpolate import interp1d
 
 

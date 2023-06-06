@@ -1,6 +1,6 @@
 import numpy as np
 from cosapp.base import System
-from Ports import VelPort
+from ports import VelPort
 
 
 class Coefficients(System):

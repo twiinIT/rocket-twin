@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from cosapp.drivers import NonLinearSolver, RungeKutta
 from cosapp.recorders import DataFrameRecorder
-from Earth import Earth
+from earth import Earth
 
 LOAD = True
 

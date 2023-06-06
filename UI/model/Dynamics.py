@@ -1,6 +1,6 @@
 import numpy as np
 from cosapp.base import System
-from Ports import AclPort, VelPort
+from ports import AclPort, VelPort
 
 
 ###DYNAMICS

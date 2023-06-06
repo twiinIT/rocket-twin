@@ -1,5 +1,5 @@
-from Atmosphere.Density import Density
-from Atmosphere.Pressure import Pressure
+from atmosphere.density import Density
+from atmosphere.pressure import Pressure
 from cosapp.base import System
 
 

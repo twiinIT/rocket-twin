@@ -9,7 +9,7 @@ sys.path.append("./model")
 import json
 
 import numpy as np
-from Earth import Earth
+from earth import Earth
 
 earth = Earth("earth")
 

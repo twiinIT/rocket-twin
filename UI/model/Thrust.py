@@ -1,7 +1,7 @@
 import numpy as np
 from cosapp.base import System
 from scipy.spatial.transform import Rotation as R
-from Utility.Utility import thrust
+from utility.utility import thrust
 
 
 class Thrust(System):

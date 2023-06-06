@@ -1,7 +1,7 @@
 # Mesh creation
 import include.init_rocket.mesh.nose_creation as nc
 import numpy as np
-from include.init_rocket.mesh.Solid import Solid
+from include.init_rocket.mesh.solid import Solid
 from scipy.spatial.transform import Rotation as R
 from stl import mesh
 

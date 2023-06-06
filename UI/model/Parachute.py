@@ -1,5 +1,5 @@
 from cosapp.base import System
-from DynamicsPar import DynamicsPar
+from dynamics_par import DynamicsPar
 
 
 class Parachute(System):

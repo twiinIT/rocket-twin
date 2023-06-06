@@ -1,9 +1,9 @@
 import numpy as np
-from Aerodynamics.Aeroforces import AeroForces
-from Aerodynamics.Coefficients import Coefficients
-from Aerodynamics.Moments import Moments
+from aerodynamics.aeroforces import AeroForces
+from aerodynamics.coefficients import Coefficients
+from aerodynamics.moments import Moments
 from cosapp.base import System
-from Ports import VelPort
+from ports import VelPort
 
 
 class Aerodynamics(System):
