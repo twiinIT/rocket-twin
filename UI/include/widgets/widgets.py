@@ -275,18 +275,106 @@ nose_type.observe(show_nose_parameter, names="value")
 # Fins properties
 with open("./include/widgets/imgs/fin.png", "rb") as fin_file:
     fin_image = fin_file.read()
-    fin_wimg = widgets.Image(value=fin_image,format='png', layout=widgets.Layout(width='300px', height='300px'))
-Cr = widgets.BoundedFloatText(value=.2,min=0,max=1,step=0.01,description='Cr ($m$):',style={'description_width': 'initial'},disabled=False)
-Ct = widgets.BoundedFloatText(value=.1,min=0,max=1,step=0.01,description='Ct ($m$):',style={'description_width': 'initial'},disabled=False)
-Xt = widgets.BoundedFloatText(value=.1,min=0,max=1,step=0.01,description='Xt ($m$):',style={'description_width': 'initial'},disabled=False)
-s = widgets.BoundedFloatText(value=.15,min=0,max=1,step=0.01,description='s ($m$):',style={'description_width': 'initial'},disabled=False)
-fins_thickness = widgets.BoundedFloatText(value=.01,min=0,max=.1,step=0.001,description='thickness ($m$):',style={'description_width': 'initial'},disabled=False)
-fins_cant = widgets.BoundedFloatText(value=0.,min=-180,max=180,step=1.,description='Cant angle (deg):',style={'description_width': 'initial'},disabled=False)
-fins_number = widgets.IntText(value=4,description='Number of fins:',style={'description_width': 'initial'},disabled=False)
-fins_material = widgets.Dropdown(layout={'width': 'strech',}, description = 'Fins material',value = "fibre_carbon",options = textures.items(),style={'description_width': 'initial'},disabled=False)
-fins_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fins density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
-fins_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.01,description='Fins position from tube bottom ($m$):',style={'description_width': 'initial'},disabled=False)
-fin_plot_button = widgets.Button(description='Fin preview',disabled=False,button_style='',tooltip='Plot fin',icon='eye')
+    fin_wimg = widgets.Image(
+        value=fin_image,
+        format="png",
+        layout=widgets.Layout(width="300px", height="300px"),
+    )
+Cr = widgets.BoundedFloatText(
+    value=0.2,
+    min=0,
+    max=1,
+    step=0.01,
+    description="Cr ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+Ct = widgets.BoundedFloatText(
+    value=0.1,
+    min=0,
+    max=1,
+    step=0.01,
+    description="Ct ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+Xt = widgets.BoundedFloatText(
+    value=0.1,
+    min=0,
+    max=1,
+    step=0.01,
+    description="Xt ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+s = widgets.BoundedFloatText(
+    value=0.15,
+    min=0,
+    max=1,
+    step=0.01,
+    description="s ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fins_thickness = widgets.BoundedFloatText(
+    value=0.01,
+    min=0,
+    max=0.1,
+    step=0.001,
+    description="thickness ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fins_cant = widgets.BoundedFloatText(
+    value=0.0,
+    min=-180,
+    max=180,
+    step=1.0,
+    description="Cant angle (deg):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fins_number = widgets.IntText(
+    value=4,
+    description="Number of fins:",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fins_material = widgets.Dropdown(
+    layout={
+        "width": "strech",
+    },
+    description="Fins material",
+    value="fibre_carbon",
+    options=textures.items(),
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fins_density = widgets.BoundedFloatText(
+    value=0,
+    min=0,
+    max=100000,
+    step=1,
+    description="Fins density ($kg/m^3$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fins_position = widgets.BoundedFloatText(
+    value=0,
+    min=0,
+    max=500,
+    step=0.01,
+    description="Fins position from tube bottom ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+fin_plot_button = widgets.Button(
+    description="Fin preview",
+    disabled=False,
+    button_style="",
+    tooltip="Plot fin",
+    icon="eye",
+)
 with open("./include/widgets/imgs/personal_fin_plot.png", "rb") as fin_file:
     fin_image = fin_file.read()
     fin_plot_wimg = widgets.Image(
@@ -311,7 +399,13 @@ fins_material.observe(show_fins_density, names="value")
 
 
 def show_fin_plot(button):
-    draw_fin(Ct.value,Cr.value,Xt.value,s.value,save="./include/widgets/imgs/personal_fin_plot.png")
+    draw_fin(
+        Ct.value,
+        Cr.value,
+        Xt.value,
+        s.value,
+        save="./include/widgets/imgs/personal_fin_plot.png",
+    )
     fin_file = open("./include/widgets/imgs/personal_fin_plot.png", "rb")
     fin_image = fin_file.read()
     fin_plot_wimg.value = fin_image
@@ -361,17 +455,70 @@ rocket_properties_widget = widgets.Tab(
 f = open("./include/widgets/motor_data.json")
 motor_data = json.load(f)
 
-impulse_class = widgets.Dropdown(options=impulse_options,description='Impulse Class ($N.s$):',style={'description_width': 'initial'},disabled=False)
-motor_diameter = widgets.FloatRangeSlider(value=[6, 161],min=6,max=161,step=1,description='Diameter ($mm$):',disabled=False,continuous_update=False,
-                                          orientation='horizontal',readout=True,readout_format='.1f',style={'description_width': 'initial'})
-motor_position = widgets.BoundedFloatText(value=0,min=0,max=500,step=0.1,description='Motor position from tube bottom ($m$):',style={'description_width': 'initial'},disabled=False)
-motor_geometry = widgets.VBox([motor_diameter,motor_position])
-selected_motor = widgets.Dropdown(options = [], description = 'Designation:', style={'description_width': 'initial'}, disabled=False)
-motor_select_text = widgets.Label( value='(Keep this tab opened to ensure you have selected the right motor)', style={'description_width':'initial'})
-motor_ring = widgets.Checkbox(value=False,description='Automatic fixation ring around the motor',disabled=False,indent=True,style={'description_width':'initial'})
-ring_material = widgets.Dropdown(layout={'width': 'strech'}, description = 'Fixation ring material',value = "acier",options = textures.items(),style={'description_width': 'initial'},disabled=False)
-ring_density = widgets.BoundedFloatText(value=0,min=0,max=100000,step=1,description='Fixation ring density ($kg/m^3$):',style={'description_width': 'initial'},disabled=False)
-ring_box = widgets.VBox([ring_material,ring_density])
+impulse_class = widgets.Dropdown(
+    options=impulse_options,
+    description="Impulse Class ($N.s$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+motor_diameter = widgets.FloatRangeSlider(
+    value=[6, 161],
+    min=6,
+    max=161,
+    step=1,
+    description="Diameter ($mm$):",
+    disabled=False,
+    continuous_update=False,
+    orientation="horizontal",
+    readout=True,
+    readout_format=".1f",
+    style={"description_width": "initial"},
+)
+motor_position = widgets.BoundedFloatText(
+    value=0,
+    min=0,
+    max=500,
+    step=0.1,
+    description="Motor position from tube bottom ($m$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+motor_geometry = widgets.VBox([motor_diameter, motor_position])
+selected_motor = widgets.Dropdown(
+    options=[],
+    description="Designation:",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+motor_select_text = widgets.Label(
+    value="(Keep this tab opened to ensure you have selected the right motor)",
+    style={"description_width": "initial"},
+)
+motor_ring = widgets.Checkbox(
+    value=False,
+    description="Automatic fixation ring around the motor",
+    disabled=False,
+    indent=True,
+    style={"description_width": "initial"},
+)
+ring_material = widgets.Dropdown(
+    layout={"width": "strech"},
+    description="Fixation ring material",
+    value="acier",
+    options=textures.items(),
+    style={"description_width": "initial"},
+    disabled=False,
+)
+ring_density = widgets.BoundedFloatText(
+    value=0,
+    min=0,
+    max=100000,
+    step=1,
+    description="Fixation ring density ($kg/m^3$):",
+    style={"description_width": "initial"},
+    disabled=False,
+)
+ring_box = widgets.VBox([ring_material, ring_density])
 motor_file = open("./include/widgets/imgs/thrustcurve.png", "rb")
 motor_image = motor_file.read()
 motor_wimg = widgets.Image(value=motor_image, format="png", height=200, width=480)
@@ -419,12 +566,12 @@ def thrustcurve(motor_name):
     x = [d[i][0] for i in range(len(d))]
     y = [d[i][1] for i in range(len(d))]
 
-    IPython.get_ipython().run_line_magic('matplotlib', 'inline')
-    plt.plot(x,y)
-    plt.xlabel('time (s)')
-    plt.ylabel('impulse (N)')
-    plt.title(f'{motor_name} thrust curve')
-    plt.savefig('./include/widgets/imgs/thrustcurve.png')
+    IPython.get_ipython().run_line_magic("matplotlib", "inline")
+    plt.plot(x, y)
+    plt.xlabel("time (s)")
+    plt.ylabel("impulse (N)")
+    plt.title(f"{motor_name} thrust curve")
+    plt.savefig("./include/widgets/imgs/thrustcurve.png")
     plt.close()
 
 
@@ -446,7 +593,7 @@ def set_motor_options(change):
 
 
 def change_thrustcurve(change):
-    thrustcurve(change['new'])
+    thrustcurve(change["new"])
     motor_file = open("./include/widgets/imgs/thrustcurve.png", "rb")
     motor_image = motor_file.read()
     motor_wimg.value = motor_image
