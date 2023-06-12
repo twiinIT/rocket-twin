@@ -3,12 +3,12 @@ import numpy as np
 
 class NoseOgive(System):
     def setup(self):
-        # Cone Geometry parameters
+        # Ogive Geometry parameters
         self.add_inward("Lo", 1.0, desc="Ogive Height", unit="m")
         self.add_inward("Ro", 1.0, desc="Ogive Radius", unit="m")
         self.add_inward("rho", 1.0, desc="Ogive material density", unit="kg/m**3")
 
-        # Cone outputs
+        # Ogive outputs
         self.add_outward(
             "Cna", 2.0, desc="Ogive normal force coefficient slope", unit=""
         )

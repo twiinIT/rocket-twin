@@ -22,7 +22,7 @@ def test_cone(R, H, dens, npts):
 
     def f(x, y, z):
 
-        return x**2 + y**2 - (z - H)**2
+        return x**2 + y**2 - ((R/H)*(z - H))**2
     
     # Cone function for volume integration
 
