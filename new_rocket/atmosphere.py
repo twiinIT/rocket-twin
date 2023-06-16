@@ -7,5 +7,5 @@ class Atmosphere(System):
 
     def setup(self):
 
-        self.add_child(Density('dens'))
-        self.add_child(Pressure('pres'))
+        self.add_child(Density('dens'), pulling=['r', 'rho'])
+        self.add_child(Pressure('pres'), pulling=['r'])
