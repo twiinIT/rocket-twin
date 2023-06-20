@@ -5,9 +5,10 @@ class Reservatory(System):
     def setup(self):
 
         self.add_inward('m_s', 1., desc="Structure mass", unit='kg')
-        self.add_inward('dm_out', 1., desc="Mass consumption rate", unit='kg/s')
+        self.add_inward('p_in', 0., desc="Fuel income rate", unit='kg/s')
+        self.add_inward('p_out', 1., desc="Fuel consumption rate", unit='kg/s')
 
-        self.add_transient('m_p', der='-dm_out', desc="Propellant mass")
+        self.add_transient('m_p', der='p_in - p_out', desc="Propellant mass")
 
         self.add_outward('weight', 1., desc="Weight", unit='kg')
         self.add_outward('cg', 1., desc="Center of gravity", unit='m')

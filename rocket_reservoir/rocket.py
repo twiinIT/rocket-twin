@@ -9,7 +9,7 @@ class Rocket(System):
     def setup(self):
 
         self.add_child(Engine('engine'))
-        self.add_child(Reservatory('reserv'))
+        self.add_child(Reservatory('reserv'), pulling=['p_in'])
         self.add_child(RocketGeom('geom', centers=['engine', 'reservatory'], weights=['weight_eng', 'weight_res']), pulling=['center'])
         self.add_child(Dynamics('dyn', forces=['thrust'], weights=['weight_eng', 'weight_res']), pulling=['a'])
 

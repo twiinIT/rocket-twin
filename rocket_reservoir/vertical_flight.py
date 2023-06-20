@@ -1,5 +1,4 @@
-from cosapp.base import System
-from cosapp.drivers import Driver, RungeKutta, NonLinearSolver
+from cosapp.drivers import RungeKutta, NonLinearSolver
 from cosapp.recorders import DataFrameRecorder
 from rocket import Rocket
 
