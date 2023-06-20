@@ -10,8 +10,9 @@ class Reservatory(System):
         self.add_transient('m_p', der='-dm_out', desc="Propellant mass")
 
         self.add_outward('weight', 1., desc="Weight", unit='kg')
-        self.add_outward('xcg', 1., desc="Center of gravity", unit='m')
+        self.add_outward('cg', 1., desc="Center of gravity", unit='m')
 
     def compute(self):
 
         self.weight = self.m_s + self.m_p
+        self.cg = 3.
