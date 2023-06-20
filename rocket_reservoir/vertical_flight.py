@@ -15,14 +15,16 @@ driver.time_interval = (0, T)
 
 driver.add_child(NonLinearSolver("solver", factor=1.0))
 
-driver.add_recorder(DataFrameRecorder(includes=['a']), period=dt)
+driver.add_recorder(DataFrameRecorder(includes=['a', 'reserv.m_p']), period=dt)
 
 init = {
-    'reserv.m_e' : 1.,
+    'reserv.m_s' : 1.,
     'reserv.m_p' : 3.
 }
 
-driver.set_scenario(init=init)
+stop = 'reserv.m_p <= 0'
+
+driver.set_scenario(init=init, stop=stop)
 
 rocket.run_drivers()
 
@@ -30,5 +32,7 @@ data = driver.recorder.export_data()
 data = data.drop(["Section", "Status", "Error code"], axis=1)
 time = np.asarray(data["time"])
 acel = np.asarray(data["a"].tolist())
+m_prop = np.asarray(data["reserv.m_p"].tolist())
 
 print(acel)
+print(m_prop)

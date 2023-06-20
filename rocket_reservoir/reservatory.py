@@ -4,12 +4,14 @@ class Reservatory(System):
 
     def setup(self):
 
-        self.add_inward('m_e', 1., desc="Empty mass", unit='kg')
-        self.add_inward('m_p', 1., desc="Propellant mass", unit='kg')
+        self.add_inward('m_s', 1., desc="Structure mass", unit='kg')
+        self.add_inward('dm_out', 1., desc="Mass consumption rate", unit='kg/s')
 
-        self.add_outward('m', 1., desc="Mass", unit='kg')
+        self.add_transient('m_p', der='-dm_out', desc="Propellant mass")
+
+        self.add_outward('weight', 1., desc="Weight", unit='kg')
         self.add_outward('xcg', 1., desc="Center of gravity", unit='m')
 
     def compute(self):
 
-        self.m = self.m_e + self.m_p
+        self.weight = self.m_s + self.m_p
