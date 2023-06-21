@@ -13,3 +13,5 @@ class Ground(System):
 
         self.connect(self.pipe.outwards, self.g_res.inwards, {'p_in' : 'p_out'})
         self.connect(self.pipe.outwards, self.rocket.inwards, {'p_out' : 'p_in'})
+
+        self.exec_order = ['pipe', 'g_res', 'rocket']

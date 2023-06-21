@@ -16,7 +16,7 @@ class TestGroundReservatory:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.w, 5.)
+        np.testing.assert_allclose(sys.w, 5., atol=10**(-10))
 
     def test_emptying(self):
 
@@ -30,7 +30,7 @@ class TestGroundReservatory:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.w, 7.5)
+        np.testing.assert_allclose(sys.w, 7.5, atol=10**(-10))
 
 
     def test_capacity(self):
@@ -46,7 +46,7 @@ class TestGroundReservatory:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.w, 10.)
+        np.testing.assert_allclose(sys.w, 10., atol=10**(-10))
 
 
 

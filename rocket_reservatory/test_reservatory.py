@@ -16,7 +16,7 @@ class TestReservatory:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.weight, 16.)
+        np.testing.assert_allclose(sys.weight, 16., atol=10**(-10))
 
     def test_flight(self):
 
@@ -30,7 +30,7 @@ class TestReservatory:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.weight, 1.)
+        np.testing.assert_allclose(sys.weight, 1., atol=10**(-10))
 
 
 test_res = TestReservatory()

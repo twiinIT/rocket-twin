@@ -14,7 +14,7 @@ class TestRocketGeom:
 
         sys.run_once()
 
-        np.testing.assert_allclose(sys.center, 2.8)
+        np.testing.assert_allclose(sys.center, 2.8, atol=10**(-10))
 
 test_geom = TestRocketGeom()
 test_geom.test_run_once()
