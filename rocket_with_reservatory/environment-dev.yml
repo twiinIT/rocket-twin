@@ -1,0 +1,10 @@
+name: rocket_with_reservatory
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pytest
+  - flake8
+  - isort
+  - black
+  - pre-commit
