@@ -8,3 +8,5 @@ dependencies:
   - isort
   - black
   - pre-commit
+  - cosapp
+  - numpy
