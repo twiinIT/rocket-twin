@@ -1,29 +1,26 @@
-from rocket_twin.drivers.vertical_flying_rocket import VerticalFlyingRocket
-from rocket_twin.drivers.fuelling_rocket import FuellingRocket
-from cosapp.drivers import Driver
 from typing import Optional
-from cosapp.systems import System
+
 import pandas as pd
+from cosapp.drivers import Driver
+from cosapp.systems import System
+
+from rocket_twin.drivers.fuelling_rocket import FuellingRocket
+from rocket_twin.drivers.vertical_flying_rocket import VerticalFlyingRocket
+
 
 class Mission(Driver):
-
-    def __init__(self,
-                 name: str,
-                 flux_in,
-                 flux_out,
-                 dt,
-                 owner: Optional['System'] = None,
-                 **kwargs):
-        
+    def __init__(
+        self, name: str, flux_in, flux_out, dt, owner: Optional["System"] = None, **kwargs
+    ):
         super().__init__(name, owner, **kwargs)
 
-        #Fuelling
-        self.add_child(FuellingRocket('fuelling', flux=flux_in, dt=dt, owner=owner))
+        # Fuelling
+        self.add_child(FuellingRocket("fuelling", flux=flux_in, dt=dt, owner=owner))
 
-        #Flying
-        self.add_child(VerticalFlyingRocket('flying', flux=flux_out, dt=dt, owner=owner))
+        # Flying
+        self.add_child(VerticalFlyingRocket("flying", flux=flux_out, dt=dt, owner=owner))
 
-        #Recorder
+        # Recorder
         self.data = None
 
     def compute(self):
