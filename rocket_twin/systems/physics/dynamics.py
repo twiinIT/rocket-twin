@@ -11,7 +11,7 @@ class Dynamics(System):
         self.add_property("forces", forces)
         self.add_property("weights", weights)
 
-        self.add_inward("switch", True, desc="Whether rocket is on or off")
+        self.add_inward("switch", False, desc="Whether rocket is on or off")
         self.add_inward("g", -10.0, desc="Gravity", unit="m/s**2")
 
         self.add_outward("a", 1.0, desc="Acceleration", unit="m/s**2")

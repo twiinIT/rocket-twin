@@ -17,10 +17,9 @@ class FuellingRocket(Driver):
 
         init = {
             "rocket.dyn.switch": False,
-            "rocket.tank.p_out": 0.0,
+            "rocket.tank.flux": 0.0,
             "g_tank.p_in": 0.0,
-            "pipe.pi_in": flux,
-            "pipe.pi_out": flux,
+            "g_tank.flux": flux,
         }
 
         stop = "rocket.tank.w_p >= rocket.tank.w_max"

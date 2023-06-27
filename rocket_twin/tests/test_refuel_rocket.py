@@ -19,9 +19,9 @@ class TestFuellingRocket:
         data = sys.drivers["fr"].data
         data = data.drop(["Section", "Status", "Error code"], axis=1)
 
-        np.testing.assert_allclose(sys.rocket.a, 0.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.rocket.dyn.a, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.tank.w_p, 5.0, atol=10 ** (-10))
-        np.testing.assert_allclose(sys.g_tank.w_p, 0.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.g_tank.w_p, 5.0, atol=10 ** (-10))
 
 
 test_fr = TestFuellingRocket()

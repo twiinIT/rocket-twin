@@ -9,11 +9,10 @@ class Rocket(System):
         self.add_child(Engine("engine"))
         self.add_child(Tank("tank"), pulling=["p_in"])
         self.add_child(
-            RocketGeom("geom", centers=["engine", "tank"], weights=["weight_eng", "weight_tank"]),
-            pulling=["center"],
+            RocketGeom("geom", centers=["engine", "tank"], weights=["weight_eng", "weight_tank"])
         )
         self.add_child(
-            Dynamics("dyn", forces=["thrust"], weights=["weight_eng", "weight_tank"]), pulling=["a"]
+            Dynamics("dyn", forces=["thrust"], weights=["weight_eng", "weight_tank"])
         )
 
         self.connect(
