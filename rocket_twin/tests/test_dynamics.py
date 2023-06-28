@@ -4,6 +4,8 @@ from rocket_twin.systems.physics import Dynamics
 
 
 class TestDynamics:
+    """Tests for the dynamics model."""
+
     def test_is_on(self):
         sys = Dynamics("sys", forces=["F"], weights=["w"])
         sys.F = 100.0

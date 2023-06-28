@@ -2,6 +2,21 @@ from cosapp.base import System
 
 
 class RocketGeom(System):
+    """Calculates the necessary geometric parameters of a rocket.
+
+    Inputs
+    ------
+    centers [m]: float,
+        center of gravity of each component of the rocket
+    weights [kg]: float,
+        weight of each component of the rocket
+
+    Outputs
+    ------
+    center [m]: float,
+        center of gravity of the rocket
+    """
+
     def setup(self, centers=None, weights=None):
         if centers is None:
             centers = []

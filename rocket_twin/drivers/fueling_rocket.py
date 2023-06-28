@@ -5,7 +5,23 @@ from cosapp.recorders import DataFrameRecorder
 from cosapp.systems import System
 
 
-class FuellingRocket(Driver):
+class FuelingRocket(Driver):
+    """Driver that simulates the fueling of a rocket.
+    
+    Inputs
+    ------
+    name: string,
+        the name of the driver
+    w_out [kg/s]: float,
+        mass flow of fuel exiting the ground tank
+    dt [s]: float,
+        integration time step
+    owner: System,
+        the system that owns the driver
+
+    Outputs
+    ------
+    """
     def __init__(self, name: str, w_out, dt, owner: Optional["System"] = None, **kwargs):
         super().__init__(name, owner, **kwargs)
 
@@ -26,7 +42,9 @@ class FuellingRocket(Driver):
 
         self.rk.set_scenario(init=init, stop=stop)
         self.rk.add_recorder(
-            DataFrameRecorder(includes=["rocket.dyn.a", "g_tank.weight", "rocket.tank.weight_p"], hold=True),
+            DataFrameRecorder(
+                includes=["rocket.dyn.a", "g_tank.weight", "rocket.tank.weight_p"], hold=True
+            ),
             period=dt,
         )
         self.data = None

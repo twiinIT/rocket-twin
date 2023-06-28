@@ -5,6 +5,8 @@ from rocket_twin.systems import Tank
 
 
 class TestTank:
+    """Tests for the tank model."""
+
     def test_fuel(self):
         sys = Tank("sys")
         driver = sys.add_driver(RungeKutta(order=4, dt=0.1))

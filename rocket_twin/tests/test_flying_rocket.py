@@ -1,12 +1,14 @@
 import numpy as np
 
 from rocket_twin.drivers.vertical_flying_rocket import VerticalFlyingRocket
-from rocket_twin.systems.ground import Ground
+from rocket_twin.systems import Station
 
 
 class TestVerticalFlyingRocket:
+    """Tests for the VerticalFlyingRocket driver."""
+
     def test_run_once(self):
-        sys = Ground("sys")
+        sys = Station("sys")
         sys.g_tank.weight_p = 0.0
         sys.rocket.tank.weight_p = sys.rocket.tank.weight_max
         w_out = 3.0

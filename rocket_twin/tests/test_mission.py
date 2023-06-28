@@ -1,12 +1,14 @@
 import numpy as np
 
 from rocket_twin.drivers.mission import Mission
-from rocket_twin.systems import Ground
+from rocket_twin.systems import Station
 
 
 class TestMission:
+    """Tests for the mission driver."""
+
     def test_run_once(self):
-        sys = Ground("sys")
+        sys = Station("sys")
         sys.g_tank.weight_p = sys.g_tank.weight_max
         sys.rocket.tank.weight_p = 0.0
         w_in = 3.0

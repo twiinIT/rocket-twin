@@ -1,18 +1,20 @@
 import numpy as np
 
-from rocket_twin.drivers.fuelling_rocket import FuellingRocket
-from rocket_twin.systems import Ground
+from rocket_twin.drivers.fueling_rocket import FuelingRocket
+from rocket_twin.systems import Station
 
 
-class TestFuellingRocket:
+class TestFuelingRocket:
+    """Tests for the FuelingRocket driver."""
+
     def test_run_once(self):
-        sys = Ground("sys")
+        sys = Station("sys")
         sys.g_tank.weight_p = sys.g_tank.weight_max
         sys.rocket.tank.weight_p = 0.0
         w_out = 3.0
         dt = 0.1
 
-        sys.add_driver(FuellingRocket("fr", w_out=w_out, dt=dt, owner=sys))
+        sys.add_driver(FuelingRocket("fr", w_out=w_out, dt=dt, owner=sys))
 
         sys.run_drivers()
 
@@ -24,6 +26,6 @@ class TestFuellingRocket:
         np.testing.assert_allclose(sys.g_tank.weight_p, 5.0, atol=10 ** (-10))
 
 
-test_fr = TestFuellingRocket()
+test_fr = TestFuelingRocket()
 test_fr.test_run_once()
 print("Test run_once passed!")

@@ -5,15 +5,22 @@ from rocket_twin.systems.rocket import RocketGeom
 
 
 class Rocket(System):
+    """A simple model of a rocket.
+
+    Inputs
+    ------
+
+    Outputs
+    ------
+    """
+
     def setup(self):
         self.add_child(Engine("engine"))
         self.add_child(Tank("tank"), pulling=["w_in"])
         self.add_child(
             RocketGeom("geom", centers=["engine", "tank"], weights=["weight_eng", "weight_tank"])
         )
-        self.add_child(
-            Dynamics("dyn", forces=["thrust"], weights=["weight_eng", "weight_tank"])
-        )
+        self.add_child(Dynamics("dyn", forces=["thrust"], weights=["weight_eng", "weight_tank"]))
 
         self.connect(
             self.engine.outwards, self.geom.inwards, {"cg": "engine", "weight": "weight_eng"}

@@ -2,6 +2,25 @@ from cosapp.base import System
 
 
 class Dynamics(System):
+    """Dynamics of a physical system.
+
+    Inputs
+    ------
+    forces [N]: float,
+        total force in each component of the system
+    weights [kg]: float,
+        total weight of each component of the system
+
+    Outputs
+    ------
+    force [N]: float,
+        total force
+    weight [kg]: float,
+        total weight
+    a [m/s**2] : float,
+        acceleration
+    """
+
     def setup(self, forces=None, weights=None):
         if forces is None:
             forces = []

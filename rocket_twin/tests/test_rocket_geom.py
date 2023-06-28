@@ -4,6 +4,8 @@ from rocket_twin.systems import RocketGeom
 
 
 class TestRocketGeom:
+    """Tests for the rocket geometry model."""
+
     def test_run_once(self):
         sys = RocketGeom("sys", centers=["c1", "c2"], weights=["w1", "w2"])
 
