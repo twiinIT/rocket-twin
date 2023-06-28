@@ -12,6 +12,7 @@ class Station(System):
     Outputs
     ------
     """
+
     def setup(self):
         self.add_child(Rocket("rocket"))
         self.add_child(Pipe("pipe"))

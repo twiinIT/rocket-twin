@@ -7,7 +7,7 @@ from cosapp.systems import System
 
 class FuelingRocket(Driver):
     """Driver that simulates the fueling of a rocket.
-    
+
     Inputs
     ------
     name: string,
@@ -22,6 +22,7 @@ class FuelingRocket(Driver):
     Outputs
     ------
     """
+
     def __init__(self, name: str, w_out, dt, owner: Optional["System"] = None, **kwargs):
         super().__init__(name, owner, **kwargs)
 
