@@ -10,7 +10,7 @@ class TestTank:
         driver = sys.add_driver(RungeKutta(order=4, dt=0.1))
         driver.time_interval = (0, 5)
 
-        init = {"p_in": 3.0, "flux": 0.0, "w_p": 0.0}
+        init = {"w_in": 3.0, "w_out_temp": 0.0, "weight_p": 0.0}
 
         driver.set_scenario(init=init)
 
@@ -23,7 +23,7 @@ class TestTank:
         driver = sys.add_driver(RungeKutta(order=4, dt=0.1))
         driver.time_interval = (0, 5)
 
-        init = {"p_in": 0.0, "flux": 3.0, "w_p": 15.0}
+        init = {"w_in": 0.0, "w_out_temp": 3.0, "weight_p": 15.0}
 
         driver.set_scenario(init=init)
 

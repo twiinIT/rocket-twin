@@ -7,7 +7,7 @@ from rocket_twin.systems.rocket import RocketGeom
 class Rocket(System):
     def setup(self):
         self.add_child(Engine("engine"))
-        self.add_child(Tank("tank"), pulling=["p_in"])
+        self.add_child(Tank("tank"), pulling=["w_in"])
         self.add_child(
             RocketGeom("geom", centers=["engine", "tank"], weights=["weight_eng", "weight_tank"])
         )

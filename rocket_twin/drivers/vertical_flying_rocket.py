@@ -6,7 +6,7 @@ from cosapp.systems import System
 
 
 class VerticalFlyingRocket(Driver):
-    def __init__(self, name: str, flux, dt, owner: Optional["System"] = None, **kwargs):
+    def __init__(self, name: str, w_out, dt, owner: Optional["System"] = None, **kwargs):
         super().__init__(name, owner, **kwargs)
 
         # Fueling:
@@ -17,16 +17,16 @@ class VerticalFlyingRocket(Driver):
 
         init = {
             "rocket.dyn.switch": True,
-            "g_tank.p_in": 0.0,
-            "g_tank.flux": 0.0,
-            "rocket.tank.flux": flux,
+            "g_tank.w_in": 0.0,
+            "g_tank.w_out_temp": 0.0,
+            "rocket.tank.w_out_temp": w_out,
         }
 
-        stop = "rocket.tank.w_p <= 0."
+        stop = "rocket.tank.weight_p <= 0."
 
         self.rk.set_scenario(init=init, stop=stop)
         self.rk.add_recorder(
-            DataFrameRecorder(includes=["rocket.dyn.a", "g_tank.w", "rocket.tank.w_p"], hold=True),
+            DataFrameRecorder(includes=["rocket.dyn.a", "g_tank.weight", "rocket.tank.weight_p"], hold=True),
             period=dt,
         )
         self.data = None
