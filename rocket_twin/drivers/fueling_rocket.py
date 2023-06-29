@@ -35,6 +35,7 @@ class FuelingRocket(Driver):
         init = {
             "rocket.dyn.switch": False,
             "rocket.tank.w_out_temp": 0.0,
+            "pipe.is_open" : True,
             "g_tank.w_in": 0.0,
             "g_tank.w_out_temp": w_out,
         }

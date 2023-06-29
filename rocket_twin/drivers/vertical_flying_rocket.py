@@ -35,7 +35,7 @@ class VerticalFlyingRocket(Driver):
         init = {
             "rocket.dyn.switch": True,
             "g_tank.w_in": 0.0,
-            "g_tank.w_out_temp": 0.0,
+            "pipe.is_open": False,
             "rocket.tank.w_out_temp": w_out,
         }
 
