@@ -1,4 +1,5 @@
 from cosapp.base import System
+from cosapp_fmu.FMUsystem import FMUSystem
 
 from rocket_twin.systems import Pipe, Rocket, Tank
 
@@ -20,5 +21,9 @@ class Station(System):
 
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
         self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": "w_in"})
+        self.connect(self.controller.outwards, self.pipe.inwards, ["is_open"])
+        #self.connect(self.controller.outwards, self.rocket.inwards, ["switch"])
+        #self.connect(self.controller.outwards, self.g_tank.inwards, {'w_out_t' : 'w_out_temp'})
+        #self.connect(self.controller.outwards, self.rocket.tank.inwards, {'w_out_r' : 'w_out_temp'})
 
         self.g_tank.weight_max = 10.0
