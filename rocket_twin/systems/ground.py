@@ -18,8 +18,6 @@ class Ground(System):
         if stations is None:
             stations = []
 
-        self.add_property("stations", stations)
-
         for station in stations:
 
             self.add_child(station)

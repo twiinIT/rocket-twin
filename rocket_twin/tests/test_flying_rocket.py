@@ -9,12 +9,25 @@ class TestVerticalFlyingRocket:
 
     def test_run_once(self):
         sys = Station("sys")
-        sys.g_tank.weight_p = 0.0
         sys.rocket.tank.weight_p = sys.rocket.tank.weight_max
-        w_out = 3.0
         dt = 0.1
 
-        sys.add_driver(VerticalFlyingRocket("vfr", w_out=w_out, dt=dt, owner=sys))
+        init = {
+            "rocket.engine.switch": True,
+            "rocket.tank.weight_p": "rocket.tank.weight_max",
+            "rocket.tank.w_out_temp": 3.0,
+            "g_tank.w_in": 0.0,
+            "g_tank.weight_p": 0.0,
+            "g_tank.is_open": False,
+        }
+
+        stop = "rocket.tank.weight_p <= 0."
+
+        includes = ["rocket.dyn.a", "g_tank.weight", "rocket.tank.weight_p"]
+
+        sys.add_driver(
+            VerticalFlyingRocket("vfr", owner=sys, init=init, stop=stop, includes=includes, dt=dt)
+        )
 
         sys.run_drivers()
 
@@ -26,6 +39,13 @@ class TestVerticalFlyingRocket:
         np.testing.assert_allclose(sys.g_tank.weight_p, 0.0, atol=10 ** (-10))
 
 
-test_vfr = TestVerticalFlyingRocket()
-test_vfr.test_run_once()
-print("Test run_once passed!")
+"""init = {
+            "rocket.dyn.switch": True,
+            "g_tank.w_in": 0.0,
+            "pipe.is_open": False,
+            "rocket.tank.w_out_temp": w_out,
+        }
+
+        stop = "rocket.tank.weight_p <= 0."""
+
+# ["rocket.dyn.a", "g_tank.weight", "rocket.tank.weight_p"]

@@ -28,22 +28,50 @@ class Mission(Driver):
     ------
     """
 
-    def __init__(self, name: str, w_in, w_out, dt, owner: Optional["System"] = None, **kwargs):
+    def __init__(
+        self,
+        name: str,
+        owner: Optional["System"] = None,
+        init: Optional[dict] = None,
+        stop: Optional[str] = None,
+        dt: Optional[float] = 0.1,
+        includes: Optional[list[str]] = None,
+        **kwargs
+    ):
         super().__init__(name, owner, **kwargs)
 
-        # Fuelling
-        self.add_child(FuelingRocket("fuelling", w_out=w_in, dt=dt, owner=owner))
+        # Init and stop conditions
+        init_fuel = init
+        init_flight = {
+            "rocket.engine.switch": True,
+            "rocket.tank.w_out_temp": 3.0,
+            "g_tank.w_in": 0.0,
+            "g_tank.is_open": False,
+        }
+
+        stop_fuel = "rocket.tank.weight_p >= rocket.tank.weight_max"
+        stop_flight = stop
+
+        # Fueling
+        self.add_child(
+            FuelingRocket(
+                "fr", owner=owner, init=init_fuel, stop=stop_fuel, includes=includes, dt=dt
+            )
+        )
 
         # Flying
-        self.add_child(VerticalFlyingRocket("flying", w_out=w_out, dt=dt, owner=owner))
+        self.add_child(
+            VerticalFlyingRocket(
+                "vfr", owner=owner, init=init_flight, stop=stop_flight, includes=includes, dt=dt
+            )
+        )
 
         # Recorder
         self.data = None
 
     def compute(self):
-        super().compute
-        for child_name in ["fuelling", "flying"]:
+        for child in self.children.values():
             self.data = pd.concat(
-                [self.data, self.children[child_name].rk.recorder.export_data()],
+                [self.data, child.rk.recorder.export_data()],
                 ignore_index=True,
             )

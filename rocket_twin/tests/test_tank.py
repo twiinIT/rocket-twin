@@ -32,10 +32,3 @@ class TestTank:
         sys.run_drivers()
 
         np.testing.assert_allclose(sys.weight, 1.0, atol=10 ** (-10))
-
-
-test_res = TestTank()
-test_res.test_fuel()
-print("Test fuel passed!")
-test_res.test_flight()
-print("Test flight passed!")

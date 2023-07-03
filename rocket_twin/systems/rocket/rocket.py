@@ -1,7 +1,6 @@
 from cosapp.base import System
 
 from rocket_twin.systems import Dynamics, Engine, Tank
-from rocket_twin.systems.rocket import RocketGeom
 
 
 class Rocket(System):
@@ -18,17 +17,25 @@ class Rocket(System):
         self.add_child(Engine("engine"))
         self.add_child(Tank("tank"), pulling=["w_in"])
         self.add_child(
-            RocketGeom("geom", centers=["engine", "tank"], weights=["weight_eng", "weight_tank"])
+            Dynamics(
+                "dyn",
+                forces=["thrust"],
+                weights=["weight_eng", "weight_tank"],
+                centers=["engine", "tank"],
+            ),
+            pulling=["a"],
         )
-        self.add_child(Dynamics("dyn", forces=["thrust"], weights=["weight_eng", "weight_tank"]))
 
         self.connect(
-            self.engine.outwards, self.geom.inwards, {"cg": "engine", "weight": "weight_eng"}
+            self.engine.outwards,
+            self.dyn.inwards,
+            {"force": "thrust", "weight": "weight_eng", "cg": "engine"},
         )
-        self.connect(self.tank.outwards, self.geom.inwards, {"cg": "tank", "weight": "weight_tank"})
-        self.connect(
-            self.engine.outwards, self.dyn.inwards, {"force": "thrust", "weight": "weight_eng"}
-        )
-        self.connect(self.tank.outwards, self.dyn.inwards, {"weight": "weight_tank"})
+        self.connect(self.tank.outwards, self.dyn.inwards, {"weight": "weight_tank", "cg": "tank"})
 
-        self.exec_order = ["engine", "tank", "geom", "dyn"]
+        # Event
+        self.add_event("is_flying", trigger="a > 0")
+
+    def transition(self):
+        if self.is_flying.present:
+            self.dyn.flight = True

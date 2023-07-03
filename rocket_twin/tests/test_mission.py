@@ -9,13 +9,25 @@ class TestMission:
 
     def test_run_once(self):
         sys = Station("sys")
-        sys.g_tank.weight_p = sys.g_tank.weight_max
-        sys.rocket.tank.weight_p = 0.0
-        w_in = 3.0
-        w_out = 3.0
         dt = 0.1
 
-        sys.add_driver(Mission("mission", w_in=w_in, w_out=w_out, dt=dt, owner=sys))
+        init = {
+            "g_tank.weight_p": "g_tank.weight_max",
+            "rocket.engine.switch": False,
+            "rocket.tank.weight_p": 0.0,
+            "rocket.tank.w_out_temp": 0.0,
+            "g_tank.is_open": True,
+            "g_tank.w_in": 0.0,
+            "g_tank.w_out_temp": 3.0,
+        }
+
+        stop = "rocket.tank.weight_p <= 0."
+
+        includes = ["rocket.dyn.a", "g_tank.weight", "rocket.tank.weight_p"]
+
+        sys.add_driver(
+            Mission("mission", owner=sys, init=init, stop=stop, includes=includes, dt=dt)
+        )
 
         sys.run_drivers()
 
@@ -25,8 +37,3 @@ class TestMission:
         np.testing.assert_allclose(sys.rocket.dyn.a, 40.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.tank.weight_p, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_p, 5.0, atol=10 ** (-10))
-
-
-test_mission = TestMission()
-test_mission.test_run_once()
-print("Mission complete!")

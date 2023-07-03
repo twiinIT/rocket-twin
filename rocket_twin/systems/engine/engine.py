@@ -6,6 +6,8 @@ class Engine(System):
 
     Inputs
     ------
+    force_command: float,
+        External control, which inputs the % of the maximum force the engine outputs
 
     Outputs
     ------
@@ -18,10 +20,20 @@ class Engine(System):
     """
 
     def setup(self):
+
+        self.add_inward("force_max", 100.0, desc="Maximum engine force", unit="N")
+        self.add_inward(
+            "force_command", 1.0, desc="Ratio of command force to maximum force", unit=""
+        )
+        self.add_inward("switch", False, desc="Whether the engine is on or off", unit="")
+
         self.add_outward("weight", 1.0, desc="weight", unit="kg")
         self.add_outward("cg", 1.0, desc="Center of Gravity", unit="m")
         self.add_outward("force", 1.0, desc="Thrust force", unit="N")
 
     def compute(self):
-        self.force = 100.0
-        self.cg = 1.0
+
+        if self.switch:
+            self.force = self.force_max * self.force_command
+        else:
+            self.force = 0.0
