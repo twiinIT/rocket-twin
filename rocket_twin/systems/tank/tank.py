@@ -31,7 +31,7 @@ class Tank(System):
         self.add_inward("w_in", 0.0, desc="Fuel income rate", unit="kg/s")
 
         # Flux control
-        self.add_inward("w_out_temp", 0.0, desc="Fuel output rate", unit="kg/s")
+        self.add_inward("w_out_max", 0.0, desc="Fuel output rate", unit="kg/s")
         self.add_inward("w_command", 1.0, desc="Fuel output control variable", unit="")
 
         # Transient
@@ -44,6 +44,6 @@ class Tank(System):
         self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
 
     def compute(self):
-        self.w_out = self.w_out_temp * self.w_command
+        self.w_out = self.w_out_max * self.w_command
         self.dw_dt = self.w_in - self.w_out
         self.weight = self.weight_s + self.weight_p
