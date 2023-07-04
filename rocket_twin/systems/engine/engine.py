@@ -25,7 +25,6 @@ class Engine(System):
         self.add_inward(
             "force_command", 1.0, desc="Ratio of command force to maximum force", unit=""
         )
-        self.add_inward("switch", False, desc="Whether the engine is on or off", unit="")
 
         self.add_outward("weight", 1.0, desc="weight", unit="kg")
         self.add_outward("cg", 1.0, desc="Center of Gravity", unit="m")

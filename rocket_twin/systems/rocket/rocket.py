@@ -8,6 +8,8 @@ class Rocket(System):
 
     Inputs
     ------
+    flying: boolean,
+        whether the rocket is already flying or still on ground
 
     Outputs
     ------
