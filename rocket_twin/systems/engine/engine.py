@@ -33,7 +33,4 @@ class Engine(System):
 
     def compute(self):
 
-        if self.switch:
-            self.force = self.force_max * self.force_command
-        else:
-            self.force = 0.0
+        self.force = self.force_max * self.force_command

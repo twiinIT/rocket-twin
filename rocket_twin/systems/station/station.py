@@ -14,8 +14,8 @@ class Station(System):
     """
 
     def setup(self):
-        self.add_child(Pipe("pipe"))
         self.add_child(Tank("g_tank"))
+        self.add_child(Pipe("pipe"))
         self.add_child(Rocket("rocket"))
 
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})

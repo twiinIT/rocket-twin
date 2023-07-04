@@ -35,14 +35,9 @@ class Dynamics(System):
         self.add_property("weights", weights)
         self.add_property("centers", centers)
 
-        # Checks if rocket is mid-flight or still in station
-        self.add_inward_modevar(
-            "flight", False, desc="Whether the rocket is flying or not", unit=""
-        )
-
         self.add_inward("g", -10.0, desc="Gravity", unit="m/s**2")
 
-        self.add_outward("a", 1.0, desc="Acceleration", unit="m/s**2")
+        self.add_outward("a", 0.0, desc="Acceleration", unit="m/s**2")
 
         for weight in self.weights:
             self.add_inward(weight, 0.0, desc=f"Weight called {weight}", unit="kg")
@@ -67,8 +62,5 @@ class Dynamics(System):
         self.force = self.weight * self.g
         for force in self.forces:
             self.force += self[force]
-
-        if self.force < 0 and self.flight is False:
-            self.force = 0
 
         self.a = self.force / self.weight

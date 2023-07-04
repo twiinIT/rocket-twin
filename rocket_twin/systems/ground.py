@@ -6,7 +6,7 @@ class Ground(System):
 
     Inputs
     ------
-    stations : System,
+    stations : List[System],
         space stations
 
     Outputs

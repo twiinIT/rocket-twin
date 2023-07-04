@@ -39,8 +39,6 @@ def run_sequences(sys, sequences):
         if "init" in seq:
             for key, val in seq["init"].items():
                 sys[key] = val
-        if "Tf" in seq:
-            rk.time_interval = (rk.time, rk.time + seq["Tf"])
         if "unknown" in seq:
             for uk in seq["unknown"]:
                 run.add_unknown(uk, max_rel_step=0.9)

@@ -33,9 +33,7 @@ class Rocket(System):
         )
         self.connect(self.tank.outwards, self.dyn.inwards, {"weight": "weight_tank", "cg": "tank"})
 
-        # Event
-        self.add_event("is_flying", trigger="a > 0")
+        self.add_inward("flying", False, desc="Whether the rocket is flying or not", unit="")
 
-    def transition(self):
-        if self.is_flying.present:
-            self.dyn.flight = True
+    def compute(self):
+        self.a *= self.flying

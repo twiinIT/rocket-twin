@@ -45,7 +45,7 @@ class FuelingRocket(Driver):
             DataFrameRecorder(includes=includes, hold=True),
             period=dt,
         )
-        self.data = None
 
-    def compute(self):
-        self.data = self.rk.recorder.export_data()
+    @property
+    def data(self):
+        return self.rk.recorder.export_data()

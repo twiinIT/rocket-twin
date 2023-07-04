@@ -11,7 +11,6 @@ class TestDynamics:
         sys.F = 100.0
         sys.w = 5.0
         sys.cg = 3.0
-        sys.flight = True
 
         sys.run_once()
 
@@ -22,11 +21,10 @@ class TestDynamics:
         sys.F = 10.0
         sys.w = 5.0
         sys.cg = 3.0
-        sys.flight = False
 
         sys.run_once()
 
-        np.testing.assert_allclose(sys.a, 0.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.a, -8.0, atol=10 ** (-10))
 
     def test_cg(self):
         sys = Dynamics("sys", weights=["w1", "w2"], centers=["c1", "c2"])

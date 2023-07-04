@@ -8,8 +8,8 @@ class Tank(System):
     ------
     w_in [kg/s]: float,
         mass flow of fuel entering the tank
-    is_open: boolean,
-        whether the tank exit is open or closed
+    w_command: float,
+        fuel exit flux control. 0 means tank exit fully closed, 1 means fully open
 
     Outputs
     ------
@@ -32,7 +32,7 @@ class Tank(System):
 
         # Flux control
         self.add_inward("w_out_temp", 0.0, desc="Fuel output rate", unit="kg/s")
-        self.add_inward("is_open", True, desc="Whether fuel can or not exit the tank", unit="")
+        self.add_inward("w_command", 1.0, desc="Fuel output control variable", unit="")
 
         # Transient
         self.add_outward("dw_dt", 0.0, desc="Fuel mass rate of change", unit="kg/s")
@@ -44,9 +44,6 @@ class Tank(System):
         self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
 
     def compute(self):
-        if self.is_open:
-            self.w_out = self.w_out_temp
-        else:
-            self.w_out = 0.0
+        self.w_out = self.w_out_temp * self.w_command
         self.dw_dt = self.w_in - self.w_out
         self.weight = self.weight_s + self.weight_p

@@ -43,10 +43,11 @@ class Mission(Driver):
         # Init and stop conditions
         init_fuel = init
         init_flight = {
-            "rocket.engine.switch": True,
+            "rocket.flying": True,
+            "rocket.engine.force_command": 1.0,
             "rocket.tank.w_out_temp": 3.0,
             "g_tank.w_in": 0.0,
-            "g_tank.is_open": False,
+            "g_tank.w_command": 0.0,
         }
 
         stop_fuel = "rocket.tank.weight_p >= rocket.tank.weight_max"
@@ -66,12 +67,9 @@ class Mission(Driver):
             )
         )
 
-        # Recorder
-        self.data = None
-
-    def compute(self):
+    @property
+    def data(self):
+        data = None
         for child in self.children.values():
-            self.data = pd.concat(
-                [self.data, child.rk.recorder.export_data()],
-                ignore_index=True,
-            )
+            data = pd.concat([data, child.rk.recorder.export_data()], ignore_index=True)
+        return data
