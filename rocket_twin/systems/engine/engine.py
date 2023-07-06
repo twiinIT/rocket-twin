@@ -7,7 +7,9 @@ class Engine(System):
     Inputs
     ------
     force_command: float,
-        External control, which inputs the % of the maximum force the engine outputs
+        external control, which inputs the % of the maximum force the engine outputs
+    w_out [kg/s]: float,
+        rate of fuel consumption
 
     Outputs
     ------
@@ -21,10 +23,13 @@ class Engine(System):
 
     def setup(self):
 
-        self.add_inward("force_max", 100.0, desc="Maximum engine force", unit="N")
+        #self.add_inward("force_max", 100.0, desc="Maximum engine force", unit="N")
         self.add_inward(
             "force_command", 1.0, desc="Ratio of command force to maximum force", unit=""
         )
+        self.add_inward("isp", 100., desc="Specific impulsion in vacuum", unit='s')
+        self.add_inward("w_out", 0., desc="Fuel consumption rate", unit='kg/s')
+        self.add_inward("g_0", 9.80665, desc="Gravity at Earth's surface", unit='m/s**2')
 
         self.add_outward("weight", 1.0, desc="weight", unit="kg")
         self.add_outward("cg", 1.0, desc="Center of Gravity", unit="m")
@@ -32,4 +37,4 @@ class Engine(System):
 
     def compute(self):
 
-        self.force = self.force_max * self.force_command
+        self.force = self.isp * self.g_0 * self.w_out * self.force_command
