@@ -16,8 +16,8 @@ class Rocket(System):
     """
 
     def setup(self):
-        self.add_child(Engine("engine"))
-        self.add_child(Tank("tank"), pulling=["w_in"])
+        self.add_child(Engine("engine"), pulling=["force_command"])
+        self.add_child(Tank("tank"), pulling=["w_in", "w_command"])
         self.add_child(
             Dynamics(
                 "dyn",

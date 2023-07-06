@@ -14,7 +14,7 @@ class TestVerticalFlyingRocket:
 
         init = {
             "rocket.flying": True,
-            "rocket.engine.force_command": 1.0,
+            "rocket.force_command": 1.0,
             "rocket.tank.weight_p": "rocket.tank.weight_max",
             "rocket.tank.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
