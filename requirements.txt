@@ -18,3 +18,4 @@ flake8
 isort
 black
 pre-commit
+cosapp_fmu @ git+https://github.com/twiinIT/cosapp-fmu.git
