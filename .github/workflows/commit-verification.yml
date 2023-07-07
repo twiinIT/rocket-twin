@@ -16,6 +16,7 @@ jobs:
     - name: Add dependencies
       run: |
         python -m pip install --upgrade pip
+        eval `ssh-agent -s`
         echo "${TOKEN}" | ssh-add -
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
