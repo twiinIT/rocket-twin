@@ -36,7 +36,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
-        echo ${{ secrets.TOKEN }} | ssh-add -
+        echo "${{ secrets.TOKEN }}" | ssh-add -
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
