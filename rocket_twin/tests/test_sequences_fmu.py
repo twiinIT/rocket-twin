@@ -8,7 +8,9 @@ from rocket_twin.systems import Station
 class TestSequencesFMU:
     def test_sequence_fmu(self):
 
-        sys = Station("sys", fmu_path="rocket_twin/systems/control/controller.fmu")
+        model_path = r"rocket_twin\\systems\\control\\controller.mo"
+        model_name = "controller"
+        sys = Station("sys", model_path=model_path, model_name=model_name)
         driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 15], dt=0.01))
         init = {"g_tank.weight_p": 10.0, "rocket.tank.weight_p": 0.0}
         values = {

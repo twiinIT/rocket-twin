@@ -19,3 +19,4 @@ isort
 black
 pre-commit
 cosapp_fmu @ git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
+OMPython

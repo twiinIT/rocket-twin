@@ -2,6 +2,7 @@ from cosapp.base import System
 from cosapp_fmu.FMUsystem import FMUSystem
 
 from rocket_twin.systems import Clock, Pipe, Rocket, Tank
+from rocket_twin.utils import create_FMU
 
 
 class Station(System):
@@ -16,7 +17,7 @@ class Station(System):
     ------
     """
 
-    def setup(self, fmu_path=None):
+    def setup(self, model_path=None, model_name=None):
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
         self.add_child(Rocket("rocket"))
@@ -24,8 +25,9 @@ class Station(System):
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
         self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": "w_in"})
 
-        if fmu_path is not None:
+        if model_path is not None:
             self.add_child(Clock("clock"))
+            fmu_path = create_FMU(model_path, model_name)
             self.add_child(FMUSystem("controller", fmu_path=fmu_path))
             self.connect(self.clock.outwards, self.controller.inwards, {"time_var": "ti"})
             self.connect(self.controller.outwards, self.g_tank.inwards, {"wg": "w_command"})
