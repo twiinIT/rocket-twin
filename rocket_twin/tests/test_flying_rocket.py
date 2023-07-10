@@ -14,12 +14,13 @@ class TestVerticalFlyingRocket:
 
         init = {
             "rocket.flying": True,
-            "rocket.force_command": 1.0,
+            "controller.cos_control.f_temp": 1.0,
+            "controller.cos_control.wg_temp": 0.0,
+            "controller.cos_control.wr_temp": 1.0,
             "rocket.tank.weight_p": "rocket.tank.weight_max",
             "rocket.tank.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
             "g_tank.weight_p": 0.0,
-            "g_tank.w_command": 0.0,
         }
 
         stop = "rocket.tank.weight_p <= 0."

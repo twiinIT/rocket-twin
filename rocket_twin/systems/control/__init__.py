@@ -1,3 +1,5 @@
-from rocket_twin.systems.control.clock import Clock
+from rocket_twin.systems.control.cosapp_controller import CosappController
 
-__all__ = ["Clock"]
+from rocket_twin.systems.control.controller import Controller  # isort: skip
+
+__all__ = ["CosappController", "Controller"]
