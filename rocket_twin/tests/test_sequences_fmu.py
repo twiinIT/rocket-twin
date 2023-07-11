@@ -7,7 +7,7 @@ from rocket_twin.systems import Station
 class TestSequencesFMU:
     def test_sequence_fmu(self):
 
-        model_path = r"C:\\Users\\Lucs\\Documents\\Polytechnique\\PSC\\rocket-twin\\rocket_twin\\systems\\control\\controller.mo"
+        model_path = r"systems\control\controller.mo"
         model_name = "controller"
         sys = Station("sys", model_path=model_path, model_name=model_name)
         driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 15], dt=0.01))

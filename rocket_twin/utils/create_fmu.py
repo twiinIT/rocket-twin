@@ -23,6 +23,8 @@ def create_FMU(model_path, model_name):
     """
 
     fmu_path = os.path.join(rocket_twin.systems.control.__path__[0], model_name)
+    model_path = os.path.join(rocket_twin.__path__[0], model_path)
+    model_path = model_path.replace("\\", "/")
     try:
         os.mkdir(fmu_path)
     except OSError:
