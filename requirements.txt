@@ -21,3 +21,4 @@ pre-commit
 maintenance @ git+ssh://git@github.com/twiinIT/maintenance.git@main
 cosapp_fmu @ git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
 OMPython
+omcompiler

@@ -19,3 +19,4 @@ isort
 black
 pre-commit
 OMPython
+omcompiler

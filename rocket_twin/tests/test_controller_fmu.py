@@ -1,26 +1,25 @@
+import os
+
 import numpy as np
 from cosapp.drivers import RungeKutta
 from maintenance.utils import swap_system
 
+import rocket_twin.systems.control
 from rocket_twin.systems import Controller, Station
 
 
 class TestControllerFMU:
     def test_controller_fmu(self):
 
-        model_path = r"systems\control\controller.mo"
-        model_name = "controller"
+        fmu_path = os.path.join(rocket_twin.systems.control.__path__[0], "controller.fmu")
 
-        model_path_r = r"systems\control\rocket_controller.mo"
-        model_name_r = "rocket_controller"
+        fmu_path_r = os.path.join(rocket_twin.systems.control.__path__[0], "rocket_controller.fmu")
 
         sys = Station("sys")
-        swap_system(
-            sys.controller, Controller("controller", model_path=model_path, model_name=model_name)
-        )
+        swap_system(sys.controller, Controller("controller", fmu_path=fmu_path))
         swap_system(
             sys.rocket.controller,
-            Controller("controller", model_path=model_path_r, model_name=model_name_r),
+            Controller("controller", fmu_path=fmu_path_r),
         )
         driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 15], dt=0.01))
         init = {"g_tank.weight_p": 10.0, "rocket.tank.weight_p": 0.0}

@@ -1,0 +1,4 @@
+loadFile("controller.mo"); getErrorString();
+loadFile("rocket_controller.mo"); getErrorString();
+translateModelFMU(controller); getErrorString();
+translateModelFMU(rocket_controller); getErrorString();
