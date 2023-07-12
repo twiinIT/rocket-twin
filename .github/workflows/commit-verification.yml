@@ -42,7 +42,8 @@ jobs:
         create-args: >-
           python=
           omcompiler
-
+        init-shell: >-
+          bash
     - name: Add dependencies
       run: |
         micromamba activate test_env
