@@ -43,5 +43,3 @@ class Rocket(System):
 
     def compute(self):
         self.a *= self.flying
-        # print(self.time)
-        # print(self.engine.w_out)

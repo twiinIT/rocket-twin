@@ -9,9 +9,11 @@ class TestControllerFMU:
     def test_controller_fmu(self):
 
         model_path = r"systems\control\controller.mo"
-        model_path_r = r"systems\control\rocket_controller.mo"
         model_name = "controller"
+
+        model_path_r = r"systems\control\rocket_controller.mo"
         model_name_r = "rocket_controller"
+
         sys = Station("sys")
         swap_system(
             sys.controller, Controller("controller", model_path=model_path, model_name=model_name)
