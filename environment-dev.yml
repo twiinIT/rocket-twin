@@ -11,3 +11,4 @@ dependencies:
   - cosapp
   - numpy
   - cosapp_fmu
+  - maintenance

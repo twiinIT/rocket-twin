@@ -32,7 +32,7 @@ class TestSequences:
             {
                 "name": "fuel",
                 "type": "transient",
-                "init": {"g_tank.w_out_max": 1.0, "controller.wg_temp": 1.0},
+                "init": {"g_tank.w_out_max": 1.0, "controller.w_temp": 1.0},
                 "dt": 0.1,
                 "stop": "rocket.tank.weight_p == rocket.tank.weight_max",
             }
@@ -59,9 +59,8 @@ class TestSequences:
                 "init": {
                     "rocket.flying": True,
                     "rocket.tank.w_out_max": 0.5,
-                    "controller.wg_temp": 0.0,
-                    "controller.f_temp": 1.0,
-                    "controller.wr_temp": 1.0,
+                    "controller.w_temp": 0.0,
+                    "rocket.controller.w_temp": 1.0,
                 },
                 "dt": 0.1,
                 "stop": f"time > {self.sys.time} + 10.",

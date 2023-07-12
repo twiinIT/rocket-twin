@@ -18,6 +18,7 @@ jobs:
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
+        echo "${{ secrets.TOKEN2 }}" | ssh-add -
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run precommit
@@ -39,6 +40,7 @@ jobs:
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
+        echo "${{ secrets.TOKEN2 }}" | ssh-add -
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 

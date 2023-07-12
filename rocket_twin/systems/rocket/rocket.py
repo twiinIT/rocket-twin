@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import Dynamics, Engine, Tank
+from rocket_twin.systems import CosappController, Dynamics, Engine, Tank
 
 
 class Rocket(System):
@@ -16,8 +16,9 @@ class Rocket(System):
     """
 
     def setup(self):
-        self.add_child(Engine("engine"), pulling=["force_command"])
-        self.add_child(Tank("tank"), pulling=["w_in", "w_command"])
+        self.add_child(CosappController("controller"))
+        self.add_child(Tank("tank"), pulling=["w_in"])
+        self.add_child(Engine("engine"))
         self.add_child(
             Dynamics(
                 "dyn",
@@ -27,6 +28,9 @@ class Rocket(System):
             ),
             pulling=["a"],
         )
+
+        self.connect(self.controller.outwards, self.tank.inwards, {"w": "w_command"})
+        self.connect(self.tank.outwards, self.engine.inwards, {"w_out": "w_out"})
 
         self.connect(
             self.engine.outwards,
@@ -39,3 +43,5 @@ class Rocket(System):
 
     def compute(self):
         self.a *= self.flying
+        # print(self.time)
+        # print(self.engine.w_out)

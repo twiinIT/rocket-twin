@@ -26,11 +26,6 @@ class Station(System):
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
         self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": "w_in"})
 
-        self.connect(self.controller.outwards, self.g_tank.inwards, {"wg": "w_command"})
-        self.connect(
-            self.controller.outwards,
-            self.rocket.inwards,
-            {"wr": "w_command", "f": "force_command"},
-        )
+        self.connect(self.controller.outwards, self.g_tank.inwards, {"w": "w_command"})
 
         self.g_tank.weight_max = 10.0

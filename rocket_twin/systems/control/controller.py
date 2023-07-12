@@ -32,7 +32,7 @@ class Controller(System):
         fmu_path = create_FMU(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling={"f": "f", "wr": "wr", "wg": "wg", "ti": "time_var"},
+            pulling={"w": "w", "ti": "time_var"},
         )
 
     def compute(self):
