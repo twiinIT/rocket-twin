@@ -36,10 +36,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: mamba-org/provision-with-micromamba@main
+      with:
+        environment-name: test_env
+        create-args: >-
+          python=
+          omcompiler
 
     - name: Add dependencies
       run: |
+        micromamba activate test_env
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
