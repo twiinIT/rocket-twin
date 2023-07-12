@@ -19,7 +19,7 @@ jobs:
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
         pip install git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
-        echo "${{ secrets.TOKEN }}" | ssh-add -d
+        ssh-add -D
         echo "${{ secrets.TOKEN2 }}" | ssh-add -
         pip install git+ssh://git@github.com/twiinIT/maintenance.git@main
         pip install flake8 pytest
