@@ -44,9 +44,9 @@ class Mission(Driver):
         init_fuel = init
         init_flight = {
             "rocket.flying": True,
-            "controller.cos_control.f_temp": 1.0,
-            "controller.cos_control.wg_temp": 0.0,
-            "controller.cos_control.wr_temp": 1.0,
+            "controller.f_temp": 1.0,
+            "controller.wg_temp": 0.0,
+            "controller.wr_temp": 1.0,
             "rocket.tank.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
         }

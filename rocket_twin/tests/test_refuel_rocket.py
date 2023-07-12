@@ -13,9 +13,9 @@ class TestFuelingRocket:
 
         init = {
             "rocket.tank.weight_p": 0.0,
-            "controller.cos_control.wr_temp": 0.0,
-            "controller.cos_control.f_temp": 0.0,
-            "controller.cos_control.wg_temp": 1.0,
+            "controller.wr_temp": 0.0,
+            "controller.f_temp": 0.0,
+            "controller.wg_temp": 1.0,
             "g_tank.weight_p": "g_tank.weight_max",
             "g_tank.w_in": 0.0,
             "g_tank.w_out_max": 3.0,

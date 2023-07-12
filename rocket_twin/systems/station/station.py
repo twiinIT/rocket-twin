@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import Controller, Pipe, Rocket, Tank
+from rocket_twin.systems import CosappController, Pipe, Rocket, Tank
 
 
 class Station(System):
@@ -17,8 +17,8 @@ class Station(System):
     ------
     """
 
-    def setup(self, model_path=None, model_name=None):
-        self.add_child(Controller("controller", model_path=model_path, model_name=model_name))
+    def setup(self):
+        self.add_child(CosappController("controller"))
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
         self.add_child(Rocket("rocket"))
