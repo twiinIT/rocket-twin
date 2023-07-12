@@ -16,9 +16,9 @@ jobs:
     - name: Add dependencies
       run: |
         python -m pip install --upgrade pip
-        export GIT_SSH_COMMAND="ssh -i < (echo ${{ secrets.TOKEN }})"
+        export GIT_SSH_COMMAND="ssh -i <( echo ${{ secrets.TOKEN }} )"
         pip install git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
-        export GIT_SSH_COMMAND="ssh -i < (echo ${{ secrets.TOKEN2 }})"
+        export GIT_SSH_COMMAND="ssh -i <( echo ${{ secrets.TOKEN2 }} )"
         pip install git+ssh://git@github.com/twiinIT/maintenance.git@main
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
