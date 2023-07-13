@@ -35,11 +35,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-
-    - name: Add dependencies
+    - name: Set up conda environment
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-name: test_env
+        create-args: >-
+          python=
+          omcompiler
+        init-shell: >-
+          bash
+    - name: Add pip dependencies
+      shell: bash -el {0}
       run: |
+        micromamba activate test_env
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
@@ -51,5 +59,6 @@ jobs:
         if [ -f requirements-ci.txt ]; then pip install -r requirements-ci.txt; fi
 
     - name: Test with pytest
+      shell: bash -el {0}
       run: |
         pytest
