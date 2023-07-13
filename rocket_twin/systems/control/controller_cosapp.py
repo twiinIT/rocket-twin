@@ -1,7 +1,7 @@
 from cosapp.base import System
 
 
-class CosappController(System):
+class ControllerCoSApp(System):
     """System which allows command through CoSApp sequences.
 
     Inputs

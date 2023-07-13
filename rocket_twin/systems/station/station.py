@@ -1,24 +1,20 @@
 from cosapp.base import System
 
-from rocket_twin.systems import CosappController, Pipe, Rocket, Tank
+from rocket_twin.systems import ControllerCoSApp, Pipe, Rocket, Tank
 
 
 class Station(System):
-    """A space station composed by a rocket, a tank and a pipe connecting them.
+    """A space station composed by a rocket, a tank, a pipe connecting them and a controller.
 
     Inputs
     ------
-    model_path: string,
-        the path to the .mo file, if any
-    model_name: string
-        the .fmu file name
 
     Outputs
     ------
     """
 
     def setup(self):
-        self.add_child(CosappController("controller"))
+        self.add_child(ControllerCoSApp("controller"))
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
         self.add_child(Rocket("rocket"))

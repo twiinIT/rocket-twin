@@ -1,5 +1,5 @@
-from rocket_twin.systems.control.cosapp_controller import CosappController
+from rocket_twin.systems.control.controller_cosapp import ControllerCoSApp
 
-from rocket_twin.systems.control.controller import Controller  # isort: skip
+from rocket_twin.systems.control.controller_fmu import ControllerFMU  # isort: skip
 
-__all__ = ["CosappController", "Controller"]
+__all__ = ["ControllerCoSApp", "ControllerFMU"]

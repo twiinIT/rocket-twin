@@ -4,7 +4,7 @@ from cosapp_fmu.FMUsystem import FMUSystem
 from rocket_twin.utils import create_FMU
 
 
-class Controller(System):
+class ControllerFMU(System):
     """Controller of the command variables.
 
     Inputs

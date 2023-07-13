@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import CosappController, Dynamics, Engine, Tank
+from rocket_twin.systems import ControllerCoSApp, Dynamics, Engine, Tank
 
 
 class Rocket(System):
@@ -16,7 +16,7 @@ class Rocket(System):
     """
 
     def setup(self):
-        self.add_child(CosappController("controller"))
+        self.add_child(ControllerCoSApp("controller"))
         self.add_child(Tank("tank"), pulling=["w_in"])
         self.add_child(Engine("engine"))
         self.add_child(
