@@ -14,12 +14,12 @@ class TestVerticalFlyingRocket:
 
         init = {
             "rocket.flying": True,
-            "rocket.engine.force_command": 1.0,
+            "controller.w_temp": 0.0,
+            "rocket.controller.w_temp": 1.0,
             "rocket.tank.weight_p": "rocket.tank.weight_max",
             "rocket.tank.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
             "g_tank.weight_p": 0.0,
-            "g_tank.w_command": 0.0,
         }
 
         stop = "rocket.tank.weight_p <= 0."
@@ -35,7 +35,7 @@ class TestVerticalFlyingRocket:
         data = sys.drivers["vfr"].data
         data = data.drop(["Section", "Status", "Error code"], axis=1)
 
-        np.testing.assert_allclose(sys.rocket.a, 40.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.rocket.a, 290.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.tank.weight_p, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_p, 0.0, atol=10 ** (-10))
 

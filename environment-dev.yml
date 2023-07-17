@@ -10,3 +10,5 @@ dependencies:
   - pre-commit
   - cosapp
   - numpy
+  - cosapp_fmu
+  - maintenance

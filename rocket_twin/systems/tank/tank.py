@@ -34,16 +34,14 @@ class Tank(System):
         self.add_inward("w_out_max", 0.0, desc="Fuel output rate", unit="kg/s")
         self.add_inward("w_command", 1.0, desc="Fuel output control variable", unit="")
 
-        # Transient
-        self.add_outward("dw_dt", 0.0, desc="Fuel mass rate of change", unit="kg/s")
-        self.add_transient("weight_p", der="dw_dt", desc="Propellant weight")
-
         # Outputs
         self.add_outward("weight", 1.0, desc="Weight", unit="kg")
         self.add_outward("cg", 1.0, desc="Center of gravity", unit="m")
         self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
 
+        # Transient
+        self.add_transient("weight_p", der="w_in - w_out", desc="Propellant weight")
+
     def compute(self):
         self.w_out = self.w_out_max * self.w_command
-        self.dw_dt = self.w_in - self.w_out
         self.weight = self.weight_s + self.weight_p

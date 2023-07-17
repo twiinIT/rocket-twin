@@ -177,7 +177,7 @@ coverage.xml
 .hypothesis/
 
 # Translations
-*.mo
+
 *.pot
 
 # Flask stuff:

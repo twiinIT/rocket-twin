@@ -12,10 +12,9 @@ class TestFuelingRocket:
         dt = 0.1
 
         init = {
-            "rocket.engine.force_command": 0.0,
             "rocket.tank.weight_p": 0.0,
-            "rocket.tank.w_out_max": 0.0,
-            "g_tank.w_command": 1.0,
+            "rocket.controller.w_temp": 0.0,
+            "controller.w_temp": 1.0,
             "g_tank.weight_p": "g_tank.weight_max",
             "g_tank.w_in": 0.0,
             "g_tank.w_out_max": 3.0,
