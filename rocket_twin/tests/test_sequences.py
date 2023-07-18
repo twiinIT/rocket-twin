@@ -57,7 +57,7 @@ class TestSequences:
                 "name": "flight",
                 "type": "transient",
                 "init": {
-                    "rocket.flying": 1.,
+                    "rocket.flying": 1.0,
                     "rocket.tank.w_out_max": 0.5,
                     "controller.w_temp": 0.0,
                     "rocket.controller.w_temp": 1.0,
@@ -79,9 +79,10 @@ class TestSequences:
 
     def test_all(self):
 
-        sys2 = Station('sys2')
+        sys2 = Station("sys2")
 
-        seq = [{
+        seq = [
+            {
                 "name": "start",
                 "init": {"g_tank.weight_p": sys2.g_tank.weight_max},
                 "type": "static",
@@ -97,14 +98,16 @@ class TestSequences:
                 "name": "flight",
                 "type": "transient",
                 "init": {
+                    "rocket.flying": 1.0,
                     "rocket.tank.w_out_max": 0.5,
                     "controller.w_temp": 0.0,
                     "rocket.controller.w_temp": 1.0,
                 },
                 "dt": 0.1,
                 "stop": "rocket.tank.weight_p == 0",
-            }]
-        
+            },
+        ]
+
         run_sequences(sys2, seq)
 
         np.testing.assert_allclose(
@@ -113,4 +116,4 @@ class TestSequences:
             atol=10 ** (-6),
         )
         np.testing.assert_allclose(sys2.rocket.tank.weight_p, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(sys2.rocket.dyn.a, 40.0, atol=10 ** (-6))
+        np.testing.assert_allclose(sys2.rocket.a, 40.0, atol=10 ** (-6))
