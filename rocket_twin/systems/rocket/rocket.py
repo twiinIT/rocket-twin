@@ -18,7 +18,7 @@ class Rocket(System):
     def setup(self):
         self.add_child(ControllerCoSApp("controller"))
         self.add_child(Tank("tank"), pulling=["w_in"])
-        self.add_child(Engine("engine"))
+        self.add_child(Engine("engine"), pulling=['force'])
         self.add_child(
             Dynamics(
                 "dyn",
@@ -39,7 +39,14 @@ class Rocket(System):
         )
         self.connect(self.tank.outwards, self.dyn.inwards, {"weight": "weight_tank", "cg": "tank"})
 
-        self.add_inward("flying", False, desc="Whether the rocket is flying or not", unit="")
+        self.add_outward_modevar("flying", 0., desc="Whether the rocket is flying or not", unit="")
+
+        self.add_event("Takeoff", trigger="force > 0")
 
     def compute(self):
         self.a *= self.flying
+
+    def transition(self):
+
+        if self.Takeoff.present:
+            self.flying = 1.
