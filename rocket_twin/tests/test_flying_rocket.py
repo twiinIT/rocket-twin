@@ -13,7 +13,6 @@ class TestVerticalFlyingRocket:
         dt = 0.1
 
         init = {
-            "rocket.flying": True,
             "controller.w_temp": 0.0,
             "rocket.controller.w_temp": 1.0,
             "rocket.tank.weight_p": "rocket.tank.weight_max",

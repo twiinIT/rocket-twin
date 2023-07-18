@@ -43,7 +43,6 @@ class Mission(Driver):
         # Init and stop conditions
         init_fuel = init
         init_flight = {
-            "rocket.flying": True,
             "controller.w_temp": 0.0,
             "rocket.controller.w_temp": 1.0,
             "rocket.tank.w_out_max": 3.0,
