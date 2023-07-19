@@ -6,8 +6,8 @@ class Engine(System):
 
     Inputs
     ------
-    force_command: float,
-        External control, which inputs the % of the maximum force the engine outputs
+    w_out [kg/s]: float,
+        fuel consumption rate
 
     Outputs
     ------

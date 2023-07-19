@@ -39,7 +39,9 @@ class Rocket(System):
         )
         self.connect(self.tank.outwards, self.dyn.inwards, {"weight": "weight_tank", "cg": "tank"})
 
-        self.add_inward_modevar("flying", 0.0, desc="Whether the rocket is flying or not", unit="")
+        self.add_inward_modevar(
+            "flying", False, desc="Whether the rocket is flying or not", unit=""
+        )
 
         self.add_event("Takeoff", trigger="dyn.a > 0")
 
@@ -49,4 +51,4 @@ class Rocket(System):
     def transition(self):
 
         if self.Takeoff.present:
-            self.flying = 1.0
+            self.flying = True
