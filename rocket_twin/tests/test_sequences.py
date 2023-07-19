@@ -57,7 +57,7 @@ class TestSequences:
                 "name": "flight",
                 "type": "transient",
                 "init": {
-                    "rocket.flying": 1.0,
+                    "rocket.flying": True,
                     "rocket.tank.w_out_max": 0.5,
                     "controller.w_temp": 0.0,
                     "rocket.controller.w_temp": 1.0,
