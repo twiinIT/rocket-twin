@@ -32,6 +32,6 @@ class TestControllerFMU:
         driver.set_scenario(init=init, values=values)
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.rocket.dyn.a, 40.0, atol=10 ** (0))
+        np.testing.assert_allclose(sys.rocket.a, 40.0, atol=10 ** (0))
         np.testing.assert_allclose(sys.g_tank.weight_p, 5.0, atol=10 ** (0))
         np.testing.assert_allclose(sys.rocket.tank.weight_p, 0.0, atol=10 ** (0))
