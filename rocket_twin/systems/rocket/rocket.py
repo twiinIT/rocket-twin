@@ -17,7 +17,7 @@ class Rocket(System):
 
     def setup(self):
         self.add_child(ControllerCoSApp("controller"))
-        self.add_child(Tank("tank"), pulling=["w_in"])
+        self.add_child(Tank("tank"), pulling=["w_in", "weight_max", "weight_p"])
         self.add_child(Engine("engine"))
         self.add_child(
             Dynamics(

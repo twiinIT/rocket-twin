@@ -30,12 +30,21 @@ class ControllerFMU(System):
     def setup(self, model_path, model_name):
 
         self.add_inward("time_var", 0.0, desc="System time", unit="")
+        self.add_inward("t0", 0.0, desc="Launch time", unit="")
         self.add_transient("x", der="1")
+
+        pulling = {
+            "w": "w",
+            "weight": "weight_p",
+            "weight_max": "weight_max",
+            "t0": "t0",
+            "ti": "time_var",
+        }
 
         fmu_path = self.create_fmu(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling={"w": "w", "ti": "time_var"},
+            pulling=pulling,
         )
 
     def compute(self):
