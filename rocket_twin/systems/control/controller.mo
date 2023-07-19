@@ -4,15 +4,15 @@ model controller
   parameter Real weight_max;
   parameter Real t0;
   output Real w;
-  output Real flying;
+  output Boolean engine_on;
 equation
-  if (ti > t0) then
-    flying = 1;
+  if (ti < t0) then
+    engine_on = false;
   else
-    flying = 0;
+    engine_on = true;
   end if;
 
-  if (weight < weight_max and flying < 0.5) then
+  if (weight < weight_max and engine_on == false) then
     w = 1.;
   else
     w = 0.;
