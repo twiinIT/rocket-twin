@@ -43,7 +43,7 @@ class Rocket(System):
             "flying", False, desc="Whether the rocket is flying or not", unit=""
         )
 
-        self.add_event("Takeoff", trigger="dyn.a > 0")
+        self.add_event("Takeoff", trigger="engine.force > 0")
 
     def compute(self):
         self.a *= self.flying
