@@ -31,7 +31,7 @@ class ControllerFMU(System):
 
         self.add_inward("time_var", 0.0, desc="System time", unit="")
         self.add_inward("time_int", 0.0, desc="Interval between fueling end and launch", unit="")
-        self.add_inward("time_lnc", 100000., desc="Launch time", unit='')
+        self.add_inward("time_lnc", 100000.0, desc="Launch time", unit="")
         self.add_transient("x", der="1")
 
         pulling = {
