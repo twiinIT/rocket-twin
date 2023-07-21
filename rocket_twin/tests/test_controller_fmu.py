@@ -1,7 +1,7 @@
 import numpy as np
 from cosapp.drivers import RungeKutta
 from cosapp.recorders import DataFrameRecorder
-from maintenance.utils import swap_system
+from cosapp.utils import swap_system
 
 from rocket_twin.systems import ControllerFMU, Station
 

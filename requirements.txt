@@ -1,4 +1,4 @@
-cosapp==0.14.1
+cosapp==0.15.0
 ipython
 matplotlib==3.6.3
 numpy
@@ -18,6 +18,5 @@ flake8
 isort
 black
 pre-commit
-maintenance @ git+ssh://git@github.com/twiinIT/maintenance.git@main
 cosapp_fmu @ git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
 OMPython
