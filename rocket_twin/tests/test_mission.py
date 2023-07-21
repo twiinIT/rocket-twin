@@ -12,7 +12,7 @@ class TestMission:
         dt = 0.1
 
         init = {
-            "rocket.tank.weight_p": 0.0,
+            "rocket.weight_p": 0.0,
             "rocket.controller.w_temp": 0.0,
             "controller.w_temp": 1.0,
             "g_tank.weight_p": "g_tank.weight_max",

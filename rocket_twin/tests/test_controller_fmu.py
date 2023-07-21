@@ -1,6 +1,7 @@
 import numpy as np
 from cosapp.drivers import RungeKutta
-from maintenance.utils import swap_system
+from cosapp.recorders import DataFrameRecorder
+from cosapp.utils import swap_system
 
 from rocket_twin.systems import ControllerFMU, Station
 
@@ -23,14 +24,26 @@ class TestControllerFMU:
             sys.rocket.controller,
             ControllerFMU("controller", model_path=model_path_r, model_name=model_name_r),
         )
-        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 15], dt=0.01))
+
+        sys.connect(sys.controller.inwards, sys.rocket.inwards, ["weight_max", "weight_p"])
+        sys.rocket.connect(
+            sys.rocket.controller.inwards, sys.rocket.tank.inwards, ["weight_max", "weight_p"]
+        )
+
+        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 16], dt=0.01))
         init = {"g_tank.weight_p": 10.0, "rocket.tank.weight_p": 0.0}
         values = {
             "g_tank.w_out_max": 1.0,
             "rocket.tank.w_out_max": 0.5,
+            "controller.t0": 5.99,
+            "rocket.controller.t0": 5.99,
         }
         driver.set_scenario(init=init, values=values)
+        driver.add_recorder(DataFrameRecorder(includes=["rocket.controller.weight_p"]), period=1.0)
+
         sys.run_drivers()
+        data = driver.recorder.export_data()
+        print(data)
 
         np.testing.assert_allclose(sys.rocket.a, 40.0, atol=10 ** (0))
         np.testing.assert_allclose(sys.g_tank.weight_p, 5.0, atol=10 ** (0))
