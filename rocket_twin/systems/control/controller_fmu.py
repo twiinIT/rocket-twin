@@ -1,5 +1,4 @@
 import os
-import time
 
 from cosapp.base import System
 from cosapp_fmu.FMUsystem import FMUSystem
@@ -79,7 +78,6 @@ class ControllerFMU(System):
         os.chdir(fmu_path)
         mod = ModelicaSystem(model_path, model_name)
         fmu = mod.convertMo2Fmu()
-        time.sleep(20.0)
         for filename in os.listdir(fmu_path):
             if filename != (model_name + ".fmu"):
                 os.remove(filename)
