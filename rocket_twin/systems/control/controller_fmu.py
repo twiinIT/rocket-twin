@@ -80,9 +80,6 @@ class ControllerFMU(System):
         fmu = mod.convertMo2Fmu()
         for filename in os.listdir(fmu_path):
             if filename != (model_name + ".fmu"):
-                try:
-                    os.remove(filename)
-                except IsADirectoryError:
-                    pass
-                        
+                os.remove(filename)
+
         return fmu
