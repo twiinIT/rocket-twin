@@ -17,5 +17,5 @@ class TestStage:
         driver.set_scenario(init=init, values=values, stop=stop)
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.weight, 2.0, atol=10 ** (-1))
-        np.testing.assert_allclose(sys.cg, 1.0, atol=10 ** (-1))
+        np.testing.assert_allclose(sys.weight, 2.0, atol=10 ** (-2))
+        np.testing.assert_allclose(sys.cg, 1.0, atol=10 ** (-2))
