@@ -21,7 +21,7 @@ class Engine(System):
 
     def setup(self):
 
-        self.add_inward("isp", 20.0, desc="Specific impulsion in vacuum", unit="s")
+        self.add_inward("isp", 200.0, desc="Specific impulsion in vacuum", unit="s")
         self.add_inward("w_out", 0.0, desc="Fuel consumption rate", unit="kg/s")
         self.add_inward("g_0", 10.0, desc="Gravity at Earth's surface", unit="m/s**2")
 
