@@ -1,5 +1,4 @@
 from cosapp.base import System
-from cosapp.utils import get_state
 
 from rocket_twin.systems import Dynamics
 from rocket_twin.systems.rocket import Stage
@@ -24,7 +23,7 @@ class Rocket(System):
         forces, weights, centers = ([None] * n_stages for i in range(3))
 
         for i in range(1, n_stages + 1):
-            self.add_child(Stage(f"stage_{i}"))
+            self.add_child(Stage(f"stage_{i}"), pulling=["w_in"])
             forces[i - 1] = f"thrust_{i}"
             weights[i - 1] = f"weight_{i}"
             centers[i - 1] = f"center_{i}"
@@ -39,8 +38,6 @@ class Rocket(System):
             pulling=["a"],
         )
 
-        self.stage_1.controller.w_temp = 1.
-
         stages = list(self.children.values())
 
         for i in range(0, len(stages) - 1):
@@ -50,20 +47,16 @@ class Rocket(System):
                 {"force": f"thrust_{i + 1}", "weight": f"weight_{i + 1}", "cg": f"center_{i + 1}"},
             )
 
-        
         self.add_inward_modevar(
             "flying", False, desc="Whether the rocket is flying or not", unit=""
         )
-        self.add_outward_modevar("stage", 1, desc="Rocket's current stage", unit='')
+        self.add_outward_modevar("stage", 1, desc="Rocket's current stage", unit="")
 
         self.add_event("Takeoff", trigger="dyn.a > 0")
         self.add_event("Removal", trigger="stage_1.weight_p == 0.")
 
-
     def compute(self):
         self.a *= self.flying
-        print('massa 1: ', self.stage_1.weight_p)
-        print('tempo: ', self.time)
 
     def transition(self):
 
@@ -72,16 +65,10 @@ class Rocket(System):
         if self.Removal.present:
             print(f"REMOVAL {self.stage}")
 
-            self.dyn.inwards[f'thrust_{self.stage}'] = 0.
-            self.dyn.inwards[f'weight_{self.stage}'] = 0.
-            self.dyn.inwards[f'center_{self.stage}'] = 0.
-
-            self.stage += 1
-            cur_stage = list(self.children.values())[1]
-            cur_stage.controller.w_temp = 1.
-
-            self.Removal.trigger = f"stage_{self.stage}.weight_p == 0."
-            self.pop_child(list(self.children.keys())[0])
-            
-
-
+            cur_stage = list(self.children.values())[self.stage - 1]
+            next_stage = list(self.children.values())[self.stage]
+            if next_stage.name != "dyn":
+                cur_stage.connected = False
+                next_stage.controller.w_temp = 1.0
+                self.Removal.trigger = f"stage_{self.stage}.weight_p == 0."
+                self.stage += 1
