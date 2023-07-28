@@ -41,7 +41,16 @@ class Tank(System):
 
         # Transient
         self.add_transient("weight_p", der="w_in - w_out", desc="Propellant weight")
+        self.add_transient('x', der='1')
+
+        self.add_inward('x_bug')
+        self.add_transient('r_bug', der='x_bug')
 
     def compute(self):
         self.w_out = self.w_out_max * self.w_command
         self.weight = self.weight_s + self.weight_p
+        if self.parent.name != 'sys':
+            if self.parent.parent.name == "rocket":
+                print(self.time)
+                print(self.weight_p)
+

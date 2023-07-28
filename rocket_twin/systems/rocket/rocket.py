@@ -18,12 +18,15 @@ class Rocket(System):
     ------
     """
 
-    def setup(self, n_stages=1):
+    def setup(self, n_stages=1, full=False):
 
         forces, weights, centers = ([None] * n_stages for i in range(3))
 
+        self.add_inward('a_bug')
+        self.add_transient('v_bug', der='a_bug')
+
         for i in range(1, n_stages + 1):
-            self.add_child(Stage(f"stage_{i}"), pulling=["w_in"])
+            self.add_child(Stage(f"stage_{i}", full=full), pulling=["w_in", 'v_bug'])
             forces[i - 1] = f"thrust_{i}"
             weights[i - 1] = f"weight_{i}"
             centers[i - 1] = f"center_{i}"
@@ -50,10 +53,8 @@ class Rocket(System):
         self.add_inward_modevar(
             "flying", False, desc="Whether the rocket is flying or not", unit=""
         )
-        self.add_outward_modevar("stage", 1, desc="Rocket's current stage", unit="")
 
         self.add_event("Takeoff", trigger="dyn.a > 0")
-        self.add_event("Removal", trigger="stage_1.weight_p == 0.")
 
     def compute(self):
         self.a *= self.flying
@@ -62,13 +63,3 @@ class Rocket(System):
 
         if self.Takeoff.present:
             self.flying = True
-        if self.Removal.present:
-            print(f"REMOVAL {self.stage}")
-
-            cur_stage = list(self.children.values())[self.stage - 1]
-            next_stage = list(self.children.values())[self.stage]
-            if next_stage.name != "dyn":
-                cur_stage.connected = False
-                next_stage.controller.w_temp = 1.0
-                self.Removal.trigger = f"stage_{self.stage}.weight_p == 0."
-                self.stage += 1
