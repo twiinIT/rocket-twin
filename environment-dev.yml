@@ -11,5 +11,3 @@ dependencies:
   - cosapp
   - numpy
   - cosapp_fmu
-  - pyoccad
-  - pythonocc-core

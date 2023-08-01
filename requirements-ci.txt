@@ -19,5 +19,3 @@ isort
 black
 pre-commit
 OMPython
-pythonocc-core
-pyoccad
