@@ -31,14 +31,14 @@ class Wings(System):
         inertia = vprop.MatrixOfInertia()
 
         self.weight = vprop.Mass()
-        self.cg = vprop.CentreOfMass()
+        self.cg = vprop.CentreOfMass().Z()
 
         for i,j in zip(range(3), range(3)):
             self.I[i, j] = inertia.Value(i+1, j+1)
 
         print(self.weight)
 
-    def create_wing(l_in, l_out, height, th):
+    def create_wing(self, l_in, l_out, height, th):
 
         edge1 = CreateEdge().from_2_points(gp_Pnt(0,0,0), gp_Pnt(0,0,l_in))
         edge2 = CreateEdge().from_2_points(gp_Pnt(0,0,0), gp_Pnt(0, height, 0))

@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import ControllerCoSApp, Dynamics, Engine, Tank
+from rocket_twin.systems import ControllerCoSApp, Dynamics, Engine, Tank, Nose, Tube, Wings
 
 
 class Rocket(System):
