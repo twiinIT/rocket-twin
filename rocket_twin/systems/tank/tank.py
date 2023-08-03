@@ -29,8 +29,8 @@ class Tank(System):
     def setup(self):
 
         # Geometry
-        self.add_inward("radius", 1.0, desc="Tank base radius", unit="m")
-        self.add_inward("height", 1.0, desc="Tank height", unit="m")
+        self.add_inward("radius", 1.0, desc="Base radius", unit="m")
+        self.add_inward("height", 1.0, desc="Height", unit="m")
         self.add_inward("weight_s", 1.0, desc="Structure weight", unit="kg")
         self.add_inward("weight_max", 5.0, desc="Maximum fuel capacity", unit="kg")
 
@@ -38,7 +38,7 @@ class Tank(System):
         shape = CreateCylinder.from_base_and_dir(
             np.zeros(3), gp_Vec(gp_XYZ(0, 0, self.height)), self.radius
         )
-        self.add_inward("shape", shape, desc="pyoccad tank model")
+        self.add_inward("shape", shape, desc="pyoccad model")
 
         # Inputs
         self.add_inward("w_in", 0.0, desc="Fuel income rate", unit="kg/s")
@@ -51,7 +51,7 @@ class Tank(System):
         self.add_outward("weight", 1.0, desc="Weight", unit="kg")
         self.add_outward("cg", 1.0, desc="Center of gravity", unit="m")
         self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
-        self.add_outward("I", np.zeros((3, 3)), desc="Tank inertia tensor", unit="kg*m**2")
+        self.add_outward("I", np.zeros((3, 3)), desc="Inertia tensor", unit="kg*m**2")
 
         # Transient
         self.add_transient("weight_p", der="w_in - w_out", desc="Propellant weight")
