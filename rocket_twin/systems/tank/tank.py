@@ -37,7 +37,7 @@ class Tank(System):
         self.add_inward("weight_max", 5.0, desc="Maximum fuel capacity", unit="kg")
 
         # Position
-        self.add_inward('pos', 1 - 1/np.pi, desc="base center z-coordinate", unit='m')
+        self.add_inward("pos", 1 - 1 / np.pi, desc="base center z-coordinate", unit="m")
 
         # pyoccad model
         shape = CreateCylinder.from_base_and_dir(

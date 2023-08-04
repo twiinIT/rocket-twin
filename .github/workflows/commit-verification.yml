@@ -20,8 +20,6 @@ jobs:
         echo "${{ secrets.TOKEN }}" | ssh-add -
         pip install git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
         ssh-add -D
-        echo "${{ secrets.TOKEN2 }}" | ssh-add -
-        pip install git+ssh://git@github.com/twiinIT/maintenance.git@main
         pip install flake8 pytest
         if [ -f requirements-ci.txt ]; then pip install -r requirements-ci.txt; fi
     - name: Run precommit
@@ -53,8 +51,6 @@ jobs:
         echo "${{ secrets.TOKEN }}" | ssh-add -
         pip install git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
         ssh-add -D
-        echo "${{ secrets.TOKEN2 }}" | ssh-add -
-        pip install git+ssh://git@github.com/twiinIT/maintenance.git@main
         pip install flake8 pytest
         conda install -c conda-forge pyoccad
         if [ -f requirements-ci.txt ]; then pip install -r requirements-ci.txt; fi
