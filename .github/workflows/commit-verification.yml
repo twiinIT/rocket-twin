@@ -40,13 +40,13 @@ jobs:
         create-args: >-
           python=
           omcompiler
+          pyoccad
         init-shell: >-
           bash
     - name: Add pip dependencies
       shell: bash -el {0}
       run: |
         micromamba activate test_env
-        conda install -c conda-forge pyoccad
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
