@@ -46,13 +46,13 @@ jobs:
       shell: bash -el {0}
       run: |
         micromamba activate test_env
+        conda install -c conda-forge pyoccad
         python -m pip install --upgrade pip
         eval `ssh-agent -s`
         echo "${{ secrets.TOKEN }}" | ssh-add -
         pip install git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
         ssh-add -D
         pip install flake8 pytest
-        conda install -c conda-forge pyoccad
         if [ -f requirements-ci.txt ]; then pip install -r requirements-ci.txt; fi
 
     - name: Test with pytest
