@@ -22,7 +22,7 @@ class Tube(System):
 
         # Geometric parameters
         self.add_inward("radius", 1.0, desc="internal radius", unit="m")
-        self.add_inward("length", 1.0, desc="length", unit="m")
+        self.add_inward("length", 5.0, desc="length", unit="m")
 
         # Positional parameters
         self.add_inward("pos", 1.0, desc="lowest point z coordinate", unit="m")
@@ -34,4 +34,4 @@ class Tube(System):
 
         # Outputs
         self.add_outward("shape", shape, desc="pyoccad model")
-        self.add_outward("rho", 1 / np.pi, desc="density", unit="kg/m**3")
+        self.add_outward("rho", 0.2 / np.pi, desc="density", unit="kg/m**3")

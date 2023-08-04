@@ -24,13 +24,13 @@ class Wings(System):
         # Geometric parameters
         self.add_inward("n", 4, desc="Number of wings", unit="")
         self.add_inward("l_in", 1.0, desc="rocket edge length", unit="m")
-        self.add_inward("l_out", 1.0, desc="free edge length", unit="m")
-        self.add_inward("width", 1.0, desc="width", unit="m")
+        self.add_inward("l_out", 0.5, desc="free edge length", unit="m")
+        self.add_inward("width", 4/3, desc="width", unit="m")
         self.add_inward("th", 0.1, desc="thickness", unit="m")
 
         # Positional parameters
         self.add_inward("radius", 1.0, desc="radius of the set", unit="m")
-        self.add_inward("pos", 0.0, desc="lowest point z-coordinate", unit="m")
+        self.add_inward("pos", 0.75, desc="lowest point z-coordinate", unit="m")
 
         # Pyoccad model
         shape = self.create_wings(

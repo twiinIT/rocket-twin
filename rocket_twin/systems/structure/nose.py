@@ -25,7 +25,7 @@ class Nose(System):
         self.add_inward("height", 1.0, desc="Height", unit="m")
 
         # Positional parameters
-        self.add_inward("pos", 0.0, desc="Base center z-position", unit="m")
+        self.add_inward("pos", 6.0, desc="Base center z-position", unit="m")
 
         # Pyoccad model
         shape = CreateCone.from_base_and_dir(

@@ -1,7 +1,7 @@
 import numpy as np
 from cosapp.base import System
 from OCC.Core.BRepGProp import brepgprop
-from OCC.Core.gp import gp_Vec, gp_XYZ
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_XYZ
 from OCC.Core.GProp import GProp_GProps
 from pyoccad.create import CreateCylinder
 
@@ -36,9 +36,12 @@ class Tank(System):
         self.add_inward("weight_s", 1.0, desc="Structure weight", unit="kg")
         self.add_inward("weight_max", 5.0, desc="Maximum fuel capacity", unit="kg")
 
+        # Position
+        self.add_inward('pos', 1 - 1/np.pi, desc="base center z-coordinate", unit='m')
+
         # pyoccad model
         shape = CreateCylinder.from_base_and_dir(
-            np.zeros(3), gp_Vec(gp_XYZ(0, 0, self.height)), self.radius
+            gp_Pnt(0, 0, self.pos), gp_Vec(gp_XYZ(0, 0, self.height)), self.radius
         )
 
         # Inputs
