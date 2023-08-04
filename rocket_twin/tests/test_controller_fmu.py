@@ -46,6 +46,6 @@ class TestControllerFMU:
         data = data.drop(["Section", "Status", "Error code"], axis=1)
         print(data)
 
-        np.testing.assert_allclose(sys.rocket.a, 40.0, atol=10 ** (0))
+        np.testing.assert_allclose(sys.rocket.a, 2.5, atol=10 ** (0))
         np.testing.assert_allclose(sys.g_tank.weight_p, 5.0, atol=10 ** (0))
         np.testing.assert_allclose(sys.rocket.tank.weight_p, 0.0, atol=10 ** (0))

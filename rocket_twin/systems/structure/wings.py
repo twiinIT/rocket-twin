@@ -1,56 +1,98 @@
-from cosapp.base import System
-from pyoccad.create import CreateExtrusion, CreateEdge, CreateWire, CreateTopology, CreateFace
-from OCC.Core.gp import gp_Pnt, gp_Vec
-from OCC.Core.GProp import GProp_GProps
-from OCC.Core.BRepGProp import brepgprop
 import numpy as np
+from cosapp.base import System
+from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
+from OCC.Core.gp import gp_Pnt, gp_Vec
+from pyoccad.create import CreateEdge, CreateExtrusion, CreateFace, CreateTopology, CreateWire
+
 
 class Wings(System):
+    """A simple model of a set of wings.
+
+    Inputs
+    ------
+
+    Outputs
+    ------
+    rho [kg/m**3]: float,
+        density
+    shape: TopoDS_Solid,
+        pyoccad model
+    """
 
     def setup(self):
 
         # Geometric parameters
-        self.add_inward('l_in', 2., desc="rocket edge length", unit='m')
-        self.add_inward('l_out', 1., desc="free edge length", unit='m')
-        self.add_inward('height', 1., desc="height", unit='m')
-        self.add_inward('th', 0.1, desc="thickness", unit='m')
+        self.add_inward("n", 4, desc="Number of wings", unit="")
+        self.add_inward("l_in", 1.0, desc="rocket edge length", unit="m")
+        self.add_inward("l_out", 1.0, desc="free edge length", unit="m")
+        self.add_inward("width", 1.0, desc="width", unit="m")
+        self.add_inward("th", 0.1, desc="thickness", unit="m")
+
+        # Positional parameters
+        self.add_inward("radius", 1.0, desc="radius of the set", unit="m")
+        self.add_inward("pos", 0.0, desc="lowest point z-coordinate", unit="m")
 
         # Pyoccad model
-        shape = self.create_wing(self.l_in, self.l_out, self.height, self.th)
-        self.add_inward('shape', shape, desc="pyoccad model")
+        shape = self.create_wings(
+            self.n, self.radius, self.pos, self.l_in, self.l_out, self.width, self.th
+        )
 
         # Outputs
-        self.add_outward('weight', 1., desc="weight", unit='kg')
-        self.add_outward('cg', 1., desc="center of gravity", unit='m')
-        self.add_outward('I', np.empty((3,3)), desc="Inertia tensor", unit='kg*m**2')
+        self.add_outward("shape", shape, desc="pyoccad model")
+        self.add_outward("rho", 10.0, desc="density", unit="kg/m**3")
 
-    def compute(self):
+    def create_wings(self, n_wings, radius, pos, l_in, l_out, width, th):
+        """Create a pyoccad model of a set of wings.
 
-        vprop = GProp_GProps()
-        brepgprop.VolumeProperties(self.shape, vprop)
-        inertia = vprop.MatrixOfInertia()
+        Inputs
+        ------
+        n_wings: int,
+            the number of wings
+        radius: float,
+            the distance of the internal edges to the center
+        pos: float,
+            the lower edges' z-coordinate
+        l_in: float,
+            the length of the inner edges
+        l_out: float,
+            the length of the outer edges
+        width: float,
+            width
+        th: float,
+            thickness
 
-        self.weight = vprop.Mass()
-        self.cg = vprop.CentreOfMass().Z()
+        Outputs
+        ------
 
-        for i,j in zip(range(3), range(3)):
-            self.I[i, j] = inertia.Value(i+1, j+1)
+        fusion: TopoDS_Solid,
+            pyoccad model of the set of wings
+        """
 
-        print(self.weight)
+        theta = 2 * np.pi / n_wings
+        shapes = [None] * n_wings
 
-    def create_wing(self, l_in, l_out, height, th):
+        for i in range(n_wings):
 
-        edge1 = CreateEdge().from_2_points(gp_Pnt(0,0,0), gp_Pnt(0,0,l_in))
-        edge2 = CreateEdge().from_2_points(gp_Pnt(0,0,0), gp_Pnt(0, height, 0))
-        edge3 = CreateEdge().from_2_points(gp_Pnt(0, height, 0), gp_Pnt(0, height, l_out))
-        edge4 = CreateEdge().from_2_points(gp_Pnt(0, 0, l_in), gp_Pnt(0, height, l_out))
-        contour = CreateWire().from_elements([edge1, edge2, edge3, edge4])
-        face = CreateFace().from_contour(contour)
-        shell = CreateExtrusion().surface(face, gp_Vec(th, 0, 0))
-        shape = CreateTopology().make_solid(shell)
+            ang = theta * i
 
-        return shape
+            p1 = gp_Pnt(radius * np.cos(ang), radius * np.sin(ang), pos)
+            p2 = gp_Pnt((radius + width) * np.cos(ang), (radius + width) * np.sin(ang), pos)
+            p3 = gp_Pnt((radius + width) * np.cos(ang), (radius + width) * np.sin(ang), pos + l_out)
+            p4 = gp_Pnt(radius * np.cos(ang), radius * np.sin(ang), pos + l_in)
 
+            edge1 = CreateEdge().from_2_points(p1, p2)
+            edge2 = CreateEdge().from_2_points(p2, p3)
+            edge3 = CreateEdge().from_2_points(p3, p4)
+            edge4 = CreateEdge().from_2_points(p4, p1)
 
-wings=Wings('wings')
-wings.run_once()
+            contour = CreateWire().from_elements([edge1, edge2, edge3, edge4])
+            face = CreateFace().from_contour(contour)
+            shell = CreateExtrusion().surface(face, gp_Vec(-th * np.sin(ang), th * np.cos(ang), 0))
+            shapes[i] = CreateTopology().make_solid(shell)
+
+        fusion = BRepAlgoAPI_Fuse(shapes[0], shapes[1]).Shape()
+
+        for i in range(2, n_wings):
+            fusion = BRepAlgoAPI_Fuse(fusion, shapes[i]).Shape()
+
+        return fusion

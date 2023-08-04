@@ -34,6 +34,6 @@ class TestMission:
         # data = data.drop(["Section", "Status", "Error code"], axis=1)
         # print(data)
 
-        np.testing.assert_allclose(sys.rocket.a, 290.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.rocket.a, 65.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.tank.weight_p, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_p, 5.0, atol=10 ** (-10))

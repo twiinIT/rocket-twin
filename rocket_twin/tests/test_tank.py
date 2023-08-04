@@ -18,10 +18,7 @@ class TestTank:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.weight, 16.0, atol=10 ** (-10))
-        np.testing.assert_allclose(
-            sys.I.diagonal(), np.array([np.pi / 3, np.pi / 3, np.pi / 2]), atol=10 ** (-10)
-        )
+        np.testing.assert_allclose(sys.weight_p, 15.0, atol=10 ** (-10))
 
     def test_flight(self):
         sys = Tank("sys")
@@ -34,4 +31,4 @@ class TestTank:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.weight, 1.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.weight_p, 0.0, atol=10 ** (-10))
