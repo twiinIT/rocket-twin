@@ -26,15 +26,15 @@ class Rocket(System):
         self.add_child(
             Geometry(
                 "geom",
-                shapes=["tank", "nose", "tube", "wings"],
-                densities=["rho_tank", "rho_nose", "rho_tube", "rho_wings"],
+                shapes=["tank", "engine", "nose", "tube", "wings"],
+                densities=["rho_tank", "rho_engine", "rho_nose", "rho_tube", "rho_wings"],
             )
         )
         self.add_child(
             Dynamics(
                 "dyn",
                 forces=["thrust"],
-                weights=["weight_eng", "weight_struct"],
+                weights=["weight_rocket"],
             ),
             pulling=["a"],
         )
@@ -43,6 +43,9 @@ class Rocket(System):
         self.connect(self.tank.outwards, self.engine.inwards, {"w_out": "w_out"})
 
         self.connect(self.tank.outwards, self.geom.inwards, {"shape": "tank", "rho": "rho_tank"})
+        self.connect(
+            self.engine.outwards, self.geom.inwards, {"shape": "engine", "rho": "rho_engine"}
+        )
         self.connect(self.nose.outwards, self.geom.inwards, {"shape": "nose", "rho": "rho_nose"})
         self.connect(self.tube.outwards, self.geom.inwards, {"shape": "tube", "rho": "rho_tube"})
         self.connect(self.wings.outwards, self.geom.inwards, {"shape": "wings", "rho": "rho_wings"})
@@ -50,10 +53,10 @@ class Rocket(System):
         self.connect(
             self.engine.outwards,
             self.dyn.inwards,
-            {"force": "thrust", "weight": "weight_eng"},
+            {"force": "thrust"},
         )
 
-        self.connect(self.geom.outwards, self.dyn.inwards, {"weight": "weight_struct"})
+        self.connect(self.geom.outwards, self.dyn.inwards, {"weight": "weight_rocket"})
 
         self.add_inward_modevar(
             "flying", False, desc="Whether the rocket is flying or not", unit=""
