@@ -41,7 +41,6 @@ jobs:
           python=
           omcompiler
           pyoccad
-          pythonocc_core
         init-shell: >-
           bash
     - name: Add pip dependencies
