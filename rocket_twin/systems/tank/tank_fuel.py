@@ -1,5 +1,6 @@
 from cosapp.base import System
 
+
 class TankFuel(System):
     """A simple model of a fuel tank.
 
@@ -31,7 +32,7 @@ class TankFuel(System):
 
         # Outputs
         self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
-        self.add_outward("weight", 1., desc="Total weight", unit="kg")
+        self.add_outward("weight", 1.0, desc="Total weight", unit="kg")
 
         # Transient
         self.add_transient("weight_p", der="w_in - w_out", desc="Propellant weight")

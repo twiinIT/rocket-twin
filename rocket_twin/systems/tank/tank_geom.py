@@ -1,10 +1,10 @@
+import numpy as np
 from cosapp.base import System
 from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_XYZ
 from OCC.Core.GProp import GProp_GProps
-from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateCylinder
-import numpy as np
+
 
 class TankGeom(System):
     """Tank geometry.
@@ -27,7 +27,7 @@ class TankGeom(System):
         self.add_inward("height", 1 / np.pi, desc="Height", unit="m")
 
         # Weight
-        self.add_inward("weight", 1., desc="current weight", unit='kg')
+        self.add_inward("weight", 1.0, desc="current weight", unit="kg")
 
         # Position
         self.add_inward("pos", 1 - 1 / np.pi, desc="base center z-coordinate", unit="m")
