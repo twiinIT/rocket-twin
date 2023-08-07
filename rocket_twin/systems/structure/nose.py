@@ -1,6 +1,7 @@
 import numpy as np
 from cosapp.base import System
 from OCC.Core.gp import gp_Pnt, gp_Vec
+from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateCone
 
 
@@ -27,11 +28,12 @@ class Nose(System):
         # Positional parameters
         self.add_inward("pos", 6.0, desc="Base center z-position", unit="m")
 
-        # Pyoccad model
-        shape = CreateCone.from_base_and_dir(
+        # Outputs
+        self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
+        self.add_outward("rho", 3 / np.pi, desc="density", unit="kg/m**3")
+
+    def compute(self):
+
+        self.shape = CreateCone.from_base_and_dir(
             gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, self.height), self.radius
         )
-
-        # Outputs
-        self.add_outward("shape", shape, desc="pyoccad model")
-        self.add_outward("rho", 3 / np.pi, desc="density", unit="kg/m**3")

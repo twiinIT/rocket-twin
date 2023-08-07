@@ -17,7 +17,7 @@ class TestVerticalFlyingRocket:
             "controller.w_temp": 0.0,
             "rocket.controller.w_temp": 1.0,
             "rocket.weight_p": "rocket.tank.weight_max",
-            "rocket.tank.w_out_max": 3.0,
+            "rocket.tank.fuel.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
             "g_tank.weight_p": 0.0,
         }

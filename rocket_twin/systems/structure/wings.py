@@ -2,6 +2,7 @@ import numpy as np
 from cosapp.base import System
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
 from OCC.Core.gp import gp_Pnt, gp_Vec
+from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateEdge, CreateExtrusion, CreateFace, CreateTopology, CreateWire
 
 
@@ -32,14 +33,15 @@ class Wings(System):
         self.add_inward("radius", 1.0, desc="radius of the set", unit="m")
         self.add_inward("pos", 0.75, desc="lowest point z-coordinate", unit="m")
 
-        # Pyoccad model
-        shape = self.create_wings(
+        # Outputs
+        self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
+        self.add_outward("rho", 10.0, desc="density", unit="kg/m**3")
+
+    def compute(self):
+
+        self.shape = self.create_wings(
             self.n, self.radius, self.pos, self.l_in, self.l_out, self.width, self.th
         )
-
-        # Outputs
-        self.add_outward("shape", shape, desc="pyoccad model")
-        self.add_outward("rho", 10.0, desc="density", unit="kg/m**3")
 
     def create_wings(self, n_wings, radius, pos, l_in, l_out, width, th):
         """Create a pyoccad model of a set of wings.

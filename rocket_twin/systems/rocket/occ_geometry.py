@@ -7,7 +7,7 @@ from OCC.Core.TopoDS import TopoDS_Solid
 # from OCC.Display.SimpleGui import init_display
 
 
-class Geometry(System):
+class OCCGeometry(System):
     """Geometrical properties of a system.
 
     Inputs

@@ -1,6 +1,7 @@
 import numpy as np
 from cosapp.base import System
 from OCC.Core.gp import gp_Pnt, gp_Vec
+from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateCone
 
 
@@ -39,16 +40,14 @@ class Engine(System):
         # Positional parameters
         self.add_inward("pos", -1 / np.pi, desc="Base center z-position", unit="m")
 
-        # Pyoccad model
-        shape = CreateCone.from_base_and_dir(
-            gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, self.height), self.base_radius, self.top_radius
-        )
-
         # Outputs
-        self.add_outward("shape", shape, desc="pyoccad model")
+        self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
         self.add_outward("rho", 12 / (7 * np.pi), desc="density", unit="kg/m**3")
         self.add_outward("force", 1.0, desc="Thrust force", unit="N")
 
     def compute(self):
 
         self.force = self.isp * self.w_out * self.g_0
+        self.shape = CreateCone.from_base_and_dir(
+            gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, self.height), self.base_radius, self.top_radius
+        )

@@ -33,8 +33,8 @@ class TestControllerFMU:
         driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 18], dt=0.01))
         init = {"g_tank.weight_p": 10.0, "rocket.tank.weight_p": 0.0}
         values = {
-            "g_tank.w_out_max": 1.0,
-            "rocket.tank.w_out_max": 0.5,
+            "g_tank.fuel.w_out_max": 1.0,
+            "rocket.tank.fuel.w_out_max": 0.5,
             "controller.time_int": 3.0,
             "rocket.controller.time_int": 3.0,
         }

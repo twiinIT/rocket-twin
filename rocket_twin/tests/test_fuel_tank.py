@@ -1,14 +1,14 @@
 import numpy as np
 from cosapp.drivers import RungeKutta
 
-from rocket_twin.systems import Tank
+from rocket_twin.systems import TankFuel
 
 
-class TestTank:
+class TestTankFuel:
     """Tests for the tank model."""
 
     def test_fuel(self):
-        sys = Tank("sys")
+        sys = TankFuel("sys")
         driver = sys.add_driver(RungeKutta(order=4, dt=0.1))
         driver.time_interval = (0, 5)
 
@@ -21,7 +21,7 @@ class TestTank:
         np.testing.assert_allclose(sys.weight_p, 15.0, atol=10 ** (-10))
 
     def test_flight(self):
-        sys = Tank("sys")
+        sys = TankFuel("sys")
         driver = sys.add_driver(RungeKutta(order=4, dt=0.1))
         driver.time_interval = (0, 5)
 

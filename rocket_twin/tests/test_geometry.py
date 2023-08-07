@@ -2,13 +2,13 @@ import numpy as np
 from OCC.Core.gp import gp_Pnt, gp_Vec
 from pyoccad.create import CreateCone, CreateCylinder
 
-from rocket_twin.systems import Geometry
+from rocket_twin.systems import OCCGeometry
 
 
 class TestGeometry:
     def test_structure(self):
 
-        sys = Geometry("sys", shapes=["cylinder", "cone"], densities=["dens_cyl", "dens_con"])
+        sys = OCCGeometry("sys", shapes=["cylinder", "cone"], densities=["dens_cyl", "dens_con"])
 
         center_cyl = gp_Pnt(0, 0, 0)
         dir_cyl = gp_Vec(0, 0, 20)

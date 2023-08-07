@@ -46,7 +46,7 @@ class Mission(Driver):
             "rocket.flying": True,
             "controller.w_temp": 0.0,
             "rocket.controller.w_temp": 1.0,
-            "rocket.tank.w_out_max": 3.0,
+            "rocket.tank.fuel.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
         }
 
