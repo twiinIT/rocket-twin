@@ -1,17 +1,4 @@
 cosapp==0.15.0
-ipython
-matplotlib==3.6.3
-numpy
-pandas
-pythreejs
-scipy
-sympy
-numpy-stl
-pyvista
-ipywidgets
-ipympl
-plotly
-nbformat
 PyQt5
 pytest
 flake8
@@ -19,4 +6,3 @@ isort
 black
 pre-commit
 cosapp_fmu @ git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
-OMPython
