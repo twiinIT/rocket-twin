@@ -3,6 +3,8 @@ from cosapp.base import System
 from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
 from OCC.Core.gp import gp_Pnt, gp_Vec
 from OCC.Core.TopoDS import TopoDS_Solid
+from OCC.Core.BRepGProp import brepgprop
+from OCC.Core.GProp import GProp_GProps
 from pyoccad.create import CreateEdge, CreateExtrusion, CreateFace, CreateTopology, CreateWire
 
 
@@ -14,10 +16,10 @@ class Wings(System):
 
     Outputs
     ------
-    rho [kg/m**3]: float,
-        density
     shape: TopoDS_Solid,
         pyoccad model
+    props: GProp_GProps,
+        model properties
     """
 
     def setup(self):
@@ -29,19 +31,26 @@ class Wings(System):
         self.add_inward("width", 4 / 3, desc="width", unit="m")
         self.add_inward("th", 0.1, desc="thickness", unit="m")
 
+        # Density
+        self.add_inward("rho", 10.0, desc="density", unit="kg/m**3")
+
         # Positional parameters
         self.add_inward("radius", 1.0, desc="radius of the set", unit="m")
         self.add_inward("pos", 0.75, desc="lowest point z-coordinate", unit="m")
 
         # Outputs
         self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
-        self.add_outward("rho", 10.0, desc="density", unit="kg/m**3")
+        self.add_outward("props", GProp_GProps(), desc="model properties")
 
     def compute(self):
 
         self.shape = self.create_wings(
             self.n, self.radius, self.pos, self.l_in, self.l_out, self.width, self.th
         )
+        vprop = GProp_GProps()
+        brepgprop.VolumeProperties(self.shape, vprop)
+        self.props = GProp_GProps()
+        self.props.Add(vprop, self.rho)
 
     def create_wings(self, n_wings, radius, pos, l_in, l_out, width, th):
         """Create a pyoccad model of a set of wings.

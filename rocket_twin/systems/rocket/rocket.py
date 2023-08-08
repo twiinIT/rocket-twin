@@ -27,7 +27,7 @@ class Rocket(System):
             OCCGeometry(
                 "geom",
                 shapes=["tank", "engine", "nose", "tube", "wings"],
-                densities=["rho_tank", "rho_engine", "rho_nose", "rho_tube", "rho_wings"],
+                properties=["tank", "engine", "nose", "tube", "wings"],
             )
         )
         self.add_child(
@@ -42,13 +42,13 @@ class Rocket(System):
         self.connect(self.controller.outwards, self.tank.inwards, {"w": "w_command"})
         self.connect(self.tank.outwards, self.engine.inwards, {"w_out": "w_out"})
 
-        self.connect(self.tank.outwards, self.geom.inwards, {"shape": "tank", "rho": "rho_tank"})
+        self.connect(self.tank.outwards, self.geom.inwards, {"shape": "tank", "props": "tank"})
         self.connect(
-            self.engine.outwards, self.geom.inwards, {"shape": "engine", "rho": "rho_engine"}
+            self.engine.outwards, self.geom.inwards, {"shape": "engine", "props": "engine"}
         )
-        self.connect(self.nose.outwards, self.geom.inwards, {"shape": "nose", "rho": "rho_nose"})
-        self.connect(self.tube.outwards, self.geom.inwards, {"shape": "tube", "rho": "rho_tube"})
-        self.connect(self.wings.outwards, self.geom.inwards, {"shape": "wings", "rho": "rho_wings"})
+        self.connect(self.nose.outwards, self.geom.inwards, {"shape": "nose", "props": "nose"})
+        self.connect(self.tube.outwards, self.geom.inwards, {"shape": "tube", "props": "tube"})
+        self.connect(self.wings.outwards, self.geom.inwards, {"shape": "wings", "props": "wings"})
 
         self.connect(
             self.engine.outwards,

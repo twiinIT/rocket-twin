@@ -17,10 +17,10 @@ class Tank(System):
     ------
     w_out [kg/s]: float,
         mass flow of fuel exiting the tank
-    rho [kg/m**3]: float,
-        mean density
-    shape: TopoDS_Solid
-        pyoccad model
+    shape_struct: TopoDS_Solid
+        pyoccad model of the structure
+    shape_fuel: TopoDS_Solid
+        pyoccad model of the fuel
     """
 
     def setup(self):
@@ -28,6 +28,9 @@ class Tank(System):
         self.add_child(
             TankFuel("fuel"), pulling=["w_out", "w_in", "w_command", "weight_max", "weight_p"]
         )
-        self.add_child(TankGeom("geom"), pulling=["shape", "rho"])
+        self.add_child(TankGeom("geom"), pulling=["shape_struct", "shape_fuel"])
 
-        self.connect(self.fuel.outwards, self.geom.inwards, ["weight"])
+        self.connect(self.geom.inwards, self.fuel.inwards, ["weight_p"])
+
+
+        

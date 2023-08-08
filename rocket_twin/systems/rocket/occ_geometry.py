@@ -1,6 +1,5 @@
 import numpy as np
 from cosapp.base import System
-from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.GProp import GProp_GProps
 from OCC.Core.TopoDS import TopoDS_Solid
 
@@ -14,8 +13,8 @@ class OCCGeometry(System):
     ------
     shapes: TopoDS_Solid,
         pyoccad models of each component of the system
-    densities [kg/m**3]: float,
-        densities of each component of the system
+    props: GProp_GProps,
+        properties of each model
 
     Outputs
     ------
@@ -27,20 +26,20 @@ class OCCGeometry(System):
         Inertia matrix
     """
 
-    def setup(self, shapes=None, densities=None):
+    def setup(self, shapes=None, properties=None):
 
         if shapes is None:
             shapes = []
-        if densities is None:
-            densities = []
+        if properties is None:
+            properties = []
 
         self.add_property("shapes", shapes)
-        self.add_property("densities", densities)
+        self.add_property("properties", properties)
 
         for shape in shapes:
             self.add_inward(shape, TopoDS_Solid(), desc=f"shape of {shape}")
-        for density in densities:
-            self.add_inward(density, 1.0, desc=f"Density of {density}", unit="kg/m**3")
+        for props in properties:
+            self.add_inward(props, GProp_GProps(), desc=f"Properties of the {props}", unit="kg/m**3")
 
         self.add_outward("weight", 1.0, desc="weight", unit="kg")
         self.add_outward("cg", 1.0, desc="center of gravity", unit="m")
@@ -49,10 +48,8 @@ class OCCGeometry(System):
     def compute(self):
 
         vprop = GProp_GProps()
-        for i in range(len(self.shapes)):
-            vprop_int = GProp_GProps()
-            brepgprop.VolumeProperties(self[self.shapes[i]], vprop_int)
-            vprop.Add(vprop_int, self[self.densities[i]])
+        for props in self.properties:
+            vprop.Add(props)
 
         self.weight = vprop.Mass()
         self.cg = vprop.CentreOfMass().Z()
