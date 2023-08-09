@@ -1,14 +1,14 @@
 import numpy as np
 from cosapp.base import System
-from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut
-from OCC.Core.gp import gp_Pnt, gp_Vec
+from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Cut, BRepAlgoAPI_Fuse
 from OCC.Core.BRepGProp import brepgprop
+from OCC.Core.gp import gp_Pnt, gp_Vec
 from OCC.Core.GProp import GProp_GProps
-from pyoccad.create import CreateCylinder, CreateCircle, CreateExtrusion, CreateFace
+from pyoccad.create import CreateCircle, CreateCylinder, CreateExtrusion, CreateFace
 
 
 class TankGeom(System):
-    """Pyoccad model of the tank structure.
+    """Pyoccad model of the tank structure and fuel.
 
     Inputs
     ------
@@ -17,34 +17,50 @@ class TankGeom(System):
     ------
     shape: TopoDS_Solid,
         pyoccad model
+    props: GProp_GProps,
+        model properties
     """
 
     def setup(self):
 
-        # Geometry
-        self.add_inward("r_int", 1.0, desc="internal radius", unit="m")
-        self.add_inward("r_ext", 2.0, desc="external radius", unit='m')
-        self.add_inward("thickness", self.r_ext - self.r_int, desc="thickness", unit='m')
-        self.add_inward("height", 1 / np.pi, desc="Height", unit="m")
+        # Structure parameters
+        self.add_inward("r_int", 0.8, desc="internal radius", unit="m")
+        self.add_inward("r_ext", 1.0, desc="external radius", unit="m")
+        self.add_inward("thickness", self.r_ext - self.r_int, desc="thickness", unit="m")
+        self.add_inward("height", 1.0, desc="Height", unit="m")
+        self.add_inward("rho_struct", 1 / (0.56 * np.pi), desc="Structure density", unit="kg/m**3")
 
-        # Density
-        self.add_inward("rho", 0.0, desc="Structure density", unit="kg/m**3")
+        # Fuel parameters
+        self.add_inward("weight_p", 0.0, desc="Fuel weight", unit="kg")
+        self.add_inward("rho_fuel", 1.0, desc="Fuel density", unit="kg/m**3")
 
         # Position
         self.add_inward("pos", 1 - 1 / np.pi, desc="base center z-coordinate", unit="m")
 
         # Outputs
-        init = CreateCylinder.from_base_and_dir(gp_Pnt(0, 0, 0), gp_Vec(gp_Pnt(0, 0, 1)), 0)
-        self.add_outward("shape", init, desc="pyoccad structure model")
+        self.add_outward("shape", CreateCylinder(), desc="pyoccad model")
         self.add_outward("props", GProp_GProps(), desc="model properties")
 
     def compute(self):
 
-        self.shape = self.create_structure(self.r_int, self.r_ext, self.height, self.thickness, self.pos)
-        vprop = GProp_GProps()
-        brepgprop.VolumeProperties(self.shape, vprop)
+        height_fuel = self.weight_p / (np.pi * self.r_int**2 * self.rho_fuel) + 0.00000001
+
+        shape_struct = self.create_structure(
+            self.r_int, self.r_ext, self.height, self.thickness, self.pos
+        )
+        shape_fuel = CreateCylinder.from_base_and_dir(
+            gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, height_fuel), self.r_int
+        )
+        self.shape = BRepAlgoAPI_Fuse(shape_struct, shape_fuel).Shape()
+
+        fuel_prop = GProp_GProps()
+        struct_prop = GProp_GProps()
+        brepgprop.VolumeProperties(shape_struct, struct_prop)
+        brepgprop.VolumeProperties(shape_fuel, fuel_prop)
+
         self.props = GProp_GProps()
-        self.props.Add(vprop, self.rho)
+        self.props.Add(fuel_prop, self.rho_fuel)
+        self.props.Add(struct_prop, self.rho_struct)
 
     def create_structure(self, r_int, r_ext, height, thickness, pos):
         """Create a pyoccad model of an empty cylindrical tank.
@@ -86,4 +102,3 @@ class TankGeom(System):
         tank = BRepAlgoAPI_Fuse(shell, bottom).Shape()
 
         return tank
-        

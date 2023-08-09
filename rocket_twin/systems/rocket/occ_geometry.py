@@ -39,7 +39,7 @@ class OCCGeometry(System):
         for shape in shapes:
             self.add_inward(shape, TopoDS_Solid(), desc=f"shape of {shape}")
         for props in properties:
-            self.add_inward(props, GProp_GProps(), desc=f"Properties of the {props}", unit="kg/m**3")
+            self.add_inward(props, GProp_GProps(), desc=f"Properties of the {props}")
 
         self.add_outward("weight", 1.0, desc="weight", unit="kg")
         self.add_outward("cg", 1.0, desc="center of gravity", unit="m")
@@ -49,7 +49,7 @@ class OCCGeometry(System):
 
         vprop = GProp_GProps()
         for props in self.properties:
-            vprop.Add(props)
+            vprop.Add(self[props])
 
         self.weight = vprop.Mass()
         self.cg = vprop.CentreOfMass().Z()

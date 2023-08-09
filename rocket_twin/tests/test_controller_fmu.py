@@ -30,7 +30,7 @@ class TestControllerFMU:
             sys.rocket.controller.inwards, sys.rocket.tank.inwards, ["weight_max", "weight_p"]
         )
 
-        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 18], dt=0.01))
+        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 18], dt=0.1))
         init = {"g_tank.weight_p": 10.0, "rocket.tank.weight_p": 0.0}
         values = {
             "g_tank.fuel.w_out_max": 1.0,

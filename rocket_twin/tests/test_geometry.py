@@ -1,5 +1,7 @@
 import numpy as np
+from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.gp import gp_Pnt, gp_Vec
+from OCC.Core.GProp import GProp_GProps
 from pyoccad.create import CreateCone, CreateCylinder
 
 from rocket_twin.systems import OCCGeometry
@@ -8,7 +10,7 @@ from rocket_twin.systems import OCCGeometry
 class TestGeometry:
     def test_structure(self):
 
-        sys = OCCGeometry("sys", shapes=["cylinder", "cone"], densities=["dens_cyl", "dens_con"])
+        sys = OCCGeometry("sys", shapes=["cylinder_s", "cone_s"], properties=["cylinder", "cone"])
 
         center_cyl = gp_Pnt(0, 0, 0)
         dir_cyl = gp_Vec(0, 0, 20)
@@ -18,14 +20,22 @@ class TestGeometry:
         dens_cyl = 10.0
         dens_con = 20.0
 
-        cylinder = CreateCylinder.from_base_and_dir(center_cyl, dir_cyl, radius)
-        cone = CreateCone.from_base_and_dir(center_con, dir_con, radius)
-        print(type(cylinder))
+        cylinder_s = CreateCylinder.from_base_and_dir(center_cyl, dir_cyl, radius)
+        cone_s = CreateCone.from_base_and_dir(center_con, dir_con, radius)
 
+        cylinder = GProp_GProps()
+        cone = GProp_GProps()
+        vprop = GProp_GProps()
+        vprop2 = GProp_GProps()
+        brepgprop.VolumeProperties(cylinder_s, vprop)
+        brepgprop.VolumeProperties(cone_s, vprop2)
+        cylinder.Add(vprop, dens_cyl)
+        cone.Add(vprop2, dens_con)
+
+        sys.cylinder_s = cylinder_s
+        sys.cone_s = cone_s
         sys.cylinder = cylinder
         sys.cone = cone
-        sys.dens_cyl = dens_cyl
-        sys.dens_con = dens_con
 
         sys.run_once()
         print(sys.weight)
