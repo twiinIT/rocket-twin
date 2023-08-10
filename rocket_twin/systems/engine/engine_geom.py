@@ -31,7 +31,7 @@ class EngineGeom(System):
         self.add_inward("rho", 12 / (7 * np.pi), desc="density", unit="kg/m**3")
 
         # Positional parameters
-        self.add_inward("pos", -1 / np.pi, desc="Base center z-position", unit="m")
+        self.add_inward("pos", -1.2, desc="Base center z-position", unit="m")
 
         # Outputs
         self.add_outward("shape", CreateCone(), desc="pyoccad model")

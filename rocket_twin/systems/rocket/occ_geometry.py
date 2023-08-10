@@ -3,7 +3,7 @@ from cosapp.base import System
 from OCC.Core.GProp import GProp_GProps
 from OCC.Core.TopoDS import TopoDS_Solid
 
-# from OCC.Display.SimpleGui import init_display
+from OCC.Display.SimpleGui import init_display
 
 
 class OCCGeometry(System):
@@ -58,11 +58,11 @@ class OCCGeometry(System):
         for i, j in zip(range(3), range(3)):
             self.I[i, j] = inertia.Value(i + 1, j + 1)
 
-    # def view(self):
+    def view(self):
 
-    # display, start_display, add_menu, add_function_to_menu = init_display()
+        display, start_display, add_menu, add_function_to_menu = init_display()
 
-    # for shape in self.shapes:
-    # display.DisplayColoredShape(self[shape], "RED")
+        for shape in self.shapes:
+            display.DisplayColoredShape(self[shape], "RED")
 
-    # start_display()
+        start_display()

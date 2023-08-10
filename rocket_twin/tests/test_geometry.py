@@ -40,5 +40,10 @@ class TestGeometry:
         sys.run_once()
         print(sys.weight)
         print(sys.cg)
+
         np.testing.assert_allclose(sys.weight, 7539.822, atol=10 ** (-1))
         np.testing.assert_allclose(sys.cg, 13.125, atol=10 ** (-1))
+
+        np.testing.assert_allclose(sys.I[0,0], 431725.5164, atol=10 ** (-2))
+        np.testing.assert_allclose(sys.I[1,1], 431725.5164, atol=10 ** (-2))
+        np.testing.assert_allclose(sys.I[2,2], 30536.2806, atol=10 ** (-2))

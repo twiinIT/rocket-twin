@@ -48,10 +48,25 @@ class TestTank:
             "fuel.weight_p": 6.0,
             "w_in": 0.0,
             "fuel.w_out_max": 1.0,
+            "geom.pos" : 0.,
         }
 
         driver.set_scenario(init=init)
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.props.Mass(), 0.86 * np.pi + 1.0, atol=10 ** (-2))
+        np.testing.assert_allclose(sys.props.Mass(), 3.7017, atol=10 ** (-2))
+
+        np.testing.assert_allclose(sys.props.CentreOfMass().X(), 0.0, atol=10 ** (-2))
+        np.testing.assert_allclose(sys.props.CentreOfMass().Y(), 0.0, atol=10 ** (-2))
+        np.testing.assert_allclose(sys.props.CentreOfMass().Z(), 0.31413, atol=10 ** (-2))
+
+        np.testing.assert_allclose(
+            sys.props.MatrixOfInertia().Diagonal().X(), 18.3849, atol=10 ** (-2)
+        )
+        np.testing.assert_allclose(
+            sys.props.MatrixOfInertia().Diagonal().Y(), 18.3849, atol=10 ** (-2)
+        )
+        np.testing.assert_allclose(
+            sys.props.MatrixOfInertia().Diagonal().Z(), 36.0101, atol=10 ** (-2)
+        )

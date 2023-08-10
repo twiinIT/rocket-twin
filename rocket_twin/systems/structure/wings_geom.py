@@ -36,7 +36,7 @@ class WingsGeom(System):
 
         # Positional parameters
         self.add_inward("radius", 1.0, desc="radius of the set", unit="m")
-        self.add_inward("pos", 0.75, desc="lowest point z-coordinate", unit="m")
+        self.add_inward("pos", 0., desc="lowest point z-coordinate", unit="m")
 
         # Outputs
         self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
