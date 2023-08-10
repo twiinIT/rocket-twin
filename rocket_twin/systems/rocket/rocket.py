@@ -71,7 +71,7 @@ class Rocket(System):
         )
 
         self.add_event("Takeoff", trigger="engine.force > 0")
-        self.add_event("view", trigger="t == 0.2")
+        # self.add_event("view", trigger="t == 0.2")
 
     def compute(self):
         self.a *= self.flying
@@ -80,5 +80,5 @@ class Rocket(System):
 
         if self.Takeoff.present:
             self.flying = True
-        if self.view.present:
-            self.geom.view()
+        # if self.view.present:
+        # self.geom.view()

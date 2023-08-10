@@ -35,7 +35,7 @@ class TankGeom(System):
         self.add_inward("rho_fuel", 7.8125 / np.pi, desc="Fuel density", unit="kg/m**3")
 
         # Position
-        self.add_inward("pos", 0., desc="base center z-coordinate", unit="m")
+        self.add_inward("pos", 0.0, desc="base center z-coordinate", unit="m")
 
         # Outputs
         self.add_outward("shape", CreateCylinder(), desc="pyoccad model")

@@ -48,7 +48,7 @@ class TestTank:
             "fuel.weight_p": 6.0,
             "w_in": 0.0,
             "fuel.w_out_max": 1.0,
-            "geom.pos" : 0.,
+            "geom.pos": 0.0,
         }
 
         driver.set_scenario(init=init)
