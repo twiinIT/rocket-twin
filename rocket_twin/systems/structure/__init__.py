@@ -1,5 +1,5 @@
-from rocket_twin.systems.structure.nose import Nose
-from rocket_twin.systems.structure.tube import Tube
-from rocket_twin.systems.structure.wings import Wings
+from rocket_twin.systems.structure.nose_geom import NoseGeom
+from rocket_twin.systems.structure.tube_geom import TubeGeom
+from rocket_twin.systems.structure.wings_geom import WingsGeom
 
-__all__ = ["Nose", "Tube", "Wings"]
+__all__ = ["NoseGeom", "TubeGeom", "WingsGeom"]

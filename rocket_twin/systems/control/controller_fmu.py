@@ -19,8 +19,6 @@ class ControllerFMU(System):
 
     Outputs
     ------
-    'f': float,
-        command force
     'wr': float,
         command flow
     'wg' float,
@@ -36,7 +34,7 @@ class ControllerFMU(System):
 
         pulling = {
             "w": "w",
-            "weight": "weight_p",
+            "weight": "weight_prop",
             "weight_max": "weight_max",
             "tl": "time_lnc",
             "ti": "time_var",
@@ -48,7 +46,7 @@ class ControllerFMU(System):
             pulling=pulling,
         )
 
-        self.add_event("full_tank", trigger="weight_p > 0.9999*weight_max")
+        self.add_event("full_tank", trigger="weight_prop > 0.9999*weight_max")
 
     def compute(self):
 

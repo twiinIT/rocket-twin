@@ -7,8 +7,8 @@ from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateCylinder
 
 
-class Tube(System):
-    """A simple model of a tube.
+class TubeGeom(System):
+    """Pyoccad model of a solid tube.
 
     Inputs
     ------

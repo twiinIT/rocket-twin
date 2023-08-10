@@ -31,8 +31,8 @@ class TankGeom(System):
         self.add_inward("rho_struct", 1 / (0.56 * np.pi), desc="Structure density", unit="kg/m**3")
 
         # Fuel parameters
-        self.add_inward("weight_p", 0.0, desc="Fuel weight", unit="kg")
-        self.add_inward("rho_fuel", 1.0, desc="Fuel density", unit="kg/m**3")
+        self.add_inward("weight_prop", 0.0, desc="Fuel weight", unit="kg")
+        self.add_inward("rho_fuel", 7.8125 / np.pi, desc="Fuel density", unit="kg/m**3")
 
         # Position
         self.add_inward("pos", 1 - 1 / np.pi, desc="base center z-coordinate", unit="m")
@@ -40,10 +40,13 @@ class TankGeom(System):
         # Outputs
         self.add_outward("shape", CreateCylinder(), desc="pyoccad model")
         self.add_outward("props", GProp_GProps(), desc="model properties")
+        self.add_outward("weight_max", 1.0, desc="Maximum fuel capacity", unit="kg")
 
     def compute(self):
 
-        height_fuel = self.weight_p / (np.pi * self.r_int**2 * self.rho_fuel) + 0.00000001
+        self.weight_max = np.pi * self.r_int**2 * self.height * self.rho_fuel
+
+        height_fuel = self.weight_prop / (np.pi * self.r_int**2 * self.rho_fuel) + 0.00000001
 
         shape_struct = self.create_structure(
             self.r_int, self.r_ext, self.height, self.thickness, self.pos

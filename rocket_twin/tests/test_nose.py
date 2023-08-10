@@ -1,13 +1,13 @@
 import numpy as np
 
-from rocket_twin.systems import Nose
+from rocket_twin.systems import NoseGeom
 
 
 class TestNose:
     """Tests for the nose model."""
 
     def test_geometry(self):
-        sys = Nose("sys")
+        sys = NoseGeom("sys")
 
         sys.radius = 5.0
         sys.height = 9.0

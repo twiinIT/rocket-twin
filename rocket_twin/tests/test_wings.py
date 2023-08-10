@@ -1,14 +1,14 @@
 import numpy as np
 from cosapp.drivers import RungeKutta
 
-from rocket_twin.systems import Wings
+from rocket_twin.systems import WingsGeom
 
 
 class TestWings:
     """Tests for the wings model."""
 
     def test_geometry(self):
-        sys = Wings("sys")
+        sys = WingsGeom("sys")
 
         sys.n = 2
         sys.l_in = 1.0

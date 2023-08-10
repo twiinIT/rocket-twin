@@ -6,9 +6,8 @@ from OCC.Core.GProp import GProp_GProps
 from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateCone
 
-
-class Nose(System):
-    """A simple model of a nose.
+class EngineGeom(System):
+    """Pyoccad model of an engine
 
     Inputs
     ------
@@ -24,23 +23,24 @@ class Nose(System):
     def setup(self):
 
         # Geometric parameters
-        self.add_inward("radius", 1.0, desc="Base radius", unit="m")
+        self.add_inward("base_radius", 1.0, desc="Base radius", unit="m")
+        self.add_inward("top_radius", 0.5, desc="top radius", unit="m")
         self.add_inward("height", 1.0, desc="Height", unit="m")
 
         # Density
-        self.add_inward("rho", 3 / np.pi, desc="density", unit="kg/m**3")
+        self.add_inward("rho", 12 / (7 * np.pi), desc="density", unit="kg/m**3")
 
         # Positional parameters
-        self.add_inward("pos", 6.0, desc="Base center z-position", unit="m")
+        self.add_inward("pos", -1 / np.pi, desc="Base center z-position", unit="m")
 
         # Outputs
-        self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
+        self.add_outward("shape", CreateCone(), desc="pyoccad model")
         self.add_outward("props", GProp_GProps(), desc="model properties")
 
     def compute(self):
 
         self.shape = CreateCone.from_base_and_dir(
-            gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, self.height), self.radius
+            gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, self.height), self.base_radius, self.top_radius
         )
         vprop = GProp_GProps()
         brepgprop.VolumeProperties(self.shape, vprop)

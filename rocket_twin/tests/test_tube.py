@@ -1,13 +1,13 @@
 import numpy as np
 
-from rocket_twin.systems import Tube
+from rocket_twin.systems import TubeGeom
 
 
 class TestTube:
     """Tests for the tube model."""
 
     def test_geometry(self):
-        sys = Tube("sys")
+        sys = TubeGeom("sys")
 
         sys.radius = 5.0
         sys.length = 9.0

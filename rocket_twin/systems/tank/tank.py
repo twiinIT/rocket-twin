@@ -17,6 +17,10 @@ class Tank(System):
     ------
     w_out [kg/s]: float,
         mass flow of fuel exiting the tank
+    weight_prop [kg]: float,
+        fuel weight
+    weight_max [kg]: float,
+        maximum fuel capacity
     shape: TopoDS_Solid,
         pyoccad model of the structure and fuel
     props: GProp_GProps,
@@ -25,9 +29,7 @@ class Tank(System):
 
     def setup(self):
 
-        self.add_child(
-            TankFuel("fuel"), pulling=["w_out", "w_in", "w_command", "weight_max", "weight_p"]
-        )
-        self.add_child(TankGeom("geom"), pulling=["shape", "props"])
+        self.add_child(TankFuel("fuel"), pulling=["w_out", "w_in", "w_command", "weight_prop"])
+        self.add_child(TankGeom("geom"), pulling=["shape", "props", "weight_max"])
 
-        self.connect(self.geom.inwards, self.fuel.inwards, ["weight_p"])
+        self.connect(self.fuel.outwards, self.geom.inwards, ["weight_prop"])

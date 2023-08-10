@@ -1,6 +1,14 @@
 from cosapp.base import System
 
-from rocket_twin.systems import ControllerCoSApp, Dynamics, Engine, Nose, Tank, Tube, Wings
+from rocket_twin.systems import (
+    ControllerCoSApp,
+    Dynamics,
+    Engine,
+    NoseGeom,
+    Tank,
+    TubeGeom,
+    WingsGeom,
+)
 from rocket_twin.systems.rocket import OCCGeometry
 
 
@@ -18,11 +26,11 @@ class Rocket(System):
 
     def setup(self):
         self.add_child(ControllerCoSApp("controller"))
-        self.add_child(Tank("tank"), pulling=["w_in", "weight_max", "weight_p"])
+        self.add_child(Tank("tank"), pulling=["w_in", "weight_max", "weight_prop"])
         self.add_child(Engine("engine"))
-        self.add_child(Nose("nose"))
-        self.add_child(Tube("tube"))
-        self.add_child(Wings("wings"))
+        self.add_child(NoseGeom("nose"))
+        self.add_child(TubeGeom("tube"))
+        self.add_child(WingsGeom("wings"))
         self.add_child(
             OCCGeometry(
                 "geom",

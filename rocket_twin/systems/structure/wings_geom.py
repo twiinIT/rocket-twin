@@ -8,8 +8,8 @@ from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateEdge, CreateExtrusion, CreateFace, CreateTopology, CreateWire
 
 
-class Wings(System):
-    """A simple model of a set of wings.
+class WingsGeom(System):
+    """Pyoccad model of a set of wings.
 
     Inputs
     ------

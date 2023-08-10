@@ -50,7 +50,7 @@ class Mission(Driver):
             "g_tank.w_in": 0.0,
         }
 
-        stop_fuel = "rocket.tank.weight_p >= rocket.tank.weight_max"
+        stop_fuel = "rocket.tank.weight_prop >= rocket.tank.weight_max"
         stop_flight = stop
 
         # Fueling

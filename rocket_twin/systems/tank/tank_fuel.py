@@ -15,15 +15,13 @@ class TankFuel(System):
     ------
     w_out [kg/s]: float,
         mass flow of fuel exiting the tank
+    weight_prop [kg]: float,
+        fuel weight
+    weight_max [kg]: float,
+        maximum fuel capacity
     """
 
     def setup(self):
-
-        # Fuel
-        self.add_inward("weight_max", 5.0, desc="Maximum fuel capacity", unit="kg")
-
-        # Geometry
-        self.add_inward("r_int", 1.0, desc="internal radius", unit="m")
 
         # Flux control
         self.add_inward("w_out_max", 0.0, desc="Fuel output rate", unit="kg/s")
@@ -34,6 +32,7 @@ class TankFuel(System):
 
         # Outputs
         self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
+        self.add_outward("weight_prop", 0.0, desc="Proppellant weight", unit="kg")
 
         # Transient
         self.add_transient("weight_p", der="w_in - w_out", desc="Propellant weight")
@@ -41,3 +40,4 @@ class TankFuel(System):
     def compute(self):
 
         self.w_out = self.w_out_max * self.w_command
+        self.weight_prop = self.weight_p
