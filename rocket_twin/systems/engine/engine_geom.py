@@ -3,11 +3,11 @@ from cosapp.base import System
 from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.gp import gp_Pnt, gp_Vec
 from OCC.Core.GProp import GProp_GProps
-from OCC.Core.TopoDS import TopoDS_Solid
 from pyoccad.create import CreateCone
 
+
 class EngineGeom(System):
-    """Pyoccad model of an engine
+    """Pyoccad model of an engine.
 
     Inputs
     ------

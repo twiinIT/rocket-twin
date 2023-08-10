@@ -1,5 +1,6 @@
 from cosapp.base import System
 
+
 class EnginePerfo(System):
     """Simple model of an engine's thrust force.
 
