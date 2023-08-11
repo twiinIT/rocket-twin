@@ -4,7 +4,7 @@ from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Fuse
 from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.gp import gp_Pnt, gp_Vec
 from OCC.Core.GProp import GProp_GProps
-from OCC.Core.TopoDS import TopoDS_Solid
+from OCC.Core.TopoDS import TopoDS_Compound
 from pyoccad.create import CreateEdge, CreateExtrusion, CreateFace, CreateTopology, CreateWire
 
 
@@ -39,7 +39,7 @@ class WingsGeom(System):
         self.add_inward("pos", 0.0, desc="lowest point z-coordinate", unit="m")
 
         # Outputs
-        self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
+        self.add_outward("shape", TopoDS_Compound(), desc="pyoccad model")
         self.add_outward("props", GProp_GProps(), desc="model properties")
 
     def compute(self):

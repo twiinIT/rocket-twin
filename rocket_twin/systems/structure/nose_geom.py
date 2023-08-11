@@ -3,8 +3,7 @@ from cosapp.base import System
 from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.gp import gp_Pnt, gp_Vec
 from OCC.Core.GProp import GProp_GProps
-from OCC.Core.TopoDS import TopoDS_Solid
-from pyoccad.create import CreateCone
+from pyoccad.create import CreateCone, CreateSphere
 
 
 class NoseGeom(System):
@@ -34,7 +33,7 @@ class NoseGeom(System):
         self.add_inward("pos", 6.0, desc="Base center z-position", unit="m")
 
         # Outputs
-        self.add_outward("shape", TopoDS_Solid(), desc="pyoccad model")
+        self.add_outward("shape", CreateSphere.from_radius_and_center(1.), desc="pyoccad model")
         self.add_outward("props", GProp_GProps(), desc="model properties")
 
     def compute(self):

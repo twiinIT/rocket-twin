@@ -5,6 +5,11 @@ from rocket_twin.systems import Engine
 
 
 class TestEngine:
+    def test_run_once(self):
+        sys = Engine('sys')
+
+        sys.run_once()
+
     def test_geom(self):
         sys = Engine("sys")
         driver = sys.add_driver(RungeKutta(order=4, dt=0.1))

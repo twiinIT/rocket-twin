@@ -6,6 +6,11 @@ from rocket_twin.systems import NoseGeom
 class TestNose:
     """Tests for the nose model."""
 
+    def test_run_once(self):
+        sys = NoseGeom('sys')
+
+        sys.run_once()
+        
     def test_geometry(self):
         sys = NoseGeom("sys")
 

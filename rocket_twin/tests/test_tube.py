@@ -6,6 +6,11 @@ from rocket_twin.systems import TubeGeom
 class TestTube:
     """Tests for the tube model."""
 
+    def test_run_once(self):
+        sys =TubeGeom('sys')
+
+        sys.run_once()
+        
     def test_geometry(self):
         sys = TubeGeom("sys")
 
