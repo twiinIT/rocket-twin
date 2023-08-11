@@ -9,5 +9,5 @@ dependencies:
   - black
   - pre-commit
   - cosapp
-  - numpy
-  - cosapp_fmu
+  - pyoccad
+  - pythonocc-core

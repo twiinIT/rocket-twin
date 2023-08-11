@@ -46,11 +46,11 @@ class Mission(Driver):
             "rocket.flying": True,
             "controller.w_temp": 0.0,
             "rocket.controller.w_temp": 1.0,
-            "rocket.tank.w_out_max": 3.0,
+            "rocket.tank.fuel.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
         }
 
-        stop_fuel = "rocket.tank.weight_p >= rocket.tank.weight_max"
+        stop_fuel = "rocket.tank.weight_prop >= rocket.tank.weight_max"
         stop_flight = stop
 
         # Fueling

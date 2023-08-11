@@ -24,4 +24,4 @@ class Station(System):
 
         self.connect(self.controller.outwards, self.g_tank.inwards, {"w": "w_command"})
 
-        self.g_tank.weight_max = 10.0
+        self.g_tank.geom.height = 2.0

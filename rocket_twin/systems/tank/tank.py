@@ -1,5 +1,7 @@
 from cosapp.base import System
 
+from rocket_twin.systems.tank import TankFuel, TankGeom
+
 
 class Tank(System):
     """A simple model of a fuel tank.
@@ -15,33 +17,19 @@ class Tank(System):
     ------
     w_out [kg/s]: float,
         mass flow of fuel exiting the tank
-    weight [kg]: float,
-        weight
-    cg [m]: float,
-        center of gravity
+    weight_prop [kg]: float,
+        fuel weight
+    weight_max [kg]: float,
+        maximum fuel capacity
+    shape: TopoDS_Solid,
+        pyoccad model of the structure and fuel
+    props: GProp_GProps,
+        model properties
     """
 
     def setup(self):
 
-        # Geometry
-        self.add_inward("weight_s", 1.0, desc="Structure weight", unit="kg")
-        self.add_inward("weight_max", 5.0, desc="Maximum fuel capacity", unit="kg")
+        self.add_child(TankFuel("fuel"), pulling=["w_out", "w_in", "w_command", "weight_prop"])
+        self.add_child(TankGeom("geom"), pulling=["shape", "props", "weight_max"])
 
-        # Inputs
-        self.add_inward("w_in", 0.0, desc="Fuel income rate", unit="kg/s")
-
-        # Flux control
-        self.add_inward("w_out_max", 0.0, desc="Fuel output rate", unit="kg/s")
-        self.add_inward("w_command", 1.0, desc="Fuel output control variable", unit="")
-
-        # Outputs
-        self.add_outward("weight", 1.0, desc="Weight", unit="kg")
-        self.add_outward("cg", 1.0, desc="Center of gravity", unit="m")
-        self.add_outward("w_out", 0.0, desc="Fuel output rate", unit="kg/s")
-
-        # Transient
-        self.add_transient("weight_p", der="w_in - w_out", desc="Propellant weight")
-
-    def compute(self):
-        self.w_out = self.w_out_max * self.w_command
-        self.weight = self.weight_s + self.weight_p
+        self.connect(self.fuel.outwards, self.geom.inwards, ["weight_prop"])
