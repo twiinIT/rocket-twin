@@ -6,7 +6,7 @@ from rocket_twin.systems import Engine
 
 class TestEngine:
     def test_run_once(self):
-        sys = Engine('sys')
+        sys = Engine("sys")
 
         sys.run_once()
 

@@ -16,7 +16,7 @@ class WingsGeom(System):
 
     Outputs
     ------
-    shape: TopoDS_Solid,
+    shape: TopoDS_Compound,
         pyoccad model
     props: GProp_GProps,
         model properties

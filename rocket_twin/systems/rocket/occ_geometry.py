@@ -1,7 +1,7 @@
 import numpy as np
 from cosapp.base import System
 from OCC.Core.GProp import GProp_GProps
-from OCC.Core.TopoDS import TopoDS_Solid, TopoDS_Compound
+from OCC.Core.TopoDS import TopoDS_Compound, TopoDS_Solid
 
 # from OCC.Display.SimpleGui import init_display
 
@@ -11,7 +11,7 @@ class OCCGeometry(System):
 
     Inputs
     ------
-    shapes: TopoDS_Solid,
+    shapes: TopoDS_Solid, TopoDS_Compound
         pyoccad models of each component of the system
     props: GProp_GProps,
         properties of each model
@@ -37,7 +37,12 @@ class OCCGeometry(System):
         self.add_property("properties", properties)
 
         for shape in shapes:
-            self.add_inward(shape, TopoDS_Solid(), dtype=(TopoDS_Solid, TopoDS_Compound), desc=f"shape of {shape}")
+            self.add_inward(
+                shape,
+                TopoDS_Solid(),
+                dtype=(TopoDS_Solid, TopoDS_Compound),
+                desc=f"shape of {shape}",
+            )
         for props in properties:
             self.add_inward(props, GProp_GProps(), desc=f"Properties of the {props}")
 

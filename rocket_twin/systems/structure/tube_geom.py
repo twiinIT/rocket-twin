@@ -33,7 +33,7 @@ class TubeGeom(System):
         self.add_inward("pos", 1.0, desc="lowest point z coordinate", unit="m")
 
         # Outputs
-        self.add_outward("shape", CreateSphere.from_radius_and_center(1.), desc="pyoccad model")
+        self.add_outward("shape", CreateSphere.from_radius_and_center(1.0), desc="pyoccad model")
         self.add_outward("props", GProp_GProps(), desc="model properties")
 
     def compute(self):

@@ -8,8 +8,8 @@ class TestWings:
     """Tests for the wings model."""
 
     def test_run_once(self):
-        sys = WingsGeom('sys')
-        
+        sys = WingsGeom("sys")
+
         sys.run_once()
 
     def test_geometry(self):

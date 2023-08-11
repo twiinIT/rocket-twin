@@ -8,7 +8,7 @@ class TestTank:
     """Tests for the tank model."""
 
     def test_run_once(self):
-        sys = Tank('sys')
+        sys = Tank("sys")
 
         sys.run_once()
 
