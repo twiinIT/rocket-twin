@@ -21,27 +21,30 @@ class TestControllerFMU:
             ControllerFMU("controller", model_path=model_path, model_name=model_name),
         )
         swap_system(
-            sys.rocket.controller,
+            sys.rocket.stage_1.controller,
             ControllerFMU("controller", model_path=model_path_r, model_name=model_name_r),
         )
 
         sys.connect(sys.rocket.outwards, sys.controller.inwards, ["weight_max", "weight_prop"])
-        sys.rocket.connect(
-            sys.rocket.tank.outwards, sys.rocket.controller.inwards, ["weight_max", "weight_prop"]
+        sys.rocket.stage_1.connect(
+            sys.rocket.stage_1.tank.outwards,
+            sys.rocket.stage_1.controller.inwards,
+            ["weight_max", "weight_prop"],
         )
 
         driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 18], dt=0.1))
         solver = driver.add_child(NonLinearSolver("solver"))
-        init = {"g_tank.fuel.weight_p": 10.0, "rocket.tank.fuel.weight_p": 0.0}
+        init = {"g_tank.fuel.weight_p": 10.0, "rocket.stage_1.tank.fuel.weight_p": 0.0}
         values = {
             "g_tank.fuel.w_out_max": 1.0,
-            "rocket.tank.fuel.w_out_max": 0.5,
+            "rocket.stage_1.tank.fuel.w_out_max": 0.5,
             "controller.time_int": 3.0,
-            "rocket.controller.time_int": 3.0,
+            "rocket.stage_1.controller.time_int": 3.0,
         }
         driver.set_scenario(init=init, values=values)
         driver.add_recorder(
-            DataFrameRecorder(includes=["controller.weight_max", "rocket.weight_max"]), period=1.0
+            DataFrameRecorder(includes=["controller.weight_max", "rocket.stage_1.weight_max"]),
+            period=1.0,
         )
         sys.run_drivers()
         data = driver.recorder.export_data()
@@ -50,4 +53,4 @@ class TestControllerFMU:
 
         np.testing.assert_allclose(sys.rocket.a, 2.5, atol=10 ** (0))
         np.testing.assert_allclose(sys.g_tank.weight_prop, 5.0, atol=10 ** (0))
-        np.testing.assert_allclose(sys.rocket.tank.weight_prop, 0.0, atol=10 ** (0))
+        np.testing.assert_allclose(sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (0))

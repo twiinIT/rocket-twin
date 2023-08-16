@@ -13,11 +13,11 @@ class Station(System):
     ------
     """
 
-    def setup(self):
+    def setup(self, n_stages=1):
         self.add_child(ControllerCoSApp("controller"))
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
-        self.add_child(Rocket("rocket"))
+        self.add_child(Rocket("rocket", n_stages=n_stages))
 
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
         self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": "w_in"})
