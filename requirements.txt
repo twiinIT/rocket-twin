@@ -5,4 +5,5 @@ flake8
 isort
 black
 pre-commit
+fmpy==0.3.15
 cosapp_fmu @ git+ssh://git@github.com/twiinIT/cosapp-fmu.git@master
