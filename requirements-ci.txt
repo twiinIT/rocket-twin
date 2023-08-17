@@ -1,4 +1,5 @@
 cosapp==0.15.0
+fmpy==0.3.15
 ipython
 matplotlib==3.6.3
 numpy
