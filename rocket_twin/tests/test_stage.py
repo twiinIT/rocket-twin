@@ -1,8 +1,9 @@
 import numpy as np
+
 from rocket_twin.systems import Rocket
 
-class TestStage:
 
+class TestStage:
     def test_run_once(self):
         sys = Rocket("sys")
 
