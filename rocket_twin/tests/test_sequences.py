@@ -71,13 +71,18 @@ class TestSequences:
 
         run_sequences(self.sys, seq)
 
+        data = self.sys.drivers["rk"].recorder.export_data()
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
+
+        acel = np.asarray(data["rocket.a"])
+
         np.testing.assert_allclose(
             self.sys.g_tank.weight_prop,
             self.sys.g_tank.weight_max - self.sys.rocket.stage_1.tank.weight_max,
             atol=10 ** (-6),
         )
         np.testing.assert_allclose(self.sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(self.sys.rocket.a, 2.5, atol=10 ** (-6))
+        np.testing.assert_allclose(acel[-2], 2.5, atol=10 ** (-6))
 
     def test_all(self):
 
@@ -112,10 +117,15 @@ class TestSequences:
 
         run_sequences(sys2, seq)
 
+        data = sys2.drivers["rk"].recorder.export_data()
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
+
+        acel = np.asarray(data["rocket.a"])
+
         np.testing.assert_allclose(
             sys2.g_tank.weight_prop,
             sys2.g_tank.weight_max - sys2.rocket.stage_1.tank.weight_max,
             atol=10 ** (-6),
         )
         np.testing.assert_allclose(sys2.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(sys2.rocket.a, 2.5, atol=10 ** (-6))
+        np.testing.assert_allclose(acel[-2], 2.5, atol=10 ** (-6))

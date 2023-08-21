@@ -30,12 +30,15 @@ class Rocket(System):
 
             self.add_child(
                 Stage(f"stage_{i}", nose=nose, wings=wings),
-                pulling={"w_in" : f'w_in_{i}', "weight_max" : f'weight_max_{i}', "weight_prop" : f"weight_prop_{i}"},
+                pulling={
+                    "w_in": f"w_in_{i}",
+                    "weight_max": f"weight_max_{i}",
+                    "weight_prop": f"weight_prop_{i}",
+                },
             )
             shapes[i - 1] = f"stage_{i}_s"
             properties[i - 1] = f"stage_{i}"
             forces[i - 1] = f"thrust_{i}"
-            
 
         self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
         self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])

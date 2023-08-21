@@ -32,10 +32,11 @@ class TestVerticalFlyingRocket:
 
         sys.run_drivers()
 
-        # data = sys.drivers["vfr"].data
-        # data = data.drop(["Section", "Status", "Error code"], axis=1)
-        # print(data)
+        data = sys.drivers["vfr"].data
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
 
-        np.testing.assert_allclose(sys.rocket.a, 65.0, atol=10 ** (-10))
+        acel = np.asarray(data["rocket.a"])
+
+        np.testing.assert_allclose(acel[-2], 65.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_prop, 0.0, atol=10 ** (-10))

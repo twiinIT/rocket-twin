@@ -13,7 +13,7 @@ def run_sequences(sys, sequences):
         the commands to be applied
     """
     rk = sys.add_driver(RungeKutta("rk"))
-    rk.add_recorder(DataFrameRecorder(includes=[], hold=True))
+    rk.add_recorder(DataFrameRecorder(includes=["rocket.a"], hold=True))
 
     for seq in sequences:
         print("sequence ", seq["name"])

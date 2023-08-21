@@ -16,8 +16,8 @@ class Station(System):
 
     def setup(self, n_stages=1):
 
-        self.add_inward('n_stages', n_stages, desc="Number of stages")
-        self.add_outward_modevar('stage', 1, desc="Current stage")
+        self.add_inward("n_stages", n_stages, desc="Number of stages")
+        self.add_outward_modevar("stage", 1, desc="Current stage")
 
         self.add_child(ControllerCoSApp("controller"))
         self.add_child(Tank("g_tank"))
@@ -40,31 +40,34 @@ class Station(System):
             if self.stage < self.n_stages:
                 self.stage += 1
 
-                self.pop_child('pipe')
-                self.add_child(Pipe('pipe'), execution_index=2)
-                #self.exec_order = ["controller", "g_tank", "pipe", "rocket"]
+                self.pop_child("pipe")
+                self.add_child(Pipe("pipe"), execution_index=2)
 
                 self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
-                self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": f"w_in_{self.stage}"})
+                self.connect(
+                    self.pipe.outwards, self.rocket.inwards, {"w_out": f"w_in_{self.stage}"}
+                )
 
-                self.rocket[f'w_in_{self.stage - 1}'] = 0.
-                self.stage_full.trigger = f"rocket.weight_prop_{self.stage} == rocket.weight_max_{self.stage}"
+                self.rocket[f"w_in_{self.stage - 1}"] = 0.0
+                self.stage_full.trigger = (
+                    f"rocket.weight_prop_{self.stage} == rocket.weight_max_{self.stage}"
+                )
             else:
-                self.controller.w_temp = 0.
-                self.rocket[f'w_in_{self.stage}'] = 0.
+                self.controller.w_temp = 0.0
+                self.rocket[f"w_in_{self.stage}"] = 0.0
                 self.stage = 1
 
         if self.stage_empty.present:
             if self.stage < self.n_stages:
                 stage = self.rocket.pop_child(f"stage_{self.stage}")
                 self.rocket.add_child(stage, execution_index=self.stage - 1)
-                self.rocket[f'stage_{self.stage}'].controller.w_temp = 0.
-                self.rocket.geom[f'stage_{self.stage}'] = GProp_GProps()
+                self.rocket[f"stage_{self.stage}"].controller.w_temp = 0.0
+                self.rocket.geom[f"stage_{self.stage}"] = GProp_GProps()
+                self.rocket.dyn[f"thrust_{self.stage}"] = 0.0
 
                 self.stage += 1
                 self.stage_empty.trigger = f"rocket.weight_prop_{self.stage} == 0."
                 self.rocket.Takeoff.trigger = "dyn.a == -10000000"
-                self.rocket[f'stage_{self.stage}'].controller.w_temp = 1.
+                self.rocket[f"stage_{self.stage}"].controller.w_temp = 1.0
             else:
-                self.rocket[f'stage_{self.stage}'].controller.w_temp = 0.
-
+                self.rocket[f"stage_{self.stage}"].controller.w_temp = 0.0

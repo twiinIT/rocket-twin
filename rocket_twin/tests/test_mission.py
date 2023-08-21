@@ -22,7 +22,7 @@ class TestMission:
 
         stop = "rocket.stage_1.tank.weight_prop <= 0."
 
-        includes = ["rocket.stage_1.force"]
+        includes = ["rocket.a"]
 
         sys.add_driver(
             Mission("mission", owner=sys, init=init, stop=stop, includes=includes, dt=dt)
@@ -30,10 +30,11 @@ class TestMission:
 
         sys.run_drivers()
 
-        # data = sys.drivers["mission"].data
-        # data = data.drop(["Section", "Status", "Error code"], axis=1)
-        # print(data)
+        data = sys.drivers["mission"].data
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
 
-        np.testing.assert_allclose(sys.rocket.a, 65.0, atol=10 ** (-10))
+        acel = np.asarray(data["rocket.a"])
+
+        np.testing.assert_allclose(acel[-2], 65.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_prop, 5.0, atol=10 ** (-10))
