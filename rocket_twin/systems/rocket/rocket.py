@@ -12,6 +12,15 @@ class Rocket(System):
     flying: boolean,
         whether the rocket is already flying or still on ground
 
+    Values
+    ------
+    shapes: list[TopoDS_Shape],
+        pyoccad visual representation of each component
+    properties: list[GProp_Gprops],
+        volume properties of each component's pyoccad model
+    forces [N]: list [float],
+        total force in each stage
+
     Outputs
     ------
     """
