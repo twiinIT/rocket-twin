@@ -23,7 +23,7 @@ class TestSequences:
         np.testing.assert_allclose(
             self.sys.g_tank.weight_prop, self.sys.g_tank.weight_max, atol=10 ** (-6)
         )
-        np.testing.assert_allclose(self.sys.rocket.tank.weight_prop, 0.0, atol=10 ** (-6))
+        np.testing.assert_allclose(self.sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
         np.testing.assert_allclose(self.sys.rocket.a, 0.0, atol=10 ** (-6))
 
     def test_fuel(self):
@@ -34,7 +34,7 @@ class TestSequences:
                 "type": "transient",
                 "init": {"g_tank.fuel.w_out_max": 1.0, "controller.w_temp": 1.0},
                 "dt": 0.1,
-                "stop": "rocket.tank.weight_prop == rocket.tank.weight_max",
+                "stop": "rocket.stage_1.tank.weight_prop == rocket.stage_1.tank.weight_max",
             }
         ]
 
@@ -42,11 +42,13 @@ class TestSequences:
 
         np.testing.assert_allclose(
             self.sys.g_tank.weight_prop,
-            self.sys.g_tank.weight_max - self.sys.rocket.tank.weight_max,
+            self.sys.g_tank.weight_max - self.sys.rocket.stage_1.tank.weight_max,
             atol=10 ** (-6),
         )
         np.testing.assert_allclose(
-            self.sys.rocket.tank.weight_prop, self.sys.rocket.tank.weight_max, atol=10 ** (-6)
+            self.sys.rocket.stage_1.tank.weight_prop,
+            self.sys.rocket.stage_1.tank.weight_max,
+            atol=10 ** (-6),
         )
         np.testing.assert_allclose(self.sys.rocket.a, 0.0, atol=10 ** (-6))
 
@@ -58,24 +60,29 @@ class TestSequences:
                 "type": "transient",
                 "init": {
                     "rocket.flying": True,
-                    "rocket.tank.fuel.w_out_max": 0.5,
+                    "rocket.stage_1.tank.fuel.w_out_max": 0.5,
                     "controller.w_temp": 0.0,
-                    "rocket.controller.w_temp": 1.0,
+                    "rocket.stage_1.controller.w_temp": 1.0,
                 },
                 "dt": 0.1,
-                "stop": "rocket.tank.weight_prop == 0",
+                "stop": "rocket.stage_1.tank.weight_prop == 0",
             }
         ]
 
         run_sequences(self.sys, seq)
 
+        data = self.sys.drivers["rk"].recorder.export_data()
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
+
+        acel = np.asarray(data["rocket.a"])
+
         np.testing.assert_allclose(
             self.sys.g_tank.weight_prop,
-            self.sys.g_tank.weight_max - self.sys.rocket.tank.weight_max,
+            self.sys.g_tank.weight_max - self.sys.rocket.stage_1.tank.weight_max,
             atol=10 ** (-6),
         )
-        np.testing.assert_allclose(self.sys.rocket.tank.weight_prop, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(self.sys.rocket.a, 2.5, atol=10 ** (-6))
+        np.testing.assert_allclose(self.sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
+        np.testing.assert_allclose(acel[-2], 2.5, atol=10 ** (-6))
 
     def test_all(self):
 
@@ -92,28 +99,33 @@ class TestSequences:
                 "type": "transient",
                 "init": {"g_tank.fuel.w_out_max": 1.0, "controller.w_temp": 1.0},
                 "dt": 0.1,
-                "stop": "rocket.tank.weight_prop == rocket.tank.weight_max",
+                "stop": "rocket.stage_1.tank.weight_prop == rocket.stage_1.tank.weight_max",
             },
             {
                 "name": "flight",
                 "type": "transient",
                 "init": {
                     "rocket.flying": True,
-                    "rocket.tank.fuel.w_out_max": 0.5,
+                    "rocket.stage_1.tank.fuel.w_out_max": 0.5,
                     "controller.w_temp": 0.0,
-                    "rocket.controller.w_temp": 1.0,
+                    "rocket.stage_1.controller.w_temp": 1.0,
                 },
                 "dt": 0.1,
-                "stop": "rocket.tank.weight_prop == 0",
+                "stop": "rocket.stage_1.tank.weight_prop == 0",
             },
         ]
 
         run_sequences(sys2, seq)
 
+        data = sys2.drivers["rk"].recorder.export_data()
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
+
+        acel = np.asarray(data["rocket.a"])
+
         np.testing.assert_allclose(
             sys2.g_tank.weight_prop,
-            sys2.g_tank.weight_max - sys2.rocket.tank.weight_max,
+            sys2.g_tank.weight_max - sys2.rocket.stage_1.tank.weight_max,
             atol=10 ** (-6),
         )
-        np.testing.assert_allclose(sys2.rocket.tank.weight_prop, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(sys2.rocket.a, 2.5, atol=10 ** (-6))
+        np.testing.assert_allclose(sys2.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
+        np.testing.assert_allclose(acel[-2], 2.5, atol=10 ** (-6))

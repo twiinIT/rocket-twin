@@ -9,22 +9,22 @@ class TestVerticalFlyingRocket:
 
     def test_run_once(self):
         sys = Station("sys")
-        sys.rocket.tank.fuel.weight_p = 5.0
+        sys.rocket.stage_1.tank.fuel.weight_p = 5.0
         dt = 0.1
 
         init = {
             "rocket.flying": True,
             "controller.w_temp": 0.0,
-            "rocket.controller.w_temp": 1.0,
-            "rocket.tank.fuel.weight_p": 5.0,
-            "rocket.tank.fuel.w_out_max": 3.0,
+            "rocket.stage_1.controller.w_temp": 1.0,
+            "rocket.stage_1.tank.fuel.weight_p": 5.0,
+            "rocket.stage_1.tank.fuel.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
             "g_tank.fuel.weight_p": 0.0,
         }
 
-        stop = "rocket.tank.weight_prop <= 0."
+        stop = "rocket.stage_1.tank.weight_prop <= 0."
 
-        includes = ["rocket.a", "g_tank.weight", "rocket.tank.weight_prop"]
+        includes = ["rocket.a", "g_tank.weight", "rocket.stage_1.tank.weight_prop"]
 
         sys.add_driver(
             VerticalFlyingRocket("vfr", owner=sys, init=init, stop=stop, includes=includes, dt=dt)
@@ -32,10 +32,11 @@ class TestVerticalFlyingRocket:
 
         sys.run_drivers()
 
-        # data = sys.drivers["vfr"].data
-        # data = data.drop(["Section", "Status", "Error code"], axis=1)
-        # print(data)
+        data = sys.drivers["vfr"].data
+        data = data.drop(["Section", "Status", "Error code"], axis=1)
 
-        np.testing.assert_allclose(sys.rocket.a, 65.0, atol=10 ** (-10))
-        np.testing.assert_allclose(sys.rocket.tank.weight_prop, 0.0, atol=10 ** (-10))
+        acel = np.asarray(data["rocket.a"])
+
+        np.testing.assert_allclose(acel[-2], 65.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_prop, 0.0, atol=10 ** (-10))

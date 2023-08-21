@@ -1,15 +1,7 @@
 from cosapp.base import System
 
-from rocket_twin.systems import (
-    ControllerCoSApp,
-    Dynamics,
-    Engine,
-    NoseGeom,
-    Tank,
-    TubeGeom,
-    WingsGeom,
-)
-from rocket_twin.systems.rocket import OCCGeometry
+from rocket_twin.systems import Dynamics
+from rocket_twin.systems.rocket import OCCGeometry, Stage
 
 
 class Rocket(System):
@@ -20,49 +12,49 @@ class Rocket(System):
     flying: boolean,
         whether the rocket is already flying or still on ground
 
+    Values
+    ------
+    shapes: list[TopoDS_Shape],
+        pyoccad visual representation of each component
+    properties: list[GProp_Gprops],
+        volume properties of each component's pyoccad model
+    forces [N]: list [float],
+        total force in each stage
+
     Outputs
     ------
     """
 
-    def setup(self):
-        self.add_child(ControllerCoSApp("controller"))
-        self.add_child(Tank("tank"), pulling=["w_in", "weight_max", "weight_prop"])
-        self.add_child(Engine("engine"))
-        self.add_child(NoseGeom("nose"))
-        self.add_child(TubeGeom("tube"))
-        self.add_child(WingsGeom("wings"))
-        self.add_child(
-            OCCGeometry(
-                "geom",
-                shapes=["tank_s", "engine_s", "nose_s", "tube_s", "wings_s"],
-                properties=["tank", "engine", "nose", "tube", "wings"],
+    def setup(self, n_stages=1):
+
+        shapes, properties, forces = ([None] * n_stages for i in range(3))
+
+        for i in range(1, n_stages + 1):
+            nose = False
+            wings = False
+            if i == 1:
+                wings = True
+            if i == n_stages:
+                nose = True
+
+            self.add_child(
+                Stage(f"stage_{i}", nose=nose, wings=wings),
+                pulling={
+                    "w_in": f"w_in_{i}",
+                    "weight_max": f"weight_max_{i}",
+                    "weight_prop": f"weight_prop_{i}",
+                },
             )
-        )
-        self.add_child(
-            Dynamics(
-                "dyn",
-                forces=["thrust"],
-                weights=["weight_rocket"],
-            ),
-            pulling=["a"],
-        )
+            shapes[i - 1] = f"stage_{i}_s"
+            properties[i - 1] = f"stage_{i}"
+            forces[i - 1] = f"thrust_{i}"
 
-        self.connect(self.controller.outwards, self.tank.inwards, {"w": "w_command"})
-        self.connect(self.tank.outwards, self.engine.inwards, {"w_out": "w_out"})
+        self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
+        self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])
 
-        self.connect(self.tank.outwards, self.geom.inwards, {"shape": "tank_s", "props": "tank"})
-        self.connect(
-            self.engine.outwards, self.geom.inwards, {"shape": "engine_s", "props": "engine"}
-        )
-        self.connect(self.nose.outwards, self.geom.inwards, {"shape": "nose_s", "props": "nose"})
-        self.connect(self.tube.outwards, self.geom.inwards, {"shape": "tube_s", "props": "tube"})
-        self.connect(self.wings.outwards, self.geom.inwards, {"shape": "wings_s", "props": "wings"})
-
-        self.connect(
-            self.engine.outwards,
-            self.dyn.inwards,
-            {"force": "thrust"},
-        )
+        for i in range(1, n_stages + 1):
+            self.connect(self[f"stage_{i}"].outwards, self.geom.inwards, {"props": f"stage_{i}"})
+            self.connect(self[f"stage_{i}"].outwards, self.dyn.inwards, {"thrust": f"thrust_{i}"})
 
         self.connect(self.geom.outwards, self.dyn.inwards, {"weight": "weight_rocket"})
 
@@ -70,8 +62,7 @@ class Rocket(System):
             "flying", False, desc="Whether the rocket is flying or not", unit=""
         )
 
-        self.add_event("Takeoff", trigger="engine.force > 0")
-        # self.add_event("view", trigger="t == 0.2")
+        self.add_event("Takeoff", trigger="stage_1.engine.force > 0")
 
     def compute(self):
         self.a *= self.flying
@@ -80,5 +71,3 @@ class Rocket(System):
 
         if self.Takeoff.present:
             self.flying = True
-        # if self.view.present:
-        # self.geom.view()

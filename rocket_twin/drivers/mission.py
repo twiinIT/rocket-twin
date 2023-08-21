@@ -45,12 +45,12 @@ class Mission(Driver):
         init_flight = {
             "rocket.flying": True,
             "controller.w_temp": 0.0,
-            "rocket.controller.w_temp": 1.0,
-            "rocket.tank.fuel.w_out_max": 3.0,
+            "rocket.stage_1.controller.w_temp": 1.0,
+            "rocket.stage_1.tank.fuel.w_out_max": 3.0,
             "g_tank.w_in": 0.0,
         }
 
-        stop_fuel = "rocket.tank.weight_prop >= rocket.tank.weight_max"
+        stop_fuel = "rocket.stage_1.tank.weight_prop >= rocket.stage_1.tank.weight_max"
         stop_flight = stop
 
         # Fueling
