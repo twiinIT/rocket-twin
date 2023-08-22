@@ -1,4 +1,4 @@
-from rocket_twin.systems.control import ControllerCoSApp, ControllerFMU
+from rocket_twin.systems.control import ControllerCoSApp, RocketControllerCoSApp, ControllerFMU
 from rocket_twin.systems.engine import Engine, EngineGeom, EnginePerfo
 from rocket_twin.systems.ground import Ground
 from rocket_twin.systems.physics import Dynamics
@@ -22,6 +22,7 @@ __all__ = [
     "Station",
     "Ground",
     "ControllerCoSApp",
+    "RocketControllerCoSApp",
     "ControllerFMU",
     "NoseGeom",
     "TubeGeom",

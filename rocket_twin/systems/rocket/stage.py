@@ -25,7 +25,7 @@ class Stage(System):
         shapes = ["tank_s", "engine_s", "tube_s"]
         properties = ["tank", "engine", "tube"]
 
-        self.add_child(ControllerCoSApp("controller"))
+        self.add_child(ControllerCoSApp("controller"), pulling=['is_on'])
         self.add_child(Tank("tank"), pulling=["w_in", "weight_max", "weight_prop"])
         self.add_child(Engine("engine"), pulling={"force": "thrust"})
         self.add_child(TubeGeom("tube"))

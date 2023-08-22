@@ -15,10 +15,10 @@ class ControllerCoSApp(System):
 
     def setup(self):
 
-        self.add_inward("w_temp", 0.0, desc="Ratio of command fuel flow to maximum flow", unit="")
+        self.add_inward_modevar("is_on", 0, desc="Whether the fuel flow is allowed or not")
 
-        self.add_outward("w", 0.0, desc="Ratio of command fuel flow to maximum flow", unit="")
+        self.add_outward("w", 1., desc="Ratio of command fuel flow to maximum flow", unit="")
 
     def compute(self):
 
-        self.w = self.w_temp
+        self.w = self.is_on

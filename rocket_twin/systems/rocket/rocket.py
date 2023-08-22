@@ -1,7 +1,8 @@
 from cosapp.base import System
 
-from rocket_twin.systems import Dynamics
+from rocket_twin.systems import Dynamics, RocketControllerCoSApp
 from rocket_twin.systems.rocket import OCCGeometry, Stage
+from OCC.Core.GProp import GProp_GProps
 
 
 class Rocket(System):
@@ -29,6 +30,9 @@ class Rocket(System):
 
         shapes, properties, forces = ([None] * n_stages for i in range(3))
 
+        self.add_inward("n_stages", n_stages, desc="Number of stages")
+        self.add_outward_modevar("stage", 1, desc="Current stage")
+
         for i in range(1, n_stages + 1):
             nose = False
             wings = False
@@ -49,25 +53,28 @@ class Rocket(System):
             properties[i - 1] = f"stage_{i}"
             forces[i - 1] = f"thrust_{i}"
 
+        self.add_child(RocketControllerCoSApp("controller", n_stages=n_stages), execution_index=0, pulling=['fueling', 'flying'])
         self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
         self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])
 
         for i in range(1, n_stages + 1):
+            self.connect(self.controller.modevars_out, self[f"stage_{i}"].modevars_in, {f"is_on_{i}" : "is_on"})
+            self.connect(self[f"stage_{i}"].outwards, self.controller.inwards, {"weight_prop" : f"weight_prop_{i}", "weight_max" : f"weight_max_{i}"})
             self.connect(self[f"stage_{i}"].outwards, self.geom.inwards, {"props": f"stage_{i}"})
             self.connect(self[f"stage_{i}"].outwards, self.dyn.inwards, {"thrust": f"thrust_{i}"})
 
         self.connect(self.geom.outwards, self.dyn.inwards, {"weight": "weight_rocket"})
-
-        self.add_inward_modevar(
-            "flying", False, desc="Whether the rocket is flying or not", unit=""
-        )
-
-        self.add_event("Takeoff", trigger="stage_1.engine.force > 0")
 
     def compute(self):
         self.a *= self.flying
 
     def transition(self):
 
-        if self.Takeoff.present:
-            self.flying = True
+        if self.controller.drop.present:
+            if self.stage < self.n_stages:
+                stage = self.pop_child(f"stage_{self.stage}")
+                self.add_child(stage, execution_index=self.stage - 1)
+                self.geom[f"stage_{self.stage}"] = GProp_GProps()
+                self.dyn[f"thrust_{self.stage}"] = 0.0
+                self.stage += 1
+
