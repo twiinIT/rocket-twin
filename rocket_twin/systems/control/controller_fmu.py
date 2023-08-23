@@ -14,14 +14,14 @@ class ControllerFMU(System):
     ------
     model_path: string,
         the path to the .mo file, if any
-    model_name: string
+    model_name: string,
         the .fmu file name
+    is_on: float,
+        whether the system is active or not
 
     Outputs
     ------
-    'wr': float,
-        command flow
-    'wg' float,
+    'w': float,
         command flow
     """
 

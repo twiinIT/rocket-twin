@@ -6,10 +6,12 @@ class ControllerCoSApp(System):
 
     Inputs
     ------
+    is_on: float,
+        whether the system is active or not
 
     Outputs
     ------
-    'w' float,
+    'w': float,
         command flow
     """
 

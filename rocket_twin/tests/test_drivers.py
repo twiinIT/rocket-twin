@@ -36,7 +36,7 @@ class TestDrivers:
         np.testing.assert_allclose(acel[-2], 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(self.sys.rocket.stage_1.tank.weight_prop, 5.0, atol=10 ** (-10))
         np.testing.assert_allclose(self.sys.g_tank.weight_prop, 5.0, atol=10 ** (-10))
-        np.testing.assert_allclose(self.sys.rocket.controller.flying, 1., atol=0.1)
+        np.testing.assert_allclose(self.sys.rocket.controller.flying, 1.0, atol=0.1)
 
     def test_flight(self):
 
@@ -55,7 +55,9 @@ class TestDrivers:
         includes = ["rocket.a", "g_tank.weight", "rocket.stage_1.tank.weight_prop"]
 
         self.sys.add_driver(
-            VerticalFlyingRocket("vfr", owner=self.sys, init=init, stop=stop, includes=includes, dt=dt)
+            VerticalFlyingRocket(
+                "vfr", owner=self.sys, init=init, stop=stop, includes=includes, dt=dt
+            )
         )
 
         self.sys.run_drivers()

@@ -2,6 +2,31 @@ from cosapp.base import System
 
 
 class RocketControllerCoSApp(System):
+    """System which allows rocket command through CoSApp sequences.
+
+    Inputs
+    ------
+    model_path: string,
+        the path to the .mo file, if any
+    model_name: string,
+        the .fmu file name
+    n_stages: int,
+        rocket's number of stages
+    weight_prop_i: float,
+        i-th stage fuel weight
+    weight_max_i: float,
+        i-th stage maximum fuel weight
+
+    Outputs
+    ------
+    is_on_i: float,
+        whether the i-th stage controller is active or not
+    fueling: float,
+        whether the rocket is in the fueling phase or not
+    flying: float,
+        whether the rocket is mid-flight or not
+    """
+
     def setup(self, n_stages):
 
         self.add_inward("n_stages", n_stages, desc="number of stages")
