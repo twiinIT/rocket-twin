@@ -58,7 +58,7 @@ class Rocket(System):
         self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])
 
         for i in range(1, n_stages + 1):
-            self.connect(self.controller.modevars_out, self[f"stage_{i}"].modevars_in, {f"is_on_{i}" : "is_on"})
+            self.connect(self.controller.outwards, self[f"stage_{i}"].inwards, {f"is_on_{i}" : "is_on"})
             self.connect(self[f"stage_{i}"].outwards, self.controller.inwards, {"weight_prop" : f"weight_prop_{i}", "weight_max" : f"weight_max_{i}"})
             self.connect(self[f"stage_{i}"].outwards, self.geom.inwards, {"props": f"stage_{i}"})
             self.connect(self[f"stage_{i}"].outwards, self.dyn.inwards, {"thrust": f"thrust_{i}"})

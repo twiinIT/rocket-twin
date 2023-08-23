@@ -27,36 +27,11 @@ class ControllerFMU(System):
 
     def setup(self, model_path, model_name):
 
-        self.add_inward("time_var", 0.0, desc="System time", unit="")
-        self.add_inward("time_int", 0.0, desc="Interval between fueling end and launch", unit="")
-        self.add_inward("time_lnc", 100000.0, desc="Launch time", unit="")
-        self.add_transient("x", der="1")
-
-        pulling = {
-            "w": "w",
-            "weight": "weight_prop",
-            "weight_max": "weight_max",
-            "tl": "time_lnc",
-            "ti": "time_var",
-        }
-
         fmu_path = self.create_fmu(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling=pulling,
+            pulling=["w", "is_on"],
         )
-
-        self.add_event("full_tank", trigger="weight_prop > 0.9999*weight_max")
-
-    def compute(self):
-
-        self.time_var = self.time
-
-    def transition(self):
-
-        if self.full_tank.present:
-
-            self.time_lnc = self.time_var + self.time_int
 
     def create_fmu(self, model_path, model_name):
         """Create an fmu file in the control folder from an mo file.

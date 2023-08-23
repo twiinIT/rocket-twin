@@ -1,18 +1,8 @@
 model controller
-  input Real ti;
-  input Real weight;
-  parameter Real weight_max;
-  parameter Real tl;
+  input Real is_on;
   output Real w;
-  output Boolean engine_on;
 equation
-  if (ti < tl) then
-    engine_on = false;
-  else
-    engine_on = true;
-  end if;
-
-  if (weight < weight_max and engine_on == false) then
+  if (is_on > 0.5) then
     w = 1.;
   else
     w = 0.;
