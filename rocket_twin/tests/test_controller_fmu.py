@@ -64,7 +64,7 @@ class TestControllerFMU:
 
         print(data1)
         print(data2)
-        acel = np.asarray(data['rocket.a'])
+        acel = np.asarray(data["rocket.a"])
 
         np.testing.assert_allclose(sys.rocket.geom.weight, 4.0, atol=10 ** (0))
         np.testing.assert_allclose(acel[-2], 40.0, rtol=0.1)
