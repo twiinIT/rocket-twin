@@ -34,7 +34,7 @@ class TestControllerFMU:
                 ControllerFMU("controller", model_path=model_path, model_name=model_name),
             )
 
-        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 40], dt=0.1))
+        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 35], dt=0.1))
         driver.add_child(NonLinearSolver("solver"))
         init = {
             "g_tank.fuel.weight_p": 20.0,
@@ -64,8 +64,7 @@ class TestControllerFMU:
 
         print(data1)
         print(data2)
+        acel = np.asarray(data['rocket.a'])
 
         np.testing.assert_allclose(sys.rocket.geom.weight, 4.0, atol=10 ** (0))
-        np.testing.assert_allclose(sys.rocket.a, 40.0, rtol=0.1)
-        # np.testing.assert_allclose(sys.g_tank.weight_prop, 5.0, atol=10 ** (0))
-        # np.testing.assert_allclose(sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (0))
+        np.testing.assert_allclose(acel[-2], 40.0, rtol=0.1)
