@@ -1,5 +1,5 @@
 import numpy as np
-from cosapp.drivers import RungeKutta, NonLinearSolver
+from cosapp.drivers import NonLinearSolver, RungeKutta
 from cosapp.recorders import DataFrameRecorder
 
 from rocket_twin.systems import Rocket, Station
@@ -29,7 +29,7 @@ class TestStage:
         ]
 
         driver = self.sys.add_driver(RungeKutta("rk", order=4, dt=1))
-        solver = driver.add_child(NonLinearSolver('solver'))
+        solver = driver.add_child(NonLinearSolver("solver"))
         driver.time_interval = (0, 20)
         driver.set_scenario(init=init)
         driver.add_recorder(DataFrameRecorder(includes=includes), period=1.0)
@@ -37,8 +37,14 @@ class TestStage:
         self.sys.run_drivers()
 
         data = driver.recorder.export_data()
-        data1 = data.drop(["Section", "Status", "Error code", "rocket.weight_prop_2", "rocket.weight_prop_3"], axis=1)
-        data2 = data.drop(["Section", "Status", "Error code", "g_tank.weight_prop", "rocket.weight_prop_1"], axis=1)
+        data1 = data.drop(
+            ["Section", "Status", "Error code", "rocket.weight_prop_2", "rocket.weight_prop_3"],
+            axis=1,
+        )
+        data2 = data.drop(
+            ["Section", "Status", "Error code", "g_tank.weight_prop", "rocket.weight_prop_1"],
+            axis=1,
+        )
 
         print(data1)
         print(data2)
@@ -66,7 +72,7 @@ class TestStage:
         ]
 
         driver = self.sys.add_driver(RungeKutta("rk", order=4, dt=1))
-        solver = driver.add_child(NonLinearSolver('solver'))
+        solver = driver.add_child(NonLinearSolver("solver"))
         driver.time_interval = (20, 40)
         driver.set_scenario(init=init, stop=stop)
         driver.add_recorder(DataFrameRecorder(includes=includes), period=1.0)
@@ -74,17 +80,23 @@ class TestStage:
         self.sys.run_drivers()
 
         data = driver.recorder.export_data()
-        data1 = data.drop(["Section", "Status", "Error code", "rocket.weight_prop_2", "rocket.weight_prop_3"], axis=1)
-        data2 = data.drop(["Section", "Status", "Error code", "g_tank.weight_prop", "rocket.weight_prop_1"], axis=1)
+        data1 = data.drop(
+            ["Section", "Status", "Error code", "rocket.weight_prop_2", "rocket.weight_prop_3"],
+            axis=1,
+        )
+        data2 = data.drop(
+            ["Section", "Status", "Error code", "g_tank.weight_prop", "rocket.weight_prop_1"],
+            axis=1,
+        )
 
         print(data1)
         print(data2)
 
-        #acel = np.asarray(data["rocket.a"])
-        #print(data)
+        # acel = np.asarray(data["rocket.a"])
+        # print(data)
 
         np.testing.assert_allclose(self.sys.rocket.weight_prop_1, 0.0, rtol=10 ** (-1))
         np.testing.assert_allclose(self.sys.rocket.weight_prop_2, 0.0, rtol=10 ** (-1))
         np.testing.assert_allclose(self.sys.rocket.weight_prop_3, 0.0, rtol=10 ** (-1))
         np.testing.assert_allclose(self.sys.rocket.geom.weight, 4.0, rtol=10 ** (-1))
-        #np.testing.assert_allclose(acel[-2], 40.0, atol=10 ** (-2))
+        # np.testing.assert_allclose(acel[-2], 40.0, atol=10 ** (-2))

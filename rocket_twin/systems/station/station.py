@@ -1,5 +1,4 @@
 from cosapp.base import System
-from OCC.Core.GProp import GProp_GProps
 
 from rocket_twin.systems import ControllerCoSApp, Pipe, Rocket, Tank
 
@@ -27,7 +26,7 @@ class Station(System):
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
         self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": "w_in_1"})
 
-        self.connect(self.rocket.outwards, self.controller.inwards, {'fueling' : 'is_on'})
+        self.connect(self.rocket.outwards, self.controller.inwards, {"fueling": "is_on"})
         self.connect(self.controller.outwards, self.g_tank.inwards, {"w": "w_command"})
 
         self.g_tank.geom.height = 2.0

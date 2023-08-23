@@ -6,8 +6,8 @@ from OMPython import ModelicaSystem
 
 import rocket_twin.systems.control
 
-class RocketControllerFMU(System):
 
+class RocketControllerFMU(System):
     def setup(self, n_stages, model_path, model_name):
 
         self.add_inward("n_stages", n_stages, desc="number of stages")
@@ -18,7 +18,7 @@ class RocketControllerFMU(System):
         self.add_inward("time_lnc", 100000.0, desc="Launch time", unit="")
         self.add_transient("x", der="1")
 
-        pulling = {"flying" : "flying", "fueling" : "fueling", "tl" : "time_lnc", "ti" : "time_var"}
+        pulling = {"flying": "flying", "fueling": "fueling", "tl": "time_lnc", "ti": "time_var"}
 
         for i in range(1, n_stages + 1):
             self.add_outward(f"is_on_{i}", 0, desc=f"Whether the stage {i} is on or not")
@@ -32,7 +32,7 @@ class RocketControllerFMU(System):
             pulling=pulling,
         )
 
-        self.add_event("full", trigger = "weight_prop_1 > 0.9999*weight_max_1")
+        self.add_event("full", trigger="weight_prop_1 > 0.9999*weight_max_1")
         self.add_event("drop", trigger="weight_prop_1 < 0.1")
 
     def compute(self):
@@ -48,7 +48,7 @@ class RocketControllerFMU(System):
             else:
                 self.time_lnc = self.time + self.time_int
                 self.stage = 1
-        
+
         if self.drop.present:
             if self.stage < self.n_stages:
                 self.stage += 1
@@ -86,5 +86,3 @@ class RocketControllerFMU(System):
                 os.remove(filename)
 
         return fmu
-
-

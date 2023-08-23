@@ -1,8 +1,8 @@
 from cosapp.base import System
+from OCC.Core.GProp import GProp_GProps
 
 from rocket_twin.systems import Dynamics, RocketControllerCoSApp
 from rocket_twin.systems.rocket import OCCGeometry, Stage
-from OCC.Core.GProp import GProp_GProps
 
 
 class Rocket(System):
@@ -53,13 +53,23 @@ class Rocket(System):
             properties[i - 1] = f"stage_{i}"
             forces[i - 1] = f"thrust_{i}"
 
-        self.add_child(RocketControllerCoSApp("controller", n_stages=n_stages), execution_index=0, pulling=['fueling', 'flying'])
+        self.add_child(
+            RocketControllerCoSApp("controller", n_stages=n_stages),
+            execution_index=0,
+            pulling=["fueling", "flying"],
+        )
         self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
         self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])
 
         for i in range(1, n_stages + 1):
-            self.connect(self.controller.outwards, self[f"stage_{i}"].inwards, {f"is_on_{i}" : "is_on"})
-            self.connect(self[f"stage_{i}"].outwards, self.controller.inwards, {"weight_prop" : f"weight_prop_{i}", "weight_max" : f"weight_max_{i}"})
+            self.connect(
+                self.controller.outwards, self[f"stage_{i}"].inwards, {f"is_on_{i}": "is_on"}
+            )
+            self.connect(
+                self[f"stage_{i}"].outwards,
+                self.controller.inwards,
+                {"weight_prop": f"weight_prop_{i}", "weight_max": f"weight_max_{i}"},
+            )
             self.connect(self[f"stage_{i}"].outwards, self.geom.inwards, {"props": f"stage_{i}"})
             self.connect(self[f"stage_{i}"].outwards, self.dyn.inwards, {"thrust": f"thrust_{i}"})
 
@@ -77,4 +87,3 @@ class Rocket(System):
                 self.geom[f"stage_{self.stage}"] = GProp_GProps()
                 self.dyn[f"thrust_{self.stage}"] = 0.0
                 self.stage += 1
-
