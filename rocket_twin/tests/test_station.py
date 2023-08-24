@@ -6,6 +6,7 @@ from rocket_twin.systems import Station
 
 class TestStation:
     """Tests for the station model."""
+
     def test_run_once(self):
         sys = Station("sys")
 

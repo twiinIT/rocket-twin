@@ -30,7 +30,7 @@ class StationControllerFMU(System):
         fmu_path = self.create_fmu(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling=['fueling', 'w'],
+            pulling=["fueling", "w"],
         )
 
     def create_fmu(self, model_path, model_name):

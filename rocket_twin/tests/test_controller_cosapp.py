@@ -7,6 +7,7 @@ from rocket_twin.systems import Station
 
 class TestControllerCosapp:
     """Tests for the cosapp controller."""
+
     def test_run_once(self):
 
         sys = Station("sys", n_stages=3)

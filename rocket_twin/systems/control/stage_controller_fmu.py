@@ -38,7 +38,7 @@ class StageControllerFMU(System):
         fmu_path = self.create_fmu(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling=['is_on', 'w'],
+            pulling=["is_on", "w"],
         )
 
         self.add_event("full", trigger="weight_prop == weight_max")

@@ -11,7 +11,7 @@ class TestDrivers:
     sys = Station("sys")
 
     def test_fuel(self):
-        dt = 1.
+        dt = 1.0
 
         init = {
             "rocket.stage_1.tank.fuel.weight_p": 0.0,

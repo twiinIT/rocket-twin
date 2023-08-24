@@ -9,6 +9,7 @@ from rocket_twin.systems import OCCGeometry
 
 class TestGeometry:
     """Tests for the geometry model."""
+
     def test_structure(self):
 
         sys = OCCGeometry("sys", shapes=["cylinder_s", "cone_s"], properties=["cylinder", "cone"])

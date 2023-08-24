@@ -60,7 +60,7 @@ class Rocket(System):
         self.add_child(
             RocketControllerCoSApp("controller", n_stages=n_stages),
             execution_index=0,
-            pulling=["flying"]
+            pulling=["flying"],
         )
         self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
         self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])

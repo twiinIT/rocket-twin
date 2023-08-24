@@ -4,7 +4,7 @@ from rocket_twin.systems.control import (
     StageControllerCoSApp,
     StageControllerFMU,
     StationControllerCoSApp,
-    StationControllerFMU
+    StationControllerFMU,
 )
 from rocket_twin.systems.engine import Engine, EngineGeom, EnginePerfo
 from rocket_twin.systems.ground import Ground

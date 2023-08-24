@@ -3,11 +3,17 @@ from cosapp.drivers import NonLinearSolver, RungeKutta
 from cosapp.recorders import DataFrameRecorder
 from cosapp.utils import swap_system
 
-from rocket_twin.systems import StageControllerFMU, StationControllerFMU, RocketControllerFMU, Station
+from rocket_twin.systems import (
+    RocketControllerFMU,
+    StageControllerFMU,
+    Station,
+    StationControllerFMU,
+)
 
 
 class TestControllerFMU:
     """Tests for the FMU controller."""
+
     def test_controller_fmu(self):
 
         n_stages = 3
@@ -38,7 +44,7 @@ class TestControllerFMU:
                 StageControllerFMU("controller", model_path=model_path_s, model_name=model_name_s),
             )
 
-        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 35], dt=1.))
+        driver = sys.add_driver(RungeKutta(order=4, time_interval=[0, 35], dt=1.0))
         driver.add_child(NonLinearSolver("solver"))
         init = {
             "g_tank.fuel.weight_p": 20.0,
