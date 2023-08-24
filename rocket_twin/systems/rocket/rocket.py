@@ -12,6 +12,8 @@ class Rocket(System):
     ------
     flying: boolean,
         whether the rocket is already flying or still on ground
+    n_stages: int,
+        how many stages the rocket has
 
     Values
     ------
@@ -24,6 +26,8 @@ class Rocket(System):
 
     Outputs
     ------
+    a [m/s**2]: float,
+        rocket acceleration
     """
 
     def setup(self, n_stages=1):
@@ -45,7 +49,6 @@ class Rocket(System):
                 Stage(f"stage_{i}", nose=nose, wings=wings),
                 pulling={
                     "w_in": f"w_in_{i}",
-                    "weight_max": f"weight_max_{i}",
                     "weight_prop": f"weight_prop_{i}",
                 },
             )
@@ -56,7 +59,6 @@ class Rocket(System):
         self.add_child(
             RocketControllerCoSApp("controller", n_stages=n_stages),
             execution_index=0,
-            pulling=["fueling", "flying"],
         )
         self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
         self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])
@@ -68,12 +70,14 @@ class Rocket(System):
             self.connect(
                 self[f"stage_{i}"].outwards,
                 self.controller.inwards,
-                {"weight_prop": f"weight_prop_{i}", "weight_max": f"weight_max_{i}"},
+                {"weight_prop": f"weight_prop_{i}"},
             )
             self.connect(self[f"stage_{i}"].outwards, self.geom.inwards, {"props": f"stage_{i}"})
             self.connect(self[f"stage_{i}"].outwards, self.dyn.inwards, {"thrust": f"thrust_{i}"})
 
         self.connect(self.geom.outwards, self.dyn.inwards, {"weight": "weight_rocket"})
+
+        self.add_outward_modevar("flying", False, desc="Whether the rocket is flying or not")
 
     def compute(self):
         self.a *= self.flying

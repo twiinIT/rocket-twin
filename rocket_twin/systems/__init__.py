@@ -1,5 +1,6 @@
 from rocket_twin.systems.control import (
-    ControllerCoSApp,
+    StageControllerCoSApp,
+    StationControllerCoSApp,
     ControllerFMU,
     RocketControllerCoSApp,
     RocketControllerFMU,
@@ -26,7 +27,8 @@ __all__ = [
     "Dynamics",
     "Station",
     "Ground",
-    "ControllerCoSApp",
+    "StageControllerCoSApp",
+    "StationControllerCoSApp"
     "RocketControllerCoSApp",
     "ControllerFMU",
     "RocketControllerFMU",

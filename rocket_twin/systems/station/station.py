@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import ControllerCoSApp, Pipe, Rocket, Tank
+from rocket_twin.systems import StationControllerCoSApp, Pipe, Rocket, Tank
 
 
 class Station(System):
@@ -8,6 +8,14 @@ class Station(System):
 
     Inputs
     ------
+    n_stages: int,
+        how many stages are present in the rocket
+    fueling: boolean,
+        whether the rocket is in the fueling phase
+    time_int [s]: float,
+        interval between fueling end and launch
+    time_lnc [s]: float,
+        rocket launch time
 
     Outputs
     ------
@@ -18,7 +26,11 @@ class Station(System):
         self.add_inward("n_stages", n_stages, desc="Number of stages")
         self.add_outward("stage", 1, desc="Current stage")
 
-        self.add_child(ControllerCoSApp("controller"))
+        self.add_inward("fueling", True, desc="Whether the rocket is fueling or not")
+        self.add_inward("time_int", 5.0, desc="Interval between fueling end and launch", unit="s")
+        self.add_inward("time_lnc", 100000.0, desc="Launch time", unit="s")
+
+        self.add_child(StationControllerCoSApp("controller"), pulling=['fueling'])
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
         self.add_child(Rocket("rocket", n_stages=n_stages))
@@ -26,22 +38,32 @@ class Station(System):
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
         self.connect(self.pipe.outwards, self.rocket.inwards, {"w_out": "w_in_1"})
 
-        self.connect(self.rocket.outwards, self.controller.inwards, {"fueling": "is_on"})
         self.connect(self.controller.outwards, self.g_tank.inwards, {"w": "w_command"})
 
         self.g_tank.geom.height = 2.0
 
+        self.add_event("launch", trigger="t == time_lnc")
+
     def transition(self):
 
-        if self.rocket.controller.full.present:
-            if self.stage < self.n_stages:
-                self.pop_child("pipe")
-                self.add_child(Pipe("pipe"), execution_index=2)
+        for i in range(1, self.n_stages + 1):
+            if self.rocket[f'stage_{i}'].controller.full.present:
+                if self.stage < self.n_stages:
+                    self.pop_child("pipe")
+                    self.add_child(Pipe("pipe"), execution_index=2)
 
-                self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
-                self.connect(
-                    self.pipe.outwards, self.rocket.inwards, {"w_out": f"w_in_{self.stage + 1}"}
-                )
+                    self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})
+                    self.connect(
+                        self.pipe.outwards, self.rocket.inwards, {"w_out": f"w_in_{self.stage + 1}"}
+                    )
 
-                self.rocket[f"w_in_{self.stage}"] = 0.0
-                self.stage += 1
+                    self.rocket[f"w_in_{self.stage}"] = 0.0
+                    self.stage += 1
+                else:
+                    self.time_lnc = self.time + self.time_int
+                    self.fueling = False
+                    self.stage = 1
+
+        if self.launch.present:
+            self.rocket.flying = True
+            self.rocket.controller.is_on_1 = True

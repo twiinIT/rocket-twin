@@ -21,7 +21,7 @@ class TestControllerCosapp:
             "rocket.stage_1.tank.fuel.w_out_max": 1.0,
             "rocket.stage_2.tank.fuel.w_out_max": 1.0,
             "rocket.stage_3.tank.fuel.w_out_max": 1.0,
-            "rocket.controller.time_int": 5.0,
+            "time_int": 5.0,
         }
 
         includes = [
@@ -32,7 +32,7 @@ class TestControllerCosapp:
             "rocket.a",
         ]
 
-        driver = sys.add_driver(RungeKutta("rk", order=4, dt=1))
+        driver = sys.add_driver(RungeKutta("rk", order=4, dt=2))
         solver = driver.add_child(NonLinearSolver("solver"))
         driver.time_interval = (0, 35)
         driver.set_scenario(init=init)

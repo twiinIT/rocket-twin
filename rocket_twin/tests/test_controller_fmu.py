@@ -51,19 +51,12 @@ class TestControllerFMU:
         }
         driver.set_scenario(init=init, values=values)
         driver.add_recorder(
-            DataFrameRecorder(includes=["rocket.weight_prop_3", "rocket.geom.weight", "rocket.a"]),
+            DataFrameRecorder(includes=["rocket.a"]),
             period=1.0,
         )
         sys.run_drivers()
         data = driver.recorder.export_data()
-        data1 = data.drop(["Section", "Status", "Error code", "rocket.a"], axis=1)
-        data2 = data.drop(
-            ["Section", "Status", "Error code", "rocket.geom.weight", "rocket.weight_prop_3"],
-            axis=1,
-        )
 
-        print(data1)
-        print(data2)
         acel = np.asarray(data["rocket.a"])
 
         np.testing.assert_allclose(sys.rocket.geom.weight, 4.0, atol=10 ** (0))
