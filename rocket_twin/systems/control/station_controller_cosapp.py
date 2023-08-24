@@ -19,7 +19,7 @@ class StationControllerCoSApp(System):
 
         self.add_inward("fueling", False, desc="Whether the system is in the fueling phase or not")
 
-        self.add_outward("w", 1., desc="Command flow", unit='')
+        self.add_outward("w", 1.0, desc="Command flow", unit="")
 
     def compute(self):
 

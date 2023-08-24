@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import StationControllerCoSApp, Pipe, Rocket, Tank
+from rocket_twin.systems import Pipe, Rocket, StationControllerCoSApp, Tank
 
 
 class Station(System):
@@ -30,7 +30,7 @@ class Station(System):
         self.add_inward("time_int", 5.0, desc="Interval between fueling end and launch", unit="s")
         self.add_inward("time_lnc", 100000.0, desc="Launch time", unit="s")
 
-        self.add_child(StationControllerCoSApp("controller"), pulling=['fueling'])
+        self.add_child(StationControllerCoSApp("controller"), pulling=["fueling"])
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
         self.add_child(Rocket("rocket", n_stages=n_stages))
@@ -47,7 +47,7 @@ class Station(System):
     def transition(self):
 
         for i in range(1, self.n_stages + 1):
-            if self.rocket[f'stage_{i}'].controller.full.present:
+            if self.rocket[f"stage_{i}"].controller.full.present:
                 if self.stage < self.n_stages:
                     self.pop_child("pipe")
                     self.add_child(Pipe("pipe"), execution_index=2)

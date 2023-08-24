@@ -1,6 +1,6 @@
 from cosapp.base import System
 
-from rocket_twin.systems import StageControllerCoSApp, Engine, NoseGeom, Tank, TubeGeom, WingsGeom
+from rocket_twin.systems import Engine, NoseGeom, StageControllerCoSApp, Tank, TubeGeom, WingsGeom
 from rocket_twin.systems.rocket import OCCGeometry
 
 
