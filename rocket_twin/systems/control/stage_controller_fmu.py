@@ -7,7 +7,7 @@ from OMPython import ModelicaSystem
 import rocket_twin.systems.control
 
 
-class RocketControllerFMU(System):
+class StageControllerFMU(System):
     """Controller of the command variables.
 
     Inputs
@@ -16,50 +16,32 @@ class RocketControllerFMU(System):
         the path to the .mo file, if any
     model_name: string,
         the .fmu file name
-    flying: boolean,
-        whether the rocket is mid-flight or not
-    n_stages: int,
-        rocket's number of stages
-    weight_prop_i: float,
-        i-th stage fuel weight
+    is_on: boolean,
+        whether the system is in fueling phase or not
+    weight_prop: float,
+        stage fuel weight
+    weight_max: float,
+        stage maximum fuel weight
 
     Outputs
     ------
-    is_on_i: boolean,
-        whether the i-th stage controller is active or not
+    w: float,
+        command flux
     """
 
-    def setup(self, n_stages, model_path, model_name):
+    def setup(self, model_path, model_name):
 
-        self.add_inward("n_stages", n_stages, desc="number of stages")
-        self.add_inward("stage", 1, desc="Current active stage")
-
-        pulling = {"flying": "flying"}
-
-        for i in range(1, n_stages + 1):
-            self.add_outward(f"is_on_{i}", 0, desc=f"Whether the stage {i} is on or not")
-            pulling[f"weight_{i}"] = f"weight_prop_{i}"
-            pulling[f"is_on_{i}"] = f"is_on_{i}"
+        self.add_inward("weight_prop", 0.0, desc="Stage propellant weight", unit="kg")
+        self.add_inward("weight_max", 1.0, desc="Stage maximum propellant weight", unit="kg")
+        self.add_inward("is_on", False, desc="Whether the stage is on or not")
 
         fmu_path = self.create_fmu(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling=pulling,
+            pulling=['is_on', 'w'],
         )
 
-        self.add_event("drop", trigger="weight_prop_1 < 0.1")
-
-    def compute(self):
-
-        for i in range(1, self.n_stages):
-            self[f"is_on_{i}"] = bool(self[f"is_on_{i}"])
-
-    def transition(self):
-
-        if self.drop.present:
-            if self.stage < self.n_stages:
-                self.stage += 1
-                self.drop.trigger = f"weight_prop_{self.stage} < 0.1"
+        self.add_event("full", trigger="weight_prop == weight_max")
 
     def create_fmu(self, model_path, model_name):
         """Create an fmu file in the control folder from an mo file.

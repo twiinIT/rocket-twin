@@ -21,6 +21,7 @@ class RocketControllerCoSApp(System):
 
         self.add_inward("n_stages", n_stages, desc="number of stages")
         self.add_inward("stage", 1, desc="Current active stage")
+        self.add_inward("flying", False, desc="Whether the rocket is flying or not")
 
         for i in range(1, n_stages + 1):
             self.add_inward(f"weight_prop_{i}", 0.0, desc=f"Stage {i} propellant weight", unit="kg")

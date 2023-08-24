@@ -6,6 +6,7 @@ from rocket_twin.systems import Station
 
 
 class TestControllerCosapp:
+    """Tests for the cosapp controller."""
     def test_run_once(self):
 
         sys = Station("sys", n_stages=3)
@@ -24,15 +25,9 @@ class TestControllerCosapp:
             "time_int": 5.0,
         }
 
-        includes = [
-            "rocket.dyn.weight",
-            "rocket.weight_prop_1",
-            "rocket.weight_prop_2",
-            "rocket.weight_prop_3",
-            "rocket.a",
-        ]
+        includes = ["rocket.a"]
 
-        driver = sys.add_driver(RungeKutta("rk", order=4, dt=2))
+        driver = sys.add_driver(RungeKutta("rk", order=4, dt=1))
         solver = driver.add_child(NonLinearSolver("solver"))
         driver.time_interval = (0, 35)
         driver.set_scenario(init=init)
@@ -41,17 +36,7 @@ class TestControllerCosapp:
         sys.run_drivers()
 
         data = driver.recorder.export_data()
-        data1 = data.drop(
-            ["Section", "Status", "Error code", "rocket.weight_prop_2", "rocket.weight_prop_3"],
-            axis=1,
-        )
-        data2 = data.drop(
-            ["Section", "Status", "Error code", "rocket.dyn.weight", "rocket.weight_prop_1"], axis=1
-        )
         acel = np.asarray(data["rocket.a"])
-
-        print(data1)
-        print(data2)
 
         np.testing.assert_allclose(sys.rocket.geom.weight, 4.0, atol=10 ** (0))
         np.testing.assert_allclose(acel[-3], 40.0, atol=0.1)

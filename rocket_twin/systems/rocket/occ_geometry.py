@@ -13,13 +13,17 @@ class OCCGeometry(System):
 
     Inputs
     ------
-    shapes: TopoDS_Solid, TopoDS_Compound
+    shapes: TopoDS_Solid, TopoDS_Compound,
         pyoccad models of each component of the system
     props: GProp_GProps,
         properties of each model
 
     Outputs
     ------
+    shapes: TopoDS_Solid, TopoDS_Compound,
+        fusion of all input models
+    props: GProp_GProps,
+        properties of the global model
     cg [m]: float,
         center of gravity
     weight [kg]: float,

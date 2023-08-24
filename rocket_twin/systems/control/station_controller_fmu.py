@@ -7,7 +7,7 @@ from OMPython import ModelicaSystem
 import rocket_twin.systems.control
 
 
-class ControllerFMU(System):
+class StationControllerFMU(System):
     """Controller of the command variables.
 
     Inputs
@@ -16,13 +16,13 @@ class ControllerFMU(System):
         the path to the .mo file, if any
     model_name: string,
         the .fmu file name
-    is_on: float,
-        whether the system is active or not
+    fueling: boolean,
+        whether the system is in fueling phase or not
 
     Outputs
     ------
-    'w': float,
-        command flow
+    w: float,
+        command flux
     """
 
     def setup(self, model_path, model_name):
@@ -30,7 +30,7 @@ class ControllerFMU(System):
         fmu_path = self.create_fmu(model_path, model_name)
         self.add_child(
             FMUSystem("fmu_controller", fmu_path=fmu_path),
-            pulling=["w", "is_on"],
+            pulling=['fueling', 'w'],
         )
 
     def create_fmu(self, model_path, model_name):

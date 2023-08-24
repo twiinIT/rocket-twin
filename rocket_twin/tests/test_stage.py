@@ -6,6 +6,7 @@ from rocket_twin.systems import Rocket, Station
 
 
 class TestStage:
+    """Tests for the Stage model."""
 
     sys = Station("sys", n_stages=3)
 

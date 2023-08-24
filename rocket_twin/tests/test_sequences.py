@@ -5,6 +5,7 @@ from rocket_twin.utils import run_sequences
 
 
 class TestSequences:
+    """Tests for command through sequences."""
 
     sys = Station("sys")
 
