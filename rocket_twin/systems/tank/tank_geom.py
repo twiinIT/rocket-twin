@@ -58,7 +58,7 @@ class TankGeom(System):
             self.r_int, self.r_ext, self.height, self.thickness, self.pos
         )
         shape_fuel = CreateCylinder.from_base_and_dir(
-            gp_Pnt(0, 0, self.pos), gp_Vec(0, 0, height_fuel), self.r_int
+            gp_Pnt(0, 0, self.pos + 0.000000001), gp_Vec(0, 0, height_fuel), self.r_int
         )
         self.shape = BRepAlgoAPI_Fuse(shape_struct, shape_fuel).Shape()
 
