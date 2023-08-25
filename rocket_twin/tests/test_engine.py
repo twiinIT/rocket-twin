@@ -5,6 +5,8 @@ from rocket_twin.systems import Engine
 
 
 class TestEngine:
+    """Tests for the engine model."""
+
     def test_run_once(self):
         sys = Engine("sys")
 

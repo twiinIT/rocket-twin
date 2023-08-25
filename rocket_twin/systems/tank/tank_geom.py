@@ -4,6 +4,7 @@ from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Cut, BRepAlgoAPI_Fuse
 from OCC.Core.BRepGProp import brepgprop
 from OCC.Core.gp import gp_Pnt, gp_Vec
 from OCC.Core.GProp import GProp_GProps
+from OCC.Core.TopoDS import TopoDS_Compound, TopoDS_Solid
 from pyoccad.create import CreateCircle, CreateCylinder, CreateExtrusion, CreateFace, CreateSphere
 
 
@@ -38,7 +39,12 @@ class TankGeom(System):
         self.add_inward("pos", 0.0, desc="base center z-coordinate", unit="m")
 
         # Outputs
-        self.add_outward("shape", CreateSphere.from_radius_and_center(1.0), desc="pyoccad model")
+        self.add_outward(
+            "shape",
+            CreateSphere.from_radius_and_center(1.0),
+            dtype=(TopoDS_Compound, TopoDS_Solid),
+            desc="pyoccad model",
+        )
         self.add_outward("props", GProp_GProps(), desc="model properties")
         self.add_outward("weight_max", 1.0, desc="Maximum fuel capacity", unit="kg")
 

@@ -5,6 +5,7 @@ from rocket_twin.utils import run_sequences
 
 
 class TestSequences:
+    """Tests for command through sequences."""
 
     sys = Station("sys")
 
@@ -32,8 +33,8 @@ class TestSequences:
             {
                 "name": "fuel",
                 "type": "transient",
-                "init": {"g_tank.fuel.w_out_max": 1.0, "controller.w_temp": 1.0},
-                "dt": 0.1,
+                "init": {"g_tank.fuel.w_out_max": 1.0},
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == rocket.stage_1.tank.weight_max",
             }
         ]
@@ -59,12 +60,9 @@ class TestSequences:
                 "name": "flight",
                 "type": "transient",
                 "init": {
-                    "rocket.flying": True,
                     "rocket.stage_1.tank.fuel.w_out_max": 0.5,
-                    "controller.w_temp": 0.0,
-                    "rocket.stage_1.controller.w_temp": 1.0,
                 },
-                "dt": 0.1,
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == 0",
             }
         ]
@@ -97,20 +95,17 @@ class TestSequences:
             {
                 "name": "fuel",
                 "type": "transient",
-                "init": {"g_tank.fuel.w_out_max": 1.0, "controller.w_temp": 1.0},
-                "dt": 0.1,
+                "init": {"g_tank.fuel.w_out_max": 1.0},
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == rocket.stage_1.tank.weight_max",
             },
             {
                 "name": "flight",
                 "type": "transient",
                 "init": {
-                    "rocket.flying": True,
                     "rocket.stage_1.tank.fuel.w_out_max": 0.5,
-                    "controller.w_temp": 0.0,
-                    "rocket.stage_1.controller.w_temp": 1.0,
                 },
-                "dt": 0.1,
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == 0",
             },
         ]
