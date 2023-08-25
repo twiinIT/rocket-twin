@@ -34,7 +34,7 @@ class TestSequences:
                 "name": "fuel",
                 "type": "transient",
                 "init": {"g_tank.fuel.w_out_max": 1.0},
-                "dt": 0.1,
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == rocket.stage_1.tank.weight_max",
             }
         ]
@@ -62,7 +62,7 @@ class TestSequences:
                 "init": {
                     "rocket.stage_1.tank.fuel.w_out_max": 0.5,
                 },
-                "dt": 0.1,
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == 0",
             }
         ]
@@ -96,7 +96,7 @@ class TestSequences:
                 "name": "fuel",
                 "type": "transient",
                 "init": {"g_tank.fuel.w_out_max": 1.0},
-                "dt": 0.1,
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == rocket.stage_1.tank.weight_max",
             },
             {
@@ -105,7 +105,7 @@ class TestSequences:
                 "init": {
                     "rocket.stage_1.tank.fuel.w_out_max": 0.5,
                 },
-                "dt": 0.1,
+                "dt": 1.0,
                 "stop": "rocket.stage_1.tank.weight_prop == 0",
             },
         ]

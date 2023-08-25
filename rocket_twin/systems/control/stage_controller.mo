@@ -1,6 +1,6 @@
 model stage_controller
-  input Boolean is_on;
-  output Real w;
+  input Boolean is_on;   // Whether the controller is on or not
+  output Real w;         // Command flow
 equation
   if (is_on == true) then
     w = 1.;

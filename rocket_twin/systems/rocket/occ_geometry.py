@@ -5,8 +5,6 @@ from OCC.Core.GProp import GProp_GProps
 from OCC.Core.TopoDS import TopoDS_Compound, TopoDS_Solid
 from pyoccad.create import CreateSphere
 
-# from OCC.Display.SimpleGui import init_display
-
 
 class OCCGeometry(System):
     """Geometrical properties of a system.
@@ -20,7 +18,7 @@ class OCCGeometry(System):
 
     Outputs
     ------
-    shapes: TopoDS_Solid, TopoDS_Compound,
+    shape: TopoDS_Solid, TopoDS_Compound,
         fusion of all input models
     props: GProp_GProps,
         properties of the global model
@@ -89,12 +87,3 @@ class OCCGeometry(System):
             fusion = BRepAlgoAPI_Fuse(fusion, self[shape]).Shape()
 
         return fusion
-
-    # def view(self):
-
-    # display, start_display, add_menu, add_function_to_menu = init_display()
-
-    # for shape in self.shapes:
-    # display.DisplayColoredShape(self[shape], "RED")
-
-    # start_display()

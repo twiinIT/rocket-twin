@@ -7,11 +7,11 @@ class StageControllerCoSApp(System):
     Inputs
     ------
     is_on: int,
-        rocket's number of stages
-    weight_prop_i: float,
-        i-th stage fuel weight
-    weight_max_i: float,
-        i-th stage maximum fuel weight
+        whether the stage is on or not
+    weight_prop: float,
+        stage fuel weight
+    weight_max: float,
+        stage maximum fuel weight
 
     Outputs
     ------

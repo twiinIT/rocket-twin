@@ -1,6 +1,6 @@
 model station_controller
-  input Boolean fueling;
-  output Real w;
+  input Boolean fueling;       // Whether the system is in its fueling phase
+  output Real w;               // Command flow
 equation
   if (fueling == true) then
     w = 1.;
