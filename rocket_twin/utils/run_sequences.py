@@ -2,7 +2,7 @@ from cosapp.drivers import NonLinearSolver, RungeKutta
 from cosapp.recorders import DataFrameRecorder
 
 
-def run_sequences(sys, sequences, includes = []):
+def run_sequences(sys, sequences, includes):
     """Run the command sequences over a system.
 
     Inputs

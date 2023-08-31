@@ -8,6 +8,7 @@ class TestSequences:
     """Tests for command through sequences."""
 
     sys = Station("sys")
+    includes = ["rocket.a"]
 
     def test_init(self):
 
@@ -19,7 +20,7 @@ class TestSequences:
             }
         ]
 
-        run_sequences(self.sys, seq)
+        run_sequences(self.sys, seq, includes=self.includes)
 
         np.testing.assert_allclose(
             self.sys.g_tank.weight_prop, self.sys.g_tank.weight_max, atol=10 ** (-6)
@@ -39,7 +40,7 @@ class TestSequences:
             }
         ]
 
-        run_sequences(self.sys, seq)
+        run_sequences(self.sys, seq, includes=self.includes)
 
         np.testing.assert_allclose(
             self.sys.g_tank.weight_prop,
@@ -67,7 +68,7 @@ class TestSequences:
             }
         ]
 
-        run_sequences(self.sys, seq)
+        run_sequences(self.sys, seq, includes=self.includes)
 
         data = self.sys.drivers["rk"].recorder.export_data()
         data = data.drop(["Section", "Status", "Error code"], axis=1)
@@ -110,7 +111,7 @@ class TestSequences:
             },
         ]
 
-        run_sequences(sys2, seq)
+        run_sequences(sys2, seq, includes=self.includes)
 
         data = sys2.drivers["rk"].recorder.export_data()
         data = data.drop(["Section", "Status", "Error code"], axis=1)
