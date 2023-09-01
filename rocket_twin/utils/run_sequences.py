@@ -2,7 +2,7 @@ from cosapp.drivers import NonLinearSolver, RungeKutta
 from cosapp.recorders import DataFrameRecorder
 
 
-def run_sequences(sys, sequences):
+def run_sequences(sys, sequences, includes):
     """Run the command sequences over a system.
 
     Inputs
@@ -13,7 +13,7 @@ def run_sequences(sys, sequences):
         the commands to be applied
     """
     rk = sys.add_driver(RungeKutta("rk"))
-    rk.add_recorder(DataFrameRecorder(includes=["rocket.a"], hold=True))
+    rk.add_recorder(DataFrameRecorder(includes=includes, hold=True))
 
     for seq in sequences:
         print("sequence ", seq["name"])
