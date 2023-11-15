@@ -34,6 +34,7 @@ class Dynamics(System):
         self.add_property("weights", weights)
 
         # inwards
+        self.add_inward("pos", np.r[0., 0., 3200.0e3], desc="local position", unit="m")
         self.add_inward("g0", -10.0, desc="Gravity on earth", unit="m/s**2")
         self.add_inward('r0', 3200.0e3, desc="Radius of the Earth", unit="m")
 
