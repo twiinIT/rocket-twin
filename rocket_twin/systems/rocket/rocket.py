@@ -1,5 +1,6 @@
 from cosapp.base import System
 from OCC.Core.GProp import GProp_GProps
+import numpy as np
 
 from rocket_twin.systems import Dynamics, RocketControllerCoSApp
 from rocket_twin.systems.rocket import OCCGeometry, Stage
@@ -63,7 +64,7 @@ class Rocket(System):
             pulling=["flying"],
         )
         self.add_child(OCCGeometry("geom", shapes=shapes, properties=properties))
-        self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a"])
+        self.add_child(Dynamics("dyn", forces=forces, weights=["weight_rocket"]), pulling=["a", "pos"])  #pulling acceleration and position to dynamics
 
         for i in range(1, n_stages + 1):
             self.connect(
@@ -89,5 +90,5 @@ class Rocket(System):
                 stage = self.pop_child(f"stage_{self.stage}")
                 self.add_child(stage, execution_index=self.stage - 1)
                 self.geom[f"stage_{self.stage}"] = GProp_GProps()
-                self.dyn[f"thrust_{self.stage}"] = 0.0
+                self.dyn[f"thrust_{self.stage}"] = np.zeros(3)
                 self.stage += 1
