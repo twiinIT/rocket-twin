@@ -40,7 +40,7 @@ class Dynamics(System):
 
         # outwards
         self.add_outward("g", np.array([0., 0., -10.0]), desc="Gravity", unit="m/s**2")
-        self.add_outward("a", 0.0, desc="Acceleration", unit="m/s**2")
+        self.add_outward("a", np.zeros(3), desc="Acceleration", unit="m/s**2")
 
         for weight in self.weights:
             self.add_inward(weight, 0.0, desc=f"Weight called {weight}", unit="kg")
