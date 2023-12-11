@@ -34,12 +34,12 @@ class Dynamics(System):
         self.add_property("weights", weights)
 
         # inwards
-        self.add_inward("pos", np.array([0., 0., 6400.0e3]), desc="local position", unit="m")
+        self.add_inward("pos", np.array([0.0, 0.0, 6400.0e3]), desc="local position", unit="m")
         self.add_inward("g0", -10.0, desc="Gravity on earth", unit="m/s**2")
-        self.add_inward('r0', 6400.0e3, desc="Radius of the Earth", unit="m")
+        self.add_inward("r0", 6400.0e3, desc="Radius of the Earth", unit="m")
 
         # outwards
-        self.add_outward("g", np.array([0., 0., -10.0]), desc="Gravity", unit="m/s**2")
+        self.add_outward("g", np.array([0.0, 0.0, -10.0]), desc="Gravity", unit="m/s**2")
         self.add_outward("a", np.zeros(3), desc="Acceleration", unit="m/s**2")
 
         for weight in self.weights:
@@ -54,7 +54,7 @@ class Dynamics(System):
         # gravity computation
         r = np.linalg.norm(self.pos)
         u = self.pos / r
-        self.g = self.g0 * (self.r0 / r) ** 2 * u 
+        self.g = self.g0 * (self.r0 / r) ** 2 * u
 
         self.weight = 0
 

@@ -56,4 +56,4 @@ class TestEngine:
 
         sys.run_drivers()
 
-        np.testing.assert_allclose(sys.force, 2000.0, atol=10 ** (-5))
+        np.testing.assert_allclose(sys.force, np.array([0.0, 0.0, 2000.0]), atol=10 ** (-5))

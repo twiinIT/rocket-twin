@@ -1,5 +1,5 @@
-from cosapp.base import System
 import numpy as np
+from cosapp.base import System
 
 
 class EnginePerfo(System):
@@ -25,7 +25,7 @@ class EnginePerfo(System):
         self.add_inward("isp", 20.0, desc="Specific impulsion in vacuum", unit="s")
         self.add_inward("g_0", 10.0, desc="Gravity at Earth's surface", unit="m/s**2")
 
-        self.add_outward("force", np.array([0.,0.,1.0]), desc="Thrust force", unit="N")
+        self.add_outward("force", np.array([0.0, 0.0, 1.0]), desc="Thrust force", unit="N")
 
     def compute(self):
 

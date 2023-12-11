@@ -40,4 +40,4 @@ class TestControllerCosapp:
         acel = np.asarray(data["rocket.a"])
 
         np.testing.assert_allclose(sys.rocket.geom.weight, 4.0, atol=10 ** (0))
-        np.testing.assert_allclose(acel[-3], 40.0, atol=0.1)
+        np.testing.assert_allclose(acel[-3], np.array([0.0, 0.0, 40.0]), atol=0.1)

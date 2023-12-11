@@ -8,18 +8,18 @@ class TestDynamics:
 
     def test_is_on(self):
         sys = Dynamics("sys", forces=["F"], weights=["w"])
-        sys.F = 100.0
+        sys.F = np.array([0.0, 0.0, 100.0])
         sys.w = 5.0
 
         sys.run_once()
 
-        np.testing.assert_allclose(sys.a, 10.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.a, np.array([0.0, 0.0, 10.0]), atol=10 ** (-10))
 
     def test_is_off(self):
         sys = Dynamics("sys", forces=["F"], weights=["w"])
-        sys.F = 10.0
+        sys.F = np.array([0.0, 0.0, 10.0])
         sys.w = 5.0
 
         sys.run_once()
 
-        np.testing.assert_allclose(sys.a, -8.0, atol=10 ** (-10))
+        np.testing.assert_allclose(sys.a, np.array([0.0, 0.0, -8.0]), atol=10 ** (-10))

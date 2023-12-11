@@ -33,6 +33,6 @@ class TestMission:
 
         acel = np.asarray(data["rocket.a"])
 
-        np.testing.assert_allclose(acel[-2], 65.0, atol=10 ** (-10))
+        np.testing.assert_allclose(acel[-2], np.array([0.0, 0.0, 65.0]), atol=10 ** (-10))
         np.testing.assert_allclose(sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-10))
         np.testing.assert_allclose(sys.g_tank.weight_prop, 5.0, atol=10 ** (-10))

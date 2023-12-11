@@ -1,26 +1,28 @@
-#main
-from cosapp.drivers import RungeKutta, NonLinearSolver
-from cosapp.recorders import DataFrameRecorder
-from rocket_twin.systems import Ground
+# main
 import numpy as np
+from cosapp.drivers import NonLinearSolver, RungeKutta
+from cosapp.recorders import DataFrameRecorder
 
-sys = Ground("ground", stations = ["station"])
+from rocket_twin.systems import Ground
 
-dt = 1.
-T = 50.
+sys = Ground("ground", stations=["station"])
 
-init = {"station.g_tank.fuel.weight_p" : 5.,
-        "station.rocket.stage_1.tank.fuel.weight_p" : 0.,
-        "station.fueling" : True,
-        "station.rocket.flying" : False,
-       }
+dt = 1.0
+T = 50.0
+
+init = {
+    "station.g_tank.fuel.weight_p": 5.0,
+    "station.rocket.stage_1.tank.fuel.weight_p": 0.0,
+    "station.fueling": True,
+    "station.rocket.flying": False,
+}
 
 driver = sys.add_driver(RungeKutta(order=4, dt=dt))
-solver = driver.add_child(NonLinearSolver('solver'))
+solver = driver.add_child(NonLinearSolver("solver"))
 driver.time_interval = (0, T)
 driver.set_scenario(init=init)
 
-includes = ["a_station","v_station", "r_station"]
+includes = ["a_station", "v_station", "r_station"]
 
 driver.add_recorder(DataFrameRecorder(includes=includes), period=1.0)
 
