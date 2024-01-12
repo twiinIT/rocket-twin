@@ -24,4 +24,4 @@ class Engine(System):
     def setup(self):
 
         self.add_child(EngineGeom("geom"), pulling=["shape", "props"])
-        self.add_child(EnginePerfo("perfo"), pulling=["w_out", "force"])
+        self.add_child(EnginePerfo("perfo"), pulling=["w_out", "force","v"])

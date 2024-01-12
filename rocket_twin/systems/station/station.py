@@ -34,7 +34,7 @@ class Station(System):
         self.add_child(Tank("g_tank"))
         self.add_child(Pipe("pipe"))
         self.add_child(
-            Rocket("rocket", n_stages=n_stages), pulling=["a", "pos"]
+            Rocket("rocket", n_stages=n_stages), pulling=["a","v", "pos"]
         )  # pulling acceleration and position (from ground to station to rocket to dynamics))
 
         self.connect(self.g_tank.outwards, self.pipe.inwards, {"w_out": "w_in"})

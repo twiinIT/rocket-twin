@@ -1,5 +1,7 @@
 import numpy as np
+from numpy import linalg
 from cosapp.base import System
+
 
 
 class EnginePerfo(System):
@@ -16,12 +18,13 @@ class EnginePerfo(System):
         thrust force
     """
 
-    def setup(self):
+    def setup(self, stations= None):
 
         # Inputs
         self.add_inward("w_out", 0.0, desc="Fuel consumption rate", unit="kg/s")
 
         # Parameters
+        self.add_inward("v", 1, desc = "velocity", unit= "m/s")
         self.add_inward("isp", 20.0, desc="Specific impulsion in vacuum", unit="s")
         self.add_inward("g_0", 10.0, desc="Gravity at Earth's surface", unit="m/s**2")
 
@@ -29,4 +32,4 @@ class EnginePerfo(System):
 
     def compute(self):
 
-        self.force = np.array([0.0, 0.0, self.isp * self.w_out * self.g_0])
+        self.force = (self.v/np.linalg.norm(self.v))*self.isp * self.w_out * self.g_0

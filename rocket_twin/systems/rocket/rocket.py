@@ -51,7 +51,7 @@ class Rocket(System):
                 Stage(f"stage_{i}", nose=nose, wings=wings),
                 pulling={
                     "w_in": f"w_in_{i}",
-                    "weight_prop": f"weight_prop_{i}",
+                    "weight_prop": f"weight_prop_{i}", "v":"v"
                 },
             )
             shapes[i - 1] = f"stage_{i}_s"

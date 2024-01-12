@@ -25,7 +25,7 @@ class Ground(System):
         for station in stations:
 
             self.add_child(
-                Station(station, n_stages=1), pulling={"a": f"a_{station}", "pos": f"pos_{station}"}
+                Station(station, n_stages=1), pulling={"a": f"a_{station}","v":f"v_{station}", "pos": f"pos_{station}"}
             )
             self.add_transient(
                 f"v_{station}", der=f"a_{station}"
@@ -33,6 +33,7 @@ class Ground(System):
             self.add_transient(
                 f"r_{station}", der=f"v_{station}"
             )  # integrate velocity to get position
+
             # self.add_outward(f"pos_{station}")
 
     def compute(self):

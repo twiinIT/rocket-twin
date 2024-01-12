@@ -57,3 +57,10 @@ class TestEngine:
         sys.run_drivers()
 
         np.testing.assert_allclose(sys.force, np.array([0.0, 0.0, 2000.0]), atol=10 ** (-5))
+
+    def test_velocity(self):
+        sys = Engine("sys")
+        sys.run_once()
+        
+        np.testing.assertTrue(are_vectors_colinear(sys.force, sys.v)) #test that velocity is parallel to thrust
+
