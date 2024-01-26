@@ -27,7 +27,7 @@ class StageControllerCoSApp(System):
 
         self.add_outward("w", 1.0, desc="Command flow", unit="")
 
-        self.add_event("full", trigger="weight_prop == weight_max")
+        self.add_event("full", trigger="weight_prop == weight_max") # transition is defined in station
 
     def compute(self):
 

@@ -81,7 +81,7 @@ class TestSequences:
             atol=10 ** (-6),
         )
         np.testing.assert_allclose(self.sys.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(acel[-2], 2.5, atol=10 ** (-6))
+        np.testing.assert_allclose(acel[-2], np.array([0.0, 0.0, 2.5]), atol=10 ** (-6))
 
     def test_all(self):
 
@@ -124,4 +124,4 @@ class TestSequences:
             atol=10 ** (-6),
         )
         np.testing.assert_allclose(sys2.rocket.stage_1.tank.weight_prop, 0.0, atol=10 ** (-6))
-        np.testing.assert_allclose(acel[-2], 2.5, atol=10 ** (-6))
+        np.testing.assert_allclose(acel[-2], np.array([0.0, 0.0, 2.5]), atol=10 ** (-6))

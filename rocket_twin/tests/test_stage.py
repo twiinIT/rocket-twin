@@ -66,6 +66,7 @@ class TestStage:
         stop = "rocket.weight_prop_3 == 0."
 
         includes = [
+            "rocket.a",
             "g_tank.weight_prop",
             "rocket.weight_prop_1",
             "rocket.weight_prop_2",
@@ -93,11 +94,11 @@ class TestStage:
         print(data1)
         print(data2)
 
-        # acel = np.asarray(data["rocket.a"])
+        acel = np.asarray(data["rocket.a"])
         # print(data)
 
         np.testing.assert_allclose(self.sys.rocket.weight_prop_1, 0.0, rtol=10 ** (-1))
         np.testing.assert_allclose(self.sys.rocket.weight_prop_2, 0.0, rtol=10 ** (-1))
         np.testing.assert_allclose(self.sys.rocket.weight_prop_3, 0.0, rtol=10 ** (-1))
         np.testing.assert_allclose(self.sys.rocket.geom.weight, 4.0, rtol=10 ** (-1))
-        # np.testing.assert_allclose(acel[-2], 40.0, atol=10 ** (-2))
+        np.testing.assert_allclose(acel[-2], np.array([0.0, 0.0, 40.0]), atol=10 ** (-2))

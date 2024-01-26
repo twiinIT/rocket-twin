@@ -31,7 +31,7 @@ class Stage(System):
 
         self.add_child(StageControllerCoSApp("controller"), pulling=["is_on"])
         self.add_child(Tank("tank"), pulling=["w_in", "weight_prop"])
-        self.add_child(Engine("engine"), pulling={"force": "thrust"})
+        self.add_child(Engine("engine"), pulling={"force": "thrust", "v":"v"})
         self.add_child(TubeGeom("tube"))
 
         if nose:
