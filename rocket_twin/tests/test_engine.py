@@ -62,5 +62,6 @@ class TestEngine:
         sys = Engine("sys")
         sys.run_once()
         
-        np.testing.assertTrue(are_vectors_colinear(sys.force, sys.v)) #test that velocity is parallel to thrust
+        np.testing.assert_allclose(sys.force/np.linalg.norm(sys.force), sys.v/np.linalg.norm(sys.v)) #test that velocity is parallel to thrust
 
+        np.testing.assertTrue(np.any(np.not_equal(sys.force, np.array([0.0, 0.0, 0.0]))), True)# check that force is non zero
