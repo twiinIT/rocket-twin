@@ -88,7 +88,7 @@ class Rocket(System):
 
         self.connect(self.geom.outwards, self.dyn.inwards, {"weight": "weight_rocket"})
 
-        self.add_event("rotation", trigger = self.pos[2] >= self.Hm)  # if we reach the altitude Hm, we want to rotate the rocket
+        self.add_event("rotation", trigger = "pos[2] >= Hm")  # if we reach the altitude Hm, we want to rotate the rocket
 
     def compute(self):
         self.a *= self.flying #if the whole rocket is not flying, its acceleration is False = 0
